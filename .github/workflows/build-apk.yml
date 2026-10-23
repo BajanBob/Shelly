@@ -1,1 +1,121 @@
+name: Build Shelly Android app
 
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  apk:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - name: Create the app project (Capacitor)
+        run: |
+          mkdir -p app/www
+          cp index.html config.json manifest.webmanifest icon-192.png icon-512.png apple-touch-icon.png app/www/
+          cd app
+          npm init -y > /dev/null
+          npm install @capacitor/core@^6.0.0 @capacitor/cli@^6.0.0 @capacitor/android@^6.0.0 @capacitor/push-notifications@^6.0.0
+          cat > capacitor.config.json <<'JSON'
+          {
+            "appId": "bb.shelly.app",
+            "appName": "Shelly",
+            "webDir": "www",
+            "android": { "allowMixedContent": false, "captureInput": true, "webContentsDebuggingEnabled": false },
+            "plugins": { "PushNotifications": { "presentationOptions": ["badge", "sound", "alert"] } }
+          }
+          JSON
+          npx cap add android
+          npx cap sync android
+
+      - name: Firebase config (for push notifications)
+        env:
+          GOOGLE_SERVICES_JSON: ${{ secrets.GOOGLE_SERVICES_JSON }}
+        run: |
+          if [ -n "$GOOGLE_SERVICES_JSON" ]; then
+            printf '%s' "$GOOGLE_SERVICES_JSON" > app/android/app/google-services.json
+            echo "Firebase config added - push notifications enabled"
+          else
+            echo "::warning::No GOOGLE_SERVICES_JSON secret - the app builds, but push notifications will be off"
+          fi
+
+      - name: Privacy, permissions, sounds and icons
+        run: |
+          set -e
+          A=app/android/app/src/main
+          # 1. Block screenshots and screen recording (FLAG_SECURE) and hide content in the recent-apps view
+          MA=$(find $A/java -name MainActivity.java)
+          cat > "$MA" <<'JAVA'
+          package bb.shelly.app;
+
+          import android.os.Bundle;
+          import android.view.WindowManager;
+          import com.getcapacitor.BridgeActivity;
+
+          public class MainActivity extends BridgeActivity {
+              @Override
+              public void onCreate(Bundle savedInstanceState) {
+                  super.onCreate(savedInstanceState);
+                  getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE);
+              }
+          }
+          JAVA
+          # 2. Camera, microphone and notification permissions
+          sed -i '0,/<application/s#<application#<uses-permission android:name="android.permission.CAMERA" />\n    <uses-permission android:name="android.permission.RECORD_AUDIO" />\n    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />\n    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />\n    <uses-permission android:name="android.permission.VIBRATE" />\n    <uses-feature android:name="android.hardware.camera" android:required="false" />\n    <application#' $A/AndroidManifest.xml
+          # 3. Notification icon and colour for Firebase
+          sed -i '0,/<activity/s#<activity#<meta-data android:name="com.google.firebase.messaging.default_notification_icon" android:resource="@drawable/ic_stat_shelly" />\n        <meta-data android:name="com.google.firebase.messaging.default_notification_color" android:resource="@color/shelly_teal" />\n        <activity#' $A/AndroidManifest.xml
+          mkdir -p $A/res/raw $A/res/drawable $A/res/values
+          # sounds (the message tone may be named shelly_msg.wav or shelly_message.wav)
+          for f in voice video; do cp android/shelly_$f.wav $A/res/raw/; done
+          if [ -f android/shelly_msg.wav ]; then cp android/shelly_msg.wav $A/res/raw/shelly_msg.wav; else cp android/shelly_message.wav $A/res/raw/shelly_msg.wav; fi
+          cp android/ic_stat_shelly.png $A/res/drawable/
+          printf '<?xml version="1.0" encoding="utf-8"?>\n<resources><color name="shelly_teal">#0A8C8A</color></resources>\n' > $A/res/values/shelly_colors.xml
+          # 4. App icon (replace the default Capacitor icon)
+          rm -rf $A/res/mipmap-anydpi-v26
+          for d in $A/res/mipmap-*; do cp icon-192.png $d/ic_launcher.png; cp icon-192.png $d/ic_launcher_round.png; done
+          sed -i 's/\(name="app_name">\)[^<]*/\1Shelly/; s/\(name="title_activity_main">\)[^<]*/\1Shelly/' $A/res/values/strings.xml
+          grep -n "FLAG_SECURE" "$MA"
+
+      - name: Build
+        run: |
+          cd app/android
+          chmod +x gradlew
+          ./gradlew assembleRelease --no-daemon
+
+      - name: Sign
+        env:
+          SHELLY_KEYSTORE: ${{ secrets.SHELLY_KEYSTORE }}
+          PASS: ${{ secrets.SHELLY_KEYSTORE_PASS || 'shelly-sign-2026' }}
+        run: |
+          set -e
+          mkdir -p out
+          if [ -n "$SHELLY_KEYSTORE" ]; then
+            printf '%s' "$SHELLY_KEYSTORE" | base64 -d > shelly.jks
+          else
+            echo "::warning::No SHELLY_KEYSTORE secret - made a new signing key. Save it as a secret (see NEW-SIGNING-KEY.txt in the download) so future updates install over this version."
+            keytool -genkeypair -keystore shelly.jks -alias shelly -keyalg RSA -keysize 2048 -validity 10000 \
+              -storepass "$PASS" -keypass "$PASS" -dname "CN=Shelly, O=BajanBob, C=BB"
+            { echo "Add this as a repository secret named SHELLY_KEYSTORE (Settings > Secrets and variables > Actions):"; echo; base64 -w0 shelly.jks; echo; } > out/NEW-SIGNING-KEY.txt
+          fi
+          BT=$(ls "$ANDROID_HOME/build-tools" | sort -V | tail -1)
+          UNSIGNED=$(find app/android/app/build/outputs/apk/release -name "*.apk" | head -1)
+          "$ANDROID_HOME/build-tools/$BT/zipalign" -f -p 4 "$UNSIGNED" aligned.apk
+          "$ANDROID_HOME/build-tools/$BT/apksigner" sign --ks shelly.jks --ks-key-alias shelly --ks-pass env:PASS --key-pass env:PASS --out out/Shelly.apk aligned.apk
+          "$ANDROID_HOME/build-tools/$BT/apksigner" verify out/Shelly.apk && echo "Signed OK"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Shelly-android
+          path: out/

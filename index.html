@@ -1,0 +1,718 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Shelly</title>
+<meta name="theme-color" content="#0a8c8a">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lilita+One&family=Figtree:wght@400;500;600;700&display=swap">
+<style>
+/* Layout: one phone-width column; list -> conversation -> call, each a full screen that slides in. */
+:root{
+  /* Layout: one phone-width column; list -> conversation -> call, each a full screen. Calypso: sea, hibiscus, sun. */
+  --bg:#e8f6f4; --surface:#ffffff; --surface-2:#d3eeea; --ink:#0b2a2e; --muted:#4f6d70; --line:#c4e3de;
+  --accent:#0a8c8a; --accent-ink:#ffffff; --accent-soft:#cdeee9; --mine:#0a8c8a; --mine-ink:#ffffff;
+  --theirs:#ffffff; --hibiscus:#e0475b; --sun:#f6b52b; --palm:#2f9e5b;
+  --danger:#d23c4f; --ok:#2f9e5b; --warn:#c98a10;
+  --display:"Lilita One", "Arial Rounded MT Bold", "Trebuchet MS", system-ui, sans-serif;
+  --body:"Figtree", "Segoe UI", system-ui, -apple-system, sans-serif;
+  --mono:ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#061d20; --surface:#0b2a2e; --surface-2:#103a3d; --ink:#e3f6f3; --muted:#8fb6b3; --line:#174447;
+  --accent:#2fc4bd; --accent-ink:#032325; --accent-soft:#11403f; --mine:#138a85; --mine-ink:#f0fffd;
+  --theirs:#103a3d; --hibiscus:#ff6f7f; --sun:#ffc84a; --palm:#5fd18f;
+  --danger:#ff7d8a; --ok:#5fd18f; --warn:#ffc84a; color-scheme:dark } }
+:root[data-theme="dark"]{
+  --bg:#061d20; --surface:#0b2a2e; --surface-2:#103a3d; --ink:#e3f6f3; --muted:#8fb6b3; --line:#174447;
+  --accent:#2fc4bd; --accent-ink:#032325; --accent-soft:#11403f; --mine:#138a85; --mine-ink:#f0fffd;
+  --theirs:#103a3d; --hibiscus:#ff6f7f; --sun:#ffc84a; --palm:#5fd18f;
+  --danger:#ff7d8a; --ok:#5fd18f; --warn:#ffc84a; color-scheme:dark }
+*{box-sizing:border-box}
+html,body{height:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.45 var(--body);-webkit-font-smoothing:antialiased}
+button,input{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+[hidden]{display:none!important}
+.app{max-width:560px;margin:0 auto;height:100%;display:flex;flex-direction:column;position:relative;overflow:hidden}
+.screen{position:absolute;inset:0;display:flex;flex-direction:column;background:var(--bg)}
+.bar{display:flex;align-items:center;gap:10px;padding-block:calc(12px + env(safe-area-inset-top,0px)) 10px;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));
+  background:var(--surface)}
+.brand{font:400 28px/1 var(--display);letter-spacing:.01em;flex:1;display:flex;align-items:center;gap:8px;color:var(--accent)}
+.brand .shell{width:30px;height:30px;flex:none}
+.brand .shell path{fill:var(--hibiscus)} .brand .shell .rib{fill:none;stroke:var(--surface);stroke-width:1.6;stroke-linecap:round}
+.brand .shell .hinge{fill:var(--sun)}
+.waves{height:16px;flex:none;background:var(--surface);position:relative;overflow:hidden}
+.waves svg{position:absolute;inset:0;width:100%;height:100%}
+.waves .w1{fill:var(--accent)} .waves .w2{fill:var(--sun);opacity:.9}
+.status{font-size:13px;color:var(--muted);display:flex;align-items:center;gap:6px}
+.dot{width:9px;height:9px;border-radius:50%;background:var(--muted);flex:none}
+.dot.on{background:var(--ok)} .dot.wait{background:var(--warn)}
+.icon-btn{width:44px;height:44px;border-radius:12px;border:1px solid var(--line);background:var(--surface);display:grid;place-items:center;flex:none}
+.icon-btn svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.icon-btn.acc{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.body{flex:1;overflow-y:auto;padding-block:14px 24px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:flex;flex-direction:column;gap:12px}
+h1,h2{font-family:var(--display);font-weight:400;margin:0;text-wrap:balance;letter-spacing:.01em}
+h1{font-size:30px;line-height:1.1} h2{font-size:19px}
+.lede{color:var(--muted);margin:0}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:16px;display:flex;flex-direction:column;gap:10px}
+.btn{min-height:48px;padding:0 18px;border-radius:12px;border:1px solid var(--line);background:var(--surface);font-weight:600;display:inline-flex;align-items:center;justify-content:center;gap:8px}
+.btn.pri{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.btn.sun{background:var(--sun);border-color:var(--sun);color:#3a2600}
+.btn.danger{color:var(--danger)}
+.row{display:flex;gap:8px;flex-wrap:wrap}
+label.f{display:flex;flex-direction:column;gap:6px;font-size:14px;color:var(--muted)}
+input.in{min-height:48px;border-radius:12px;border:1px solid var(--line);background:var(--bg);padding:0 14px;color:var(--ink);width:100%}
+.tabs{display:grid;grid-template-columns:1fr 1fr;gap:4px;padding:4px;border-radius:12px;background:var(--surface-2)}
+.tabs button{min-height:40px;border:0;border-radius:9px;background:transparent;font-weight:600;color:var(--muted)}
+.tabs button[aria-selected="true"]{background:var(--surface);color:var(--ink);box-shadow:0 1px 2px rgba(0,0,0,.08)}
+.contact{display:flex;align-items:center;gap:12px;padding:12px;border-radius:16px;background:var(--surface);border:1px solid var(--line)}
+.welcome-hero{display:flex;flex-direction:column;gap:14px}
+.welcome-hero .brand{font-size:52px}
+.welcome-hero .brand .shell{width:56px;height:56px}
+.contact .who{flex:1;min-width:0;display:flex;flex-direction:column;border:0;background:none;text-align:left;padding:0}
+.contact .who b{font-weight:600}
+.contact .who span{color:var(--muted);font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.av{width:46px;height:46px;border-radius:50%;background:var(--accent-soft);color:var(--accent);display:grid;place-items:center;font:400 18px var(--display);flex:none;position:relative}
+.av .dot{position:absolute;right:0;bottom:1px;border:2px solid var(--surface);width:13px;height:13px}
+.badge{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;color:var(--ok);background:color-mix(in srgb,var(--ok) 12%,transparent);border-radius:999px;padding:3px 10px;align-self:flex-start}
+.badge.weak{color:var(--warn);background:color-mix(in srgb,var(--warn) 14%,transparent)}
+.badge svg{width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2.4}
+.empty{color:var(--muted);text-align:center;padding:28px 12px;border:1px dashed var(--line);border-radius:16px}
+.unread{background:var(--hibiscus);color:var(--accent-ink);border-radius:999px;font-size:12px;font-weight:700;padding:1px 8px}
+/* conversation */
+.who-head{flex:1;min-width:0;display:flex;flex-direction:column}
+.who-head b{font:400 20px var(--display);letter-spacing:.01em}
+.who-head span{font-size:13px;color:var(--muted);display:flex;gap:6px;align-items:center}
+.msgs{flex:1;overflow-y:auto;padding-block:14px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:flex;flex-direction:column;gap:6px}
+.msg{max-width:80%;padding:9px 13px;border-radius:16px;background:var(--theirs);border:1px solid var(--line);align-self:flex-start;white-space:pre-wrap;overflow-wrap:anywhere}
+.msg.me{align-self:flex-end;background:var(--mine);color:var(--mine-ink);border-color:var(--mine)}
+.msg small{display:block;font-size:11px;opacity:.75;margin-top:2px;text-align:right}
+.sys{align-self:center;font-size:12px;color:var(--muted);text-align:center;max-width:90%}
+.compose{display:flex;gap:8px;padding-block:10px calc(10px + env(safe-area-inset-bottom,0px));padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));background:var(--surface);border-top:1px solid var(--line)}
+/* call */
+.call{background:linear-gradient(170deg,#063b3e 0%,#04191b 60%,#1b0c12 100%);color:#eaf6f3;z-index:20}
+.call video{background:#061210}
+#v-remote{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+#v-local{position:absolute;right:max(14px,env(safe-area-inset-right,0px));top:calc(80px + env(safe-area-inset-top,0px));width:28%;max-width:150px;aspect-ratio:3/4;object-fit:cover;border-radius:14px;border:2px solid rgba(255,255,255,.5);transform:scaleX(-1)}
+.call-top{position:relative;z-index:2;padding-block:calc(18px + env(safe-area-inset-top,0px)) 0;padding-left:max(18px,env(safe-area-inset-left,0px));padding-right:max(18px,env(safe-area-inset-right,0px));display:flex;flex-direction:column;gap:6px;text-shadow:0 1px 3px rgba(0,0,0,.6)}
+.call-top b{font:400 32px var(--display);letter-spacing:.01em}
+.call-voice{position:absolute;inset:0;display:grid;place-items:center}
+.call-voice .av{width:120px;height:120px;font-size:48px;background:#0d4a4b;color:#ffc84a}
+.call-ctrl{position:absolute;left:0;right:0;bottom:0;z-index:2;display:flex;justify-content:center;gap:16px;padding-block:18px calc(26px + env(safe-area-inset-bottom,0px));background:linear-gradient(transparent,rgba(0,0,0,.55))}
+.round{width:62px;height:62px;border-radius:50%;border:0;background:rgba(255,255,255,.16);color:#fff;display:grid;place-items:center}
+.round svg{width:26px;height:26px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.round.off{background:#fff;color:#061210}
+.round.end{background:#d64531}
+.round.go{background:#1c9a58}
+.call .badge{background:rgba(0,0,0,.5);color:#8ff5d6}
+.call .badge.weak{color:#ffd27a}
+.safety{font:600 13px var(--mono);background:rgba(0,0,0,.35);border-radius:10px;padding:6px 10px;align-self:flex-start;letter-spacing:.06em}
+.ring{position:absolute;inset:0;z-index:30;background:linear-gradient(170deg,rgba(6,59,62,.97),rgba(27,12,18,.97));color:#eaf6f3;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;padding:24px;text-align:center}
+.ring .av{width:110px;height:110px;font-size:44px;background:#0d4a4b;color:#ffc84a;animation:pulse 1.6s ease-in-out infinite}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(255,200,74,.55)}50%{box-shadow:0 0 0 24px rgba(255,200,74,0)}}
+@media (prefers-reduced-motion: reduce){.ring .av{animation:none}}
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(20px + env(safe-area-inset-bottom,0px));z-index:50;background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:12px;font-weight:500;max-width:calc(100% - 32px);box-shadow:0 6px 20px rgba(0,0,0,.25)}
+.qr{background:#fff;border-radius:12px;padding:8px;align-self:center;width:min(240px,70%);height:auto;image-rendering:pixelated}
+.link{font:13px var(--mono);word-break:break-all;background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:10px;user-select:all}
+.small{font-size:13px;color:var(--muted);margin:0}
+.req{border-color:var(--warn)}
+</style>
+</head>
+<body>
+<div class="app" id="app">
+
+  <!-- first run -->
+  <section class="screen" id="s-welcome" hidden>
+    <div class="body" style="justify-content:center">
+      <div class="welcome-hero"><div class="brand"><svg class="shell" viewBox="0 0 32 32" aria-hidden="true"><path d="M16 3C8.5 3 3 8.6 3 15.2c0 3.2 1.3 6 3.4 8.1L10 27h12l3.6-3.7c2.1-2.1 3.4-4.9 3.4-8.1C29 8.6 23.5 3 16 3z"/><path class="rib" d="M16 26V6M12 26 8.5 9M20 26l3.5-17M9 25.5 5 15M23 25.5 27 15"/><path class="hinge" d="M11 26h10l-1.6 3.4h-6.8z"/></svg>Shelly</div>
+      <h1>Lime with your people, privately.</h1>
+      <p class="lede">Chat, voice and video calls go straight from your device to theirs, locked with AES-256 encryption. Only people you invite can reach you.</p></div>
+      <label class="f" for="w-name">Your name, as your contacts will see it
+        <input class="in" id="w-name" maxlength="30" autocomplete="name" placeholder="Kammie"></label>
+      <button class="btn pri" id="w-go">Start Shelly</button>
+    </div>
+  </section>
+
+  <!-- home -->
+  <section class="screen" id="s-home" hidden>
+    <header class="bar">
+      <div class="brand"><svg class="shell" viewBox="0 0 32 32" aria-hidden="true"><path d="M16 3C8.5 3 3 8.6 3 15.2c0 3.2 1.3 6 3.4 8.1L10 27h12l3.6-3.7c2.1-2.1 3.4-4.9 3.4-8.1C29 8.6 23.5 3 16 3z"/><path class="rib" d="M16 26V6M12 26 8.5 9M20 26l3.5-17M9 25.5 5 15M23 25.5 27 15"/><path class="hinge" d="M11 26h10l-1.6 3.4h-6.8z"/></svg>Shelly</div>
+      <span class="status" id="h-status"><span class="dot" id="h-dot"></span><span id="h-st">Connecting</span></span>
+      <button class="icon-btn" id="h-settings" aria-label="Settings"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg></button>
+    </header>
+    <div class="waves" aria-hidden="true"><svg viewBox="0 0 400 16" preserveAspectRatio="none"><path class="w2" d="M0 9 Q25 2 50 9 T100 9 T150 9 T200 9 T250 9 T300 9 T350 9 T400 9 V16 H0z"/><path class="w1" d="M0 12 Q25 6 50 12 T100 12 T150 12 T200 12 T250 12 T300 12 T350 12 T400 12 V16 H0z"/></svg></div>
+    <div class="body">
+      <div class="tabs" role="tablist">
+        <button role="tab" id="t-people" aria-selected="true">People</button>
+        <button role="tab" id="t-invite" aria-selected="false">Invite someone</button>
+      </div>
+      <div id="p-people" style="display:flex;flex-direction:column;gap:10px">
+        <div id="requests"></div>
+        <div id="contacts" style="display:flex;flex-direction:column;gap:10px"></div>
+        <p class="small">Keep Shelly open to receive calls and messages. On a phone, add it to your home screen from the browser menu.</p>
+      </div>
+      <div id="p-invite" hidden style="display:flex;flex-direction:column;gap:12px">
+        <div class="card">
+          <h2>Invite someone</h2>
+          <p class="small">Each invite works once and holds a secret 256-bit key. Send it privately: show the QR code in person, or send the link in a direct message. Anyone who has the link can become your contact.</p>
+          <button class="btn sun" id="inv-make">Create an invite</button>
+          <div id="inv-out" hidden style="display:flex;flex-direction:column;gap:10px">
+            <canvas class="qr" id="inv-qr" width="240" height="240" aria-label="Invite QR code"></canvas>
+            <div class="link" id="inv-link"></div>
+            <div class="row"><button class="btn" id="inv-copy">Copy link</button><button class="btn" id="inv-share">Share</button></div>
+          </div>
+        </div>
+        <div class="card"><h2>Open invites</h2><div id="inv-list" class="small">None</div></div>
+        <div class="card">
+          <h2>Got an invite?</h2>
+          <p class="small">Open the link on this device, or paste it here.</p>
+          <input class="in" id="inv-paste" placeholder="https://…#join=…" autocomplete="off">
+          <button class="btn" id="inv-join">Add contact</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- conversation -->
+  <section class="screen" id="s-chat" hidden>
+    <header class="bar">
+      <button class="icon-btn" id="c-back" aria-label="Back"><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg></button>
+      <div class="who-head"><b id="c-name">Name</b><span><span class="dot" id="c-dot"></span><span id="c-st">Offline</span></span></div>
+      <button class="icon-btn" id="c-voice" aria-label="Voice call"><svg viewBox="0 0 24 24"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8 9.8a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.7 2z"/></svg></button>
+      <button class="icon-btn acc" id="c-video" aria-label="Video call"><svg viewBox="0 0 24 24"><path d="M23 7l-7 5 7 5V7z"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg></button>
+    </header>
+    <div class="waves" aria-hidden="true"><svg viewBox="0 0 400 16" preserveAspectRatio="none"><path class="w2" d="M0 9 Q25 2 50 9 T100 9 T150 9 T200 9 T250 9 T300 9 T350 9 T400 9 V16 H0z"/><path class="w1" d="M0 12 Q25 6 50 12 T100 12 T150 12 T200 12 T250 12 T300 12 T350 12 T400 12 V16 H0z"/></svg></div>
+    <div class="msgs" id="c-msgs" aria-live="polite"></div>
+    <form class="compose" id="c-form">
+      <label for="c-text" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">Message</label>
+      <input class="in" id="c-text" placeholder="Message" autocomplete="off" maxlength="4000">
+      <button class="btn pri" id="c-send">Send</button>
+    </form>
+  </section>
+
+  <!-- settings -->
+  <section class="screen" id="s-settings" hidden>
+    <header class="bar">
+      <button class="icon-btn" id="st-back" aria-label="Back"><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg></button>
+      <div class="brand" style="font-size:22px">Settings</div>
+    </header>
+    <div class="waves" aria-hidden="true"><svg viewBox="0 0 400 16" preserveAspectRatio="none"><path class="w2" d="M0 9 Q25 2 50 9 T100 9 T150 9 T200 9 T250 9 T300 9 T350 9 T400 9 V16 H0z"/><path class="w1" d="M0 12 Q25 6 50 12 T100 12 T150 12 T200 12 T250 12 T300 12 T350 12 T400 12 V16 H0z"/></svg></div>
+    <div class="body">
+      <div class="card">
+        <label class="f" for="st-name">Your name<input class="in" id="st-name" maxlength="30"></label>
+        <button class="btn" id="st-save-name">Save name</button>
+      </div>
+      <div class="card">
+        <h2>Encryption on this device</h2>
+        <div id="st-crypto" class="small"></div>
+      </div>
+      <div class="card">
+        <h2>Relay server (optional)</h2>
+        <p class="small">Most calls connect directly. Some mobile networks block direct connections; a TURN relay fixes that. It only passes along encrypted data it cannot read.</p>
+        <label class="f" for="st-turn">TURN address<input class="in" id="st-turn" placeholder="turns:relay.example.com:443" autocomplete="off"></label>
+        <label class="f" for="st-tuser">Username<input class="in" id="st-tuser" autocomplete="off"></label>
+        <label class="f" for="st-tpass">Password<input class="in" id="st-tpass" type="password" autocomplete="off"></label>
+        <button class="btn" id="st-save-turn">Save relay</button>
+      </div>
+      <div class="card">
+        <h2>Your Shelly ID</h2>
+        <div class="link" id="st-id"></div>
+        <p class="small">Your ID only finds you; it can't be used to reach you without an invite key.</p>
+      </div>
+      <div class="card">
+        <h2>Privacy</h2>
+        <button class="btn" id="st-clear">Delete all chat history on this device</button>
+        <button class="btn danger" id="st-reset">Reset Shelly (removes contacts and keys)</button>
+        <div id="st-confirm" hidden class="row"><span class="small" id="st-confirm-t"></span><button class="btn danger" id="st-yes">Yes, do it</button><button class="btn" id="st-no">Cancel</button></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- call -->
+  <section class="screen call" id="s-call" hidden>
+    <video id="v-remote" autoplay playsinline></video>
+    <div class="call-voice" id="call-voice"><div class="av" id="call-av">?</div></div>
+    <video id="v-local" autoplay playsinline muted></video>
+    <div class="call-top">
+      <b id="call-name">Name</b>
+      <span id="call-st">Calling…</span>
+      <span class="badge" id="call-enc"><svg viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg><span>Encrypting…</span></span>
+      <span class="safety" id="call-safety" hidden></span>
+    </div>
+    <div class="call-ctrl">
+      <button class="round" id="k-mute" aria-label="Mute microphone" aria-pressed="false"><svg viewBox="0 0 24 24"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 10a7 7 0 0 0 14 0M12 17v5"/></svg></button>
+      <button class="round" id="k-cam" aria-label="Turn camera off" aria-pressed="false"><svg viewBox="0 0 24 24"><path d="M23 7l-7 5 7 5V7z"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg></button>
+      <button class="round" id="k-flip" aria-label="Switch camera"><svg viewBox="0 0 24 24"><path d="M20 7h-3l-2-3H9L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2z"/><path d="M9 13a3 3 0 0 1 5-2.2M15 13a3 3 0 0 1-5 2.2"/></svg></button>
+      <button class="round end" id="k-end" aria-label="Hang up"><svg viewBox="0 0 24 24" style="transform:rotate(135deg)"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8 9.8a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.7 2z"/></svg></button>
+    </div>
+  </section>
+
+  <!-- incoming call -->
+  <div class="ring" id="ring" hidden role="dialog" aria-labelledby="ring-name">
+    <div class="av" id="ring-av">?</div>
+    <div><h1 id="ring-name" style="color:#fff">Name</h1><p id="ring-kind" style="margin:6px 0 0;color:#a9cfc7">is calling</p></div>
+    <div class="row" style="justify-content:center;gap:18px">
+      <button class="round end" id="r-no" aria-label="Decline"><svg viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
+      <button class="round go" id="r-voice" aria-label="Answer with voice"><svg viewBox="0 0 24 24"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8 9.8a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.7 2z"/></svg></button>
+      <button class="round go" id="r-video" aria-label="Answer with video"><svg viewBox="0 0 24 24"><path d="M23 7l-7 5 7 5V7z"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg></button>
+    </div>
+  </div>
+
+  <div class="toast" id="toast" role="status" hidden></div>
+</div>
+
+<script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
+<script>
+/* QR encoder (byte mode, ECC M) */
+/* Small QR code encoder (byte mode, error correction M, versions 1-10) - no internet needed */
+function qrMatrix(text){
+  const data = Array.from(new TextEncoder().encode(text));
+  const ECC = [0,10,16,26,18,24,16,18,22,22,26], BLK = [0,1,1,1,2,2,4,4,4,5,5];
+  const raw = v => { let r=(16*v+128)*v+64; if (v>=2){ const n=Math.floor(v/7)+2; r-=(25*n-10)*n-55; if (v>=7) r-=36; } return r; };
+  let ver = 0;
+  for (let v=1; v<=10; v++){ const cap=(Math.floor(raw(v)/8)-ECC[v]*BLK[v])*8; if (4+(v<10?8:16)+8*data.length <= cap){ ver=v; break; } }
+  if (!ver) throw new Error('text too long for QR');
+  const size = ver*4+17, M = [], F = [];
+  for (let y=0;y<size;y++){ M.push(new Array(size).fill(false)); F.push(new Array(size).fill(false)); }
+  const set = (x,y,d)=>{ M[y][x]=d; F[y][x]=true; };
+  for (let i=0;i<size;i++){ set(6,i,i%2===0); set(i,6,i%2===0); }
+  for (const [cx,cy] of [[3,3],[size-4,3],[3,size-4]])
+    for (let dy=-4;dy<=4;dy++) for (let dx=-4;dx<=4;dx++){
+      const d=Math.max(Math.abs(dx),Math.abs(dy)), x=cx+dx, y=cy+dy;
+      if (x>=0&&x<size&&y>=0&&y<size) set(x,y,d!==2&&d!==4); }
+  const al=[];
+  if (ver>1){ const n=Math.floor(ver/7)+2, step=Math.ceil((ver*4+4)/(n*2-2))*2; al.push(6);
+    for (let p=ver*4+10; al.length<n; p-=step) al.splice(1,0,p); }
+  for (let i=0;i<al.length;i++) for (let j=0;j<al.length;j++){
+    if ((i===0&&j===0)||(i===0&&j===al.length-1)||(i===al.length-1&&j===0)) continue;
+    for (let dy=-2;dy<=2;dy++) for (let dx=-2;dx<=2;dx++) set(al[i]+dx,al[j]+dy,Math.max(Math.abs(dx),Math.abs(dy))!==1); }
+  const fmt = mask=>{
+    const d=(0<<3)|mask; let r=d; for (let i=0;i<10;i++) r=(r<<1)^((r>>>9)*0x537);
+    const b=((d<<10)|r)^0x5412, g=i=>((b>>>i)&1)!==0;
+    for (let i=0;i<=5;i++) set(8,i,g(i)); set(8,7,g(6)); set(8,8,g(7)); set(7,8,g(8));
+    for (let i=9;i<15;i++) set(14-i,8,g(i));
+    for (let i=0;i<8;i++) set(size-1-i,8,g(i)); for (let i=8;i<15;i++) set(8,size-15+i,g(i));
+    set(8,size-8,true); };
+  fmt(0);
+  if (ver>=7){ let r=ver; for (let i=0;i<12;i++) r=(r<<1)^((r>>>11)*0x1F25); const b=(ver<<12)|r;
+    for (let i=0;i<18;i++){ const bit=((b>>>i)&1)!==0, a=size-11+i%3, c=Math.floor(i/3); set(a,c,bit); set(c,a,bit); } }
+  // data bits
+  const bits=[], put=(v,n)=>{ for (let i=n-1;i>=0;i--) bits.push((v>>>i)&1); };
+  put(4,4); put(data.length, ver<10?8:16); data.forEach(b=>put(b,8));
+  const cap=(Math.floor(raw(ver)/8)-ECC[ver]*BLK[ver])*8;
+  put(0, Math.min(4, cap-bits.length)); while (bits.length%8) bits.push(0);
+  for (let p=0xEC; bits.length<cap; p^=0xEC^0x11) put(p,8);
+  const cw=[]; for (let i=0;i<bits.length;i+=8) cw.push(parseInt(bits.slice(i,i+8).join(''),2));
+  // Reed-Solomon
+  const mul=(x,y)=>{ let z=0; for (let i=7;i>=0;i--){ z=(z<<1)^((z>>>7)*0x11D); z^=((y>>>i)&1)*x; } return z; };
+  const deg=ECC[ver], div=new Array(deg).fill(0); div[deg-1]=1;
+  for (let i=0, root=1; i<deg; i++){ for (let j=0;j<deg;j++){ div[j]=mul(div[j],root); if (j+1<deg) div[j]^=div[j+1]; } root=mul(root,2); }
+  const rem=d=>{ const r=new Array(deg).fill(0); for (const b of d){ const f=b^r.shift(); r.push(0); for (let i=0;i<deg;i++) r[i]^=mul(div[i],f); } return r; };
+  const nb=BLK[ver], rawCw=Math.floor(raw(ver)/8), nShort=nb-rawCw%nb, shortLen=Math.floor(rawCw/nb), blocks=[];
+  for (let i=0,k=0;i<nb;i++){ const d=cw.slice(k,k+shortLen-deg+(i<nShort?0:1)); k+=d.length; const e=rem(d); if (i<nShort) d.push(0); blocks.push(d.concat(e)); }
+  const out=[]; for (let i=0;i<blocks[0].length;i++) for (let j=0;j<nb;j++) if (i!==shortLen-deg||j>=nShort) out.push(blocks[j][i]);
+  let i=0;
+  for (let right=size-1; right>=1; right-=2){ if (right===6) right=5;
+    for (let v=0; v<size; v++) for (let j=0;j<2;j++){
+      const x=right-j, up=((right+1)&2)===0, y=up?size-1-v:v;
+      if (!F[y][x] && i<out.length*8){ M[y][x]=((out[i>>>3]>>>(7-(i&7)))&1)!==0; i++; } } }
+  const MASKS=[(x,y)=>(x+y)%2===0,(x,y)=>y%2===0,(x,y)=>x%3===0,(x,y)=>(x+y)%3===0,(x,y)=>(Math.floor(x/3)+Math.floor(y/2))%2===0,
+    (x,y)=>x*y%2+x*y%3===0,(x,y)=>(x*y%2+x*y%3)%2===0,(x,y)=>((x+y)%2+x*y%3)%2===0];
+  const apply=m=>{ for (let y=0;y<size;y++) for (let x=0;x<size;x++) if (!F[y][x] && MASKS[m](x,y)) M[y][x]=!M[y][x]; };
+  const penalty=()=>{ let p=0, dark=0;
+    for (let a=0;a<2;a++) for (let y=0;y<size;y++){ let run=1;
+      for (let x=1;x<size;x++){ const c=a?M[x][y]:M[y][x], pc=a?M[x-1][y]:M[y][x-1];
+        if (c===pc){ run++; if (run===5) p+=3; else if (run>5) p++; } else run=1; } }
+    for (let y=0;y<size-1;y++) for (let x=0;x<size-1;x++){ const c=M[y][x]; if (c===M[y][x+1]&&c===M[y+1][x]&&c===M[y+1][x+1]) p+=3; }
+    for (let y=0;y<size;y++) for (let x=0;x<size;x++) if (M[y][x]) dark++;
+    return p + Math.floor(Math.abs(dark*20-size*size*10)/(size*size))*10; };
+  let best=0, bestP=Infinity;
+  for (let m=0;m<8;m++){ apply(m); fmt(m); const p=penalty(); if (p<bestP){ bestP=p; best=m; } apply(m); }
+  apply(best); fmt(best);
+  return M;
+}
+function qrDraw(canvas, text, px){
+  const M=qrMatrix(text), n=M.length, s=px||6, q=4;
+  canvas.width=canvas.height=(n+q*2)*s; const g=canvas.getContext('2d');
+  g.fillStyle='#fff'; g.fillRect(0,0,canvas.width,canvas.height); g.fillStyle='#000';
+  for (let y=0;y<n;y++) for (let x=0;x<n;x++) if (M[y][x]) g.fillRect((x+q)*s,(y+q)*s,s,s);
+}
+
+
+</script>
+<script id="shelly-crypto">
+/* ===================== Shelly crypto =====================
+   Pairing: each invite carries a random 256-bit secret K (out of band).
+   Session: both sides send a fresh ECDH P-256 public key. Keys =
+     HKDF-SHA-256(ikm = ECDH shared secret, salt = K, info = "Shelly v1 <purpose> " + sorted IDs)
+   giving separate AES-256-GCM keys for chat and for media in each direction.
+   Without K a man-in-the-middle can't derive the keys; fresh ECDH keys give forward secrecy.
+   A key-confirmation message proves both sides hold the same keys.            */
+const SC = {
+  te: new TextEncoder(), td: new TextDecoder(),
+  b64(u8){ let s=''; u8=new Uint8Array(u8); for (let i=0;i<u8.length;i++) s+=String.fromCharCode(u8[i]); return btoa(s).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,''); },
+  unb64(s){ s=s.replace(/-/g,'+').replace(/_/g,'/'); while (s.length%4) s+='='; const b=atob(s), u=new Uint8Array(b.length); for (let i=0;i<b.length;i++) u[i]=b.charCodeAt(i); return u; },
+  rand(n){ return crypto.getRandomValues(new Uint8Array(n)); },
+  async ecdh(){ return crypto.subtle.generateKey({name:'ECDH', namedCurve:'P-256'}, false, ['deriveBits']); },
+  async pub(kp){ return new Uint8Array(await crypto.subtle.exportKey('raw', kp.publicKey)); },
+  async derive(kp, theirPubRaw, K, myId, theirId){
+    const theirPub = await crypto.subtle.importKey('raw', theirPubRaw, {name:'ECDH', namedCurve:'P-256'}, false, []);
+    const shared = await crypto.subtle.deriveBits({name:'ECDH', public: theirPub}, kp.privateKey, 256);
+    const ikm = await crypto.subtle.importKey('raw', shared, 'HKDF', false, ['deriveKey', 'deriveBits']);
+    const ids = [myId, theirId].sort().join(' ');
+    const mk = (info, usages) => crypto.subtle.deriveKey({name:'HKDF', hash:'SHA-256', salt:K, info:SC.te.encode('Shelly v1 '+info+' '+ids)},
+                                                          ikm, {name:'AES-GCM', length:256}, false, usages);
+    const dir = id => 'from:'+id;
+    const safetyBits = new Uint8Array(await crypto.subtle.deriveBits({name:'HKDF', hash:'SHA-256', salt:K, info:SC.te.encode('Shelly v1 safety '+ids)}, ikm, 64));
+    return {
+      chatTx: await mk('chat '+dir(myId), ['encrypt']), chatRx: await mk('chat '+dir(theirId), ['decrypt']),
+      mediaTx: await mk('media '+dir(myId), ['encrypt']), mediaRx: await mk('media '+dir(theirId), ['decrypt']),
+      safety: [...safetyBits.slice(0,6)].map(b=>String(b%100).padStart(2,'0')).join('').replace(/(\d{4})(?=\d)/g,'$1 ')
+    };
+  },
+  async seal(key, obj){ const iv=SC.rand(12); const ct=await crypto.subtle.encrypt({name:'AES-GCM', iv}, key, SC.te.encode(JSON.stringify(obj))); return {iv:SC.b64(iv), ct:SC.b64(ct)}; },
+  async open(key, box){ const pt=await crypto.subtle.decrypt({name:'AES-GCM', iv:SC.unb64(box.iv)}, key, SC.unb64(box.ct)); return JSON.parse(SC.td.decode(pt)); },
+};
+
+/* ---- media frame encryption (AES-256-GCM per audio/video frame) ----
+   The first bytes of each video frame stay readable (VP8 needs them to packetize: 10 on key frames,
+   3 on others; 1 for audio); they are authenticated as additional data. Layout: header | ciphertext | IV(12). */
+const E2EE_WORKER = `
+let keys = {};
+const hdr = f => (f.type === 'key' ? 10 : f.type === 'delta' ? 3 : 1);
+async function enc(f, c){ const k=keys.tx; if(!k){ return; } const d=new Uint8Array(f.data), n=Math.min(hdr(f), d.length), iv=crypto.getRandomValues(new Uint8Array(12));
+  const ct=new Uint8Array(await crypto.subtle.encrypt({name:'AES-GCM', iv, additionalData:d.subarray(0,n)}, k, d.subarray(n)));
+  const out=new Uint8Array(n+ct.length+12); out.set(d.subarray(0,n)); out.set(ct,n); out.set(iv,n+ct.length); f.data=out.buffer; c.enqueue(f); }
+async function dec(f, c){ const k=keys.rx; if(!k){ return; } const d=new Uint8Array(f.data), n=Math.min(hdr(f), d.length); if (d.length < n+28) return;
+  try { const pt=new Uint8Array(await crypto.subtle.decrypt({name:'AES-GCM', iv:d.subarray(d.length-12), additionalData:d.subarray(0,n)}, k, d.subarray(n, d.length-12)));
+    const out=new Uint8Array(n+pt.length); out.set(d.subarray(0,n)); out.set(pt,n); f.data=out.buffer; c.enqueue(f); keys.ok=(keys.ok||0)+1; }
+  catch(e){ keys.bad=(keys.bad||0)+1; } }
+function pipe(readable, writable, dir){ readable.pipeThrough(new TransformStream({transform:(f,c)=>dir==='tx'?enc(f,c):dec(f,c)})).pipeTo(writable).catch(()=>{}); }
+onmessage = e => { const m=e.data; if (m.keys){ keys.tx=m.keys.tx; keys.rx=m.keys.rx; } if (m.readable) pipe(m.readable, m.writable, m.dir); if (m.stats) postMessage({ok:keys.ok||0, bad:keys.bad||0}); };
+if (self.RTCTransformEvent !== undefined || 'onrtctransform' in self) self.onrtctransform = ev => { const t=ev.transformer; pipe(t.readable, t.writable, t.options.dir); };
+`;
+const E2EE = {
+  mode: ('RTCRtpScriptTransform' in window) ? 'script' : (window.RTCRtpSender && 'createEncodedStreams' in RTCRtpSender.prototype) ? 'streams' : 'none',
+  worker(){ return new Worker(URL.createObjectURL(new Blob([E2EE_WORKER], {type:'text/javascript'}))); },
+  pcConfig(){ return E2EE.mode === 'streams' ? {encodedInsertableStreams: true} : {}; },
+  attach(pc, keys){                      // returns a worker; call for every sender now and every receiver via 'track'
+    if (E2EE.mode === 'none') return null;
+    const w = E2EE.worker(); w.postMessage({keys:{tx:keys.mediaTx, rx:keys.mediaRx}});
+    const done = new WeakSet();
+    const hook = (x, dir) => {
+      if (!x || done.has(x)) return; done.add(x);
+      if (E2EE.mode === 'script') x.transform = new RTCRtpScriptTransform(w, {dir});
+      else { const s = x.createEncodedStreams(); w.postMessage({readable:s.readable, writable:s.writable, dir}, [s.readable, s.writable]); }
+    };
+    pc.getSenders().forEach(s=>hook(s,'tx')); pc.getReceivers().forEach(r=>hook(r,'rx'));
+    pc.addEventListener('track', ev=>hook(ev.receiver,'rx'));
+    w.hookSenders = () => pc.getSenders().forEach(s=>hook(s,'tx'));
+    return w;
+  },
+  preferVP8(pc){
+    try { pc.getTransceivers().forEach(t=>{ if (t.receiver.track && t.receiver.track.kind==='video' && RTCRtpReceiver.getCapabilities){
+      const c = RTCRtpReceiver.getCapabilities('video').codecs; const vp8 = c.filter(x=>/vp8/i.test(x.mimeType)), rest = c.filter(x=>!/vp8/i.test(x.mimeType));
+      if (vp8.length) t.setCodecPreferences([...vp8, ...rest]); } }); } catch(e){}
+  },
+};
+</script>
+<script>
+/* ===================== Shelly app ===================== */
+const $ = s => document.querySelector(s);
+const esc = v => String(v==null?'':v).replace(/[&<>"]/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'})[c]);
+const LS = {
+  get(k, d){ try { const v = localStorage.getItem('shelly_'+k); return v==null ? d : JSON.parse(v); } catch(e){ return d; } },
+  set(k, v){ try { localStorage.setItem('shelly_'+k, JSON.stringify(v)); } catch(e){} },
+  del(k){ try { localStorage.removeItem('shelly_'+k); } catch(e){} },
+};
+let me = LS.get('me', null), contacts = LS.get('contacts', {}), invites = LS.get('invites', {}), settings = LS.get('settings', {});
+const sessions = {};       // contact id -> {conn, kp, keys, ready, online}
+let peer = null, cur = null, call = null, ringing = null, toastT = null;
+const saveContacts = () => LS.set('contacts', contacts), saveInvites = () => LS.set('invites', invites);
+const msgsOf = id => LS.get('msgs_'+id, []), setMsgs = (id, m) => LS.set('msgs_'+id, m.slice(-500));
+const initials = n => (n||'?').trim().split(/\s+/).map(w=>w[0]).join('').slice(0,2).toUpperCase() || '?';
+const fmtT = t => new Date(t).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
+function toast(t, ms=3200){ const el=$('#toast'); el.textContent=t; el.hidden=false; clearTimeout(toastT); toastT=setTimeout(()=>el.hidden=true, ms); }
+function show(id){ ['#s-welcome','#s-home','#s-chat','#s-settings'].forEach(s=>$(s).hidden = s!==id); }
+function newId(){ const a='abcdefghijkmnpqrstuvwxyz23456789', r=SC.rand(20); return 'shelly-'+[...r].map(b=>a[b%a.length]).join(''); }
+
+/* ---------- peer connection to the broker (only finds peers; never sees content) ---------- */
+function iceServers(){
+  const s = [{urls:'stun:stun.l.google.com:19302'}, {urls:'stun:stun.cloudflare.com:3478'}];
+  if (settings.turn) s.push({urls:settings.turn, username:settings.tuser||'', credential:settings.tpass||''});
+  return s;
+}
+function setStatus(kind, text){ $('#h-dot').className = 'dot' + (kind==='on'?' on':kind==='wait'?' wait':''); $('#h-st').textContent = text; }
+function startPeer(){
+  if (typeof Peer === 'undefined'){ setStatus('off', 'No connection library - check internet'); return; }
+  setStatus('wait', 'Connecting');
+  peer = new Peer(me.id, {config:{iceServers:iceServers(), ...E2EE.pcConfig()}, debug:0});
+  peer.on('open', ()=>{ setStatus('on', 'Online'); Object.keys(contacts).forEach(id=>connect(id)); });
+  peer.on('connection', conn=>incoming(conn));
+  peer.on('call', c=>incomingCall(c));
+  peer.on('disconnected', ()=>{ setStatus('wait', 'Reconnecting'); setTimeout(()=>{ try { peer.reconnect(); } catch(e){} }, 2000); });
+  peer.on('error', err=>{
+    if (err.type === 'peer-unavailable'){ const id=(String(err.message).match(/shelly-[a-z0-9]+/)||[])[0]; if (id && sessions[id]) { sessions[id].online=false; drawAll(); } return; }
+    if (err.type === 'unavailable-id'){ setStatus('off', 'Open in another tab'); toast('Shelly is already open in another tab or device with this identity.'); return; }
+    if (err.type === 'network' || err.type === 'server-error' || err.type === 'socket-error'){ setStatus('wait', 'Waiting for internet'); }
+  });
+}
+setInterval(()=>{ if (peer && peer.open) Object.keys(contacts).forEach(id=>{ const s=sessions[id]; if (!s || !s.conn || !s.conn.open) connect(id); }); }, 45000);
+
+/* ---------- secure channel per contact ---------- */
+async function connect(id){
+  if (!peer || !peer.open || !contacts[id]) return;
+  const s = sessions[id] || (sessions[id] = {});
+  if (s.conn && s.conn.open) return;
+  const conn = peer.connect(id, {reliable:true, metadata:{v:1}});
+  wire(conn, id);
+}
+function incoming(conn){
+  const id = conn.peer;
+  if (contacts[id] && contacts[id].blocked) { conn.on('open', ()=>conn.close()); return; }
+  wire(conn, id);                       // unknown callers must prove an invite key in their hello
+}
+function wire(conn, id){
+  const s = sessions[id] || (sessions[id] = {});
+  conn.on('open', async ()=>{
+    if (s.conn && s.conn !== conn && s.conn.open && s.ready){ conn.close(); return; }
+    s.conn = conn; s.ready = false; s.kp = await SC.ecdh();
+    const c = contacts[id];
+    conn.send({t:'hello', name:me.name, pub:SC.b64(await SC.pub(s.kp)), invite: c && !c.bound ? c.invite : undefined});
+  });
+  conn.on('data', d=>onData(id, conn, d));
+  conn.on('close', ()=>{ if (s.conn === conn){ s.conn=null; s.ready=false; s.online=false; drawAll(); } });
+  conn.on('error', ()=>{});
+}
+async function onData(id, conn, d){
+  const s = sessions[id] || (sessions[id] = {});
+  if (!d || typeof d !== 'object') return;
+  if (d.t === 'hello'){
+    let c = contacts[id];
+    if (!c){                                           // a new contact must hold one of our invite keys
+      const inv = d.invite && invites[d.invite];
+      if (!inv){ conn.close(); return; }
+      c = contacts[id] = {name:String(d.name||'Contact').slice(0,30), K:inv.K, invite:d.invite, bound:true, added:Date.now()};
+      delete invites[d.invite]; saveInvites(); saveContacts();
+      sysMsg(id, `${c.name} joined from your invite.`); toast(`${c.name} is now a contact`);
+    }
+    if (c.blocked){ conn.close(); return; }
+    if (!s.kp){ s.conn = conn; s.kp = await SC.ecdh(); conn.send({t:'hello', name:me.name, pub:SC.b64(await SC.pub(s.kp))}); }
+    try { s.keys = await SC.derive(s.kp, SC.unb64(d.pub), SC.unb64(c.K), me.id, id); }
+    catch(e){ conn.close(); return; }
+    if (d.name && !c.renamed) c.name = String(d.name).slice(0,30);
+    conn.send({t:'confirm', box: await SC.seal(s.keys.chatTx, {ok:'shelly', id:me.id})});
+    return;
+  }
+  if (d.t === 'confirm'){
+    try { const o = await SC.open(s.keys.chatRx, d.box); if (o.ok!=='shelly' || o.id!==id) throw 0; }
+    catch(e){ sysMsg(id, 'Security check failed - keys do not match. Connection closed.'); conn.close(); return; }
+    s.ready = true; s.online = true; const c = contacts[id]; if (c && !c.bound){ c.bound = true; saveContacts(); }
+    drawAll(); flushQueue(id); return;
+  }
+  if (!s.ready || !d.box) return;
+  let o; try { o = await SC.open(s.keys.chatRx, d.box); } catch(e){ return; }      // anything not sealed with our key is dropped
+  if (o.t === 'msg'){
+    const m = msgsOf(id); if (!m.some(x=>x.id===o.id)){ m.push({id:o.id, me:false, text:String(o.text).slice(0,4000), ts:o.ts||Date.now()}); setMsgs(id, m); }
+    sendSealed(id, {t:'ack', id:o.id});
+    if (cur !== id){ contacts[id].unread = (contacts[id].unread||0)+1; saveContacts(); notify(contacts[id].name, o.text); }
+    drawAll();
+  } else if (o.t === 'ack'){
+    const m = msgsOf(id), x = m.find(x=>x.id===o.id); if (x){ x.state='delivered'; setMsgs(id, m); drawChat(); }
+  } else if (o.t === 'bye'){ endCall(false); }
+}
+async function sendSealed(id, obj){ const s=sessions[id]; if (!s || !s.ready || !s.conn || !s.conn.open) return false; s.conn.send({box: await SC.seal(s.keys.chatTx, obj)}); return true; }
+async function flushQueue(id){ const m=msgsOf(id); for (const x of m) if (x.me && x.state==='waiting') await sendSealed(id, {t:'msg', id:x.id, text:x.text, ts:x.ts}); }
+function sysMsg(id, text){ const m=msgsOf(id); m.push({id:'s'+Date.now(), sys:true, text, ts:Date.now()}); setMsgs(id, m); drawChat(); }
+function notify(title, body){ try { if (document.hidden && 'Notification' in window && Notification.permission==='granted') new Notification(title, {body:String(body).slice(0,120)}); } catch(e){} }
+
+/* ---------- invites ---------- */
+function inviteLink(inv, invId){ const base = location.href.split('#')[0]; return `${base}#join=${me.id}.${invId}.${inv.K}.${encodeURIComponent(me.name)}`; }
+function makeInvite(){
+  const invId = SC.b64(SC.rand(9)), K = SC.b64(SC.rand(32));
+  invites[invId] = {K, created:Date.now()}; saveInvites();
+  const link = inviteLink(invites[invId], invId);
+  $('#inv-out').hidden = false; $('#inv-link').textContent = link; qrDraw($('#inv-qr'), link, 5); drawInvites();
+}
+function joinFrom(text){
+  const m = String(text).match(/#join=(shelly-[a-z0-9]+)\.([A-Za-z0-9_-]+)\.([A-Za-z0-9_-]{43})\.([^\s]*)/);
+  if (!m) { toast('That is not a Shelly invite link.'); return false; }
+  const [, id, invId, K, nm] = m;
+  if (me && id === me.id){ toast('That is your own invite - send it to someone else.'); return false; }
+  contacts[id] = Object.assign(contacts[id]||{}, {name:decodeURIComponent(nm||'Contact').slice(0,30), K, invite:invId, bound:false, added:Date.now(), blocked:false});
+  saveContacts(); toast(`${contacts[id].name} added - connecting securely`); connect(id); drawAll(); return true;
+}
+function drawInvites(){
+  const ks = Object.keys(invites);
+  $('#inv-list').innerHTML = ks.length ? ks.map(k=>`<div class="row" style="align-items:center;justify-content:space-between"><span>Created ${new Date(invites[k].created).toLocaleString()}</span><button class="btn" data-revoke="${esc(k)}">Cancel invite</button></div>`).join('') : 'None';
+  document.querySelectorAll('[data-revoke]').forEach(b=>b.onclick=()=>{ delete invites[b.dataset.revoke]; saveInvites(); drawInvites(); toast('Invite cancelled - that link no longer works'); });
+}
+
+/* ---------- drawing ---------- */
+function drawAll(){ drawContacts(); drawChat(); }
+function drawContacts(){
+  const ids = Object.keys(contacts).filter(id=>!contacts[id].blocked)
+    .sort((a,b)=>((msgsOf(b).slice(-1)[0]||{}).ts||contacts[b].added) - ((msgsOf(a).slice(-1)[0]||{}).ts||contacts[a].added));
+  $('#contacts').innerHTML = ids.length ? ids.map(id=>{
+    const c = contacts[id], s = sessions[id]||{}, last = msgsOf(id).filter(m=>!m.sys).slice(-1)[0];
+    const st = s.ready ? 'on' : (c.bound ? '' : 'wait');
+    return `<div class="contact"><div class="av">${esc(initials(c.name))}<span class="dot ${st==='on'?'on':st==='wait'?'wait':''}"></span></div>
+      <button class="who" data-open="${esc(id)}"><b>${esc(c.name)} ${c.unread ? `<span class="unread">${c.unread}</span>` : ''}</b>
+      <span>${last ? esc((last.me?'You: ':'')+last.text) : (c.bound ? (s.ready?'Online - say hello':'Offline') : 'Waiting for them to open Shelly')}</span></button>
+      <button class="icon-btn" data-call="${esc(id)}" aria-label="Voice call ${esc(c.name)}"><svg viewBox="0 0 24 24"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8 9.8a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.7 2z"/></svg></button>
+      <button class="icon-btn acc" data-vcall="${esc(id)}" aria-label="Video call ${esc(c.name)}"><svg viewBox="0 0 24 24"><path d="M23 7l-7 5 7 5V7z"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg></button></div>`;
+  }).join('') : `<div class="empty">Nobody to lime with yet.<br>Tap <b>Invite someone</b> to add your first person.</div>`;
+  document.querySelectorAll('[data-open]').forEach(b=>b.onclick=()=>openChat(b.dataset.open));
+  document.querySelectorAll('[data-call]').forEach(b=>b.onclick=()=>startCall(b.dataset.call, false));
+  document.querySelectorAll('[data-vcall]').forEach(b=>b.onclick=()=>startCall(b.dataset.vcall, true));
+}
+function openChat(id){ cur = id; contacts[id].unread = 0; saveContacts(); show('#s-chat'); drawChat(); drawContacts(); setTimeout(()=>$('#c-text').focus(), 50); }
+function drawChat(){
+  if (!cur || !contacts[cur]) return;
+  const c = contacts[cur], s = sessions[cur]||{};
+  $('#c-name').textContent = c.name;
+  $('#c-dot').className = 'dot' + (s.ready ? ' on' : '');
+  $('#c-st').textContent = s.ready ? 'Online · end-to-end encrypted' : (c.bound ? 'Offline - messages send when they open Shelly' : 'Waiting for them to open Shelly');
+  const m = msgsOf(cur), box = $('#c-msgs'), atEnd = box.scrollHeight - box.scrollTop - box.clientHeight < 60;
+  box.innerHTML = `<div class="sys"><span class="badge"><svg viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>AES-256-GCM end-to-end · keys only on your two devices</span></div>` +
+    m.map(x=> x.sys ? `<div class="sys">${esc(x.text)}</div>` :
+      `<div class="msg ${x.me?'me':''}">${esc(x.text)}<small>${fmtT(x.ts)}${x.me ? (x.state==='delivered'?' · ✓✓':x.state==='waiting'?' · waiting':' · ✓') : ''}</small></div>`).join('');
+  if (atEnd) box.scrollTop = box.scrollHeight;
+}
+
+/* ---------- calls (media frames AES-256-GCM encrypted end to end) ---------- */
+async function getMedia(video){
+  return navigator.mediaDevices.getUserMedia({audio:{echoCancellation:true, noiseSuppression:true}, video: video ? {facingMode: call && call.facing || 'user', width:{ideal:1280}, height:{ideal:720}} : false});
+}
+function callUI(id, video, state){
+  const c = contacts[id];
+  $('#s-call').hidden = false; $('#call-name').textContent = c ? c.name : 'Call'; $('#call-av').textContent = initials(c && c.name);
+  $('#call-st').textContent = state; $('#call-voice').hidden = !!video; $('#v-local').hidden = !video; $('#k-cam').hidden = !video; $('#k-flip').hidden = !video;
+  const enc = $('#call-enc'); enc.className = 'badge' + (E2EE.mode==='none' ? ' weak' : '');
+  enc.lastElementChild.textContent = E2EE.mode==='none' ? 'Encrypted (browser standard) - update your browser for AES-256 end-to-end' : 'AES-256-GCM end-to-end';
+}
+async function startCall(id, video){
+  const s = sessions[id];
+  if (!s || !s.ready){ toast(`${contacts[id] ? contacts[id].name : 'They'} is offline - they need Shelly open.`); return; }
+  if (call) return toast('You are already on a call.');
+  let stream; try { stream = await getMedia(video); } catch(e){ return toast(video ? 'Allow camera and microphone to make a video call.' : 'Allow the microphone to make a call.'); }
+  call = {id, video, stream, facing:'user'};
+  callUI(id, video, 'Calling…'); $('#v-local').srcObject = video ? stream : null;
+  const mc = peer.call(id, stream, {metadata:{video}});
+  setupMedia(mc);
+}
+function incomingCall(mc){
+  const id = mc.peer, s = sessions[id];
+  if (!contacts[id] || contacts[id].blocked || !s || !s.ready || call){ try { mc.close(); } catch(e){} return; }   // only verified contacts can ring you
+  ringing = mc; const c = contacts[id], v = !!(mc.metadata && mc.metadata.video);
+  $('#ring').hidden = false; $('#ring-name').textContent = c.name; $('#ring-av').textContent = initials(c.name);
+  $('#ring-kind').textContent = v ? 'Video call · end-to-end encrypted' : 'Voice call · end-to-end encrypted';
+  ringTone(true); notify(c.name, v ? 'Video call' : 'Voice call');
+  mc.on('close', ()=>{ if (ringing === mc){ ringing=null; $('#ring').hidden=true; ringTone(false); sysMsg(id, 'Missed call'); } });
+}
+async function answer(video){
+  const mc = ringing; if (!mc) return; ringing = null; $('#ring').hidden = true; ringTone(false);
+  let stream; try { stream = await getMedia(video); } catch(e){ toast('Allow the microphone (and camera) to answer.'); mc.close(); return; }
+  call = {id:mc.peer, video, stream, facing:'user'};
+  callUI(mc.peer, video, 'Connecting…'); $('#v-local').srcObject = video ? stream : null;
+  mc.answer(stream); setupMedia(mc);
+}
+function setupMedia(mc){
+  call.mc = mc; const s = sessions[call.id], pc = mc.peerConnection;
+  if (pc){ call.worker = E2EE.attach(pc, s.keys); EM.preferAndHook(pc); }
+  else { const iv = setInterval(()=>{ if (mc.peerConnection){ clearInterval(iv); call.worker = E2EE.attach(mc.peerConnection, s.keys); EM.preferAndHook(mc.peerConnection); } }, 20); }
+  $('#call-safety').hidden = false; $('#call-safety').textContent = 'Safety code ' + s.keys.safety;
+  mc.on('stream', rs=>{
+    $('#v-remote').srcObject = rs; $('#call-st').textContent = 'Connected'; call.t0 = Date.now();
+    const hasV = rs.getVideoTracks().length > 0; $('#call-voice').hidden = hasV; $('#v-remote').hidden = !hasV;
+    clearInterval(call.tick); call.tick = setInterval(()=>{ const t=Math.floor((Date.now()-call.t0)/1000); $('#call-st').textContent = `${Math.floor(t/60)}:${String(t%60).padStart(2,'0')}`; }, 1000);
+  });
+  mc.on('close', ()=>endCall(false));
+  mc.on('error', ()=>endCall(false));
+}
+const EM = { preferAndHook(pc){ E2EE.preferVP8(pc); setTimeout(()=>{ if (call && call.worker && call.worker.hookSenders) call.worker.hookSenders(); }, 0); } };
+function endCall(tell=true){
+  if (!call) return; const c = call; call = null;
+  if (tell) sendSealed(c.id, {t:'bye'});
+  clearInterval(c.tick); try { c.mc && c.mc.close(); } catch(e){}
+  c.stream && c.stream.getTracks().forEach(t=>t.stop()); c.worker && c.worker.terminate();
+  $('#s-call').hidden = true; $('#v-remote').srcObject = null; $('#v-local').srcObject = null;
+  const dur = c.t0 ? Math.round((Date.now()-c.t0)/1000) : 0;
+  sysMsg(c.id, `${c.video?'Video':'Voice'} call${dur ? ` · ${Math.floor(dur/60)}:${String(dur%60).padStart(2,'0')}` : ' · not connected'}`);
+}
+let ringCtx = null, ringIv = null;
+function ringTone(on){
+  clearInterval(ringIv); if (!on) return;
+  try { ringCtx = ringCtx || new (window.AudioContext || window.webkitAudioContext)();
+    // steel pan: a bright struck tone (fundamental + octave + a slightly sharp twelfth) playing a little calypso phrase
+    const pan = (hz, at, len=.9) => { [[1,.5],[2,.28],[3.02,.12]].forEach(([m,v])=>{ const o=ringCtx.createOscillator(), g=ringCtx.createGain();
+      o.type='sine'; o.frequency.value=hz*m; g.gain.setValueAtTime(.0001, at); g.gain.exponentialRampToValueAtTime(v*.35, at+.012);
+      g.gain.exponentialRampToValueAtTime(.0001, at+len/m); o.connect(g).connect(ringCtx.destination); o.start(at); o.stop(at+len); }); };
+    const phrase = ()=>{ const t=ringCtx.currentTime+.05, N={C5:523.25,D5:587.33,E5:659.25,G5:783.99,A5:880,C6:1046.5};
+      [['C5',0],['E5',.18],['G5',.36],['A5',.63],['G5',.81],['E5',.99],['G5',1.26],['C6',1.44]].forEach(([n,d])=>pan(N[n], t+d)); };
+    phrase(); ringIv = setInterval(phrase, 2600); } catch(e){}
+}
+
+/* ---------- controls ---------- */
+$('#w-go').onclick = ()=>{ const n=$('#w-name').value.trim(); if (!n) return toast('Enter your name first.');
+  me = {id:newId(), name:n.slice(0,30)}; LS.set('me', me); boot(); };
+$('#t-people').onclick = ()=>{ $('#t-people').setAttribute('aria-selected','true'); $('#t-invite').setAttribute('aria-selected','false'); $('#p-people').hidden=false; $('#p-invite').hidden=true; };
+$('#t-invite').onclick = ()=>{ $('#t-invite').setAttribute('aria-selected','true'); $('#t-people').setAttribute('aria-selected','false'); $('#p-people').hidden=true; $('#p-invite').hidden=false; drawInvites(); };
+$('#inv-make').onclick = makeInvite;
+$('#inv-copy').onclick = async ()=>{ const t=$('#inv-link').textContent; try { await navigator.clipboard.writeText(t); toast('Invite link copied'); } catch(e){ const r=document.createRange(); r.selectNodeContents($('#inv-link')); getSelection().removeAllRanges(); getSelection().addRange(r); toast('Link selected - copy it'); } };
+$('#inv-share').onclick = async ()=>{ const t=$('#inv-link').textContent; if (navigator.share){ try { await navigator.share({title:'Shelly invite', text:`${me.name} invited you to Shelly (private calls and chat):`, url:t}); } catch(e){} } else $('#inv-copy').click(); };
+$('#inv-join').onclick = ()=>{ if (joinFrom($('#inv-paste').value)) { $('#inv-paste').value=''; $('#t-people').click(); } };
+$('#c-back').onclick = ()=>{ cur=null; show('#s-home'); drawContacts(); };
+$('#c-voice').onclick = ()=>startCall(cur, false);
+$('#c-video').onclick = ()=>startCall(cur, true);
+$('#c-form').addEventListener('submit', async e=>{
+  e.preventDefault(); const text=$('#c-text').value.trim(); if (!text || !cur) return;
+  const id = cur, msg = {id:SC.b64(SC.rand(9)), me:true, text, ts:Date.now(), state:'waiting'};
+  const m = msgsOf(id); m.push(msg); setMsgs(id, m); $('#c-text').value=''; drawChat();
+  if (await sendSealed(id, {t:'msg', id:msg.id, text, ts:msg.ts})){ const m2=msgsOf(id), x=m2.find(x=>x.id===msg.id); if (x && x.state==='waiting'){ x.state='sent'; setMsgs(id, m2); drawChat(); } }
+  if ('Notification' in window && Notification.permission==='default') try { Notification.requestPermission(); } catch(e){}
+});
+$('#k-end').onclick = ()=>endCall(true);
+$('#k-mute').onclick = ()=>{ if (!call) return; const t=call.stream.getAudioTracks()[0]; t.enabled=!t.enabled; $('#k-mute').classList.toggle('off', !t.enabled); $('#k-mute').setAttribute('aria-pressed', String(!t.enabled)); };
+$('#k-cam').onclick = ()=>{ if (!call) return; const t=call.stream.getVideoTracks()[0]; if (!t) return; t.enabled=!t.enabled; $('#k-cam').classList.toggle('off', !t.enabled); $('#k-cam').setAttribute('aria-pressed', String(!t.enabled)); };
+$('#k-flip').onclick = async ()=>{
+  if (!call || !call.video || !call.mc) return;
+  call.facing = call.facing==='user' ? 'environment' : 'user';
+  try { const ns = await navigator.mediaDevices.getUserMedia({video:{facingMode:call.facing}}); const nt = ns.getVideoTracks()[0];
+    const sender = call.mc.peerConnection.getSenders().find(s=>s.track && s.track.kind==='video'); await sender.replaceTrack(nt);
+    const old = call.stream.getVideoTracks()[0]; call.stream.removeTrack(old); old.stop(); call.stream.addTrack(nt); $('#v-local').srcObject = call.stream;
+    $('#v-local').style.transform = call.facing==='user' ? 'scaleX(-1)' : 'none'; } catch(e){ toast('This device has only one camera.'); }
+};
+$('#r-no').onclick = ()=>{ const mc=ringing; ringing=null; $('#ring').hidden=true; ringTone(false); if (mc) { sysMsg(mc.peer, 'Declined call'); mc.close(); } };
+$('#r-voice').onclick = ()=>answer(false);
+$('#r-video').onclick = ()=>answer(true);
+$('#h-settings').onclick = ()=>{ $('#st-name').value=me.name; $('#st-turn').value=settings.turn||''; $('#st-tuser').value=settings.tuser||''; $('#st-tpass').value=settings.tpass||'';
+  $('#st-id').textContent = me.id;
+  $('#st-crypto').innerHTML = `Chat: <b>AES-256-GCM</b> (Web Crypto)<br>Keys: fresh <b>ECDH P-256</b> per session + 256-bit invite secret, <b>HKDF-SHA-256</b><br>Calls: ${E2EE.mode==='none' ? '<b>browser standard DTLS-SRTP</b> - this browser cannot add AES-256 frame encryption; update it' : '<b>AES-256-GCM</b> on every audio and video frame, inside the browser\'s DTLS-SRTP'}`;
+  show('#s-settings'); };
+$('#st-back').onclick = ()=>{ show('#s-home'); drawContacts(); };
+$('#st-save-name').onclick = ()=>{ const n=$('#st-name').value.trim(); if (!n) return; me.name=n.slice(0,30); LS.set('me', me); toast('Name saved - contacts see it next time you connect'); };
+$('#st-save-turn').onclick = ()=>{ settings = {turn:$('#st-turn').value.trim(), tuser:$('#st-tuser').value.trim(), tpass:$('#st-tpass').value}; LS.set('settings', settings); toast('Relay saved - restart Shelly to use it'); };
+let pending = null;
+function confirmStep(text, fn){ pending = fn; $('#st-confirm-t').textContent = text; $('#st-confirm').hidden = false; }
+$('#st-clear').onclick = ()=>confirmStep('Delete every message on this device?', ()=>{ Object.keys(contacts).forEach(id=>LS.del('msgs_'+id)); toast('Chat history deleted'); });
+$('#st-reset').onclick = ()=>confirmStep('Remove your identity, contacts and keys from this device?', ()=>{ try { Object.keys(localStorage).filter(k=>k.startsWith('shelly_')).forEach(k=>localStorage.removeItem(k)); } catch(e){} location.hash=''; location.reload(); });
+$('#st-yes').onclick = ()=>{ $('#st-confirm').hidden = true; const f=pending; pending=null; f && f(); };
+$('#st-no').onclick = ()=>{ $('#st-confirm').hidden = true; pending = null; };
+window.addEventListener('hashchange', ()=>{ if (me && location.hash.startsWith('#join=')){ joinFrom(location.hash); history.replaceState(null, '', location.pathname + location.search); } });
+
+function boot(){
+  show('#s-home'); drawContacts();
+  if (location.hash.startsWith('#join=')){ joinFrom(location.hash); history.replaceState(null, '', location.pathname + location.search); }
+  if (!window.isSecureContext) toast('Open Shelly from an https:// address - browsers block calls on plain pages.', 6000);
+  startPeer();
+}
+if (me) boot(); else { show('#s-welcome'); if (location.hash.startsWith('#join=')) $('#w-name').focus(); }
+</script>
+</body>
+</html>

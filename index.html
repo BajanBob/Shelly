@@ -1,13 +1,21 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" data-skin="calypso">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Shelly</title>
 <meta name="theme-color" content="#0a8c8a">
+<meta name="description" content="Private chat, voice and video calls with the people you invite.">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Shelly">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lilita+One&family=Figtree:wght@400;500;600;700&display=swap">
 <style>
+
 /* Layout: one phone-width column; list -> conversation -> call, each a full screen that slides in. */
 :root{
   /* Layout: one phone-width column; list -> conversation -> call, each a full screen. Calypso: sea, hibiscus, sun. */
@@ -121,17 +129,61 @@ input.in{min-height:48px;border-radius:12px;border:1px solid var(--line);backgro
 .link{font:13px var(--mono);word-break:break-all;background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:10px;user-select:all}
 .small{font-size:13px;color:var(--muted);margin:0}
 .req{border-color:var(--warn)}
+
+/* ---- v2: themes, wallpapers, quick replies, privacy ---- */
+:root[data-skin="sunset"]{--accent:#c8471f; --accent-soft:#f9dccf; --mine:#c8471f; --hibiscus:#8e3fa8; --sun:#f2a93b; --bg:#fbf0ea; --surface-2:#f5e0d5; --line:#ecd2c4; --accent-ink:#ffffff}
+@media (prefers-color-scheme: dark){ :root[data-skin="sunset"]:not([data-theme="light"]){--accent:#ff8a5c; --accent-soft:#3d1f17; --mine:#b4502c; --hibiscus:#c77ddb; --sun:#ffc06a; --bg:#1b0f12; --surface-2:#2c1a1c; --line:#3a2226; --accent-ink:#032325} }
+:root[data-skin="sunset"][data-theme="dark"]{--accent:#ff8a5c; --accent-soft:#3d1f17; --mine:#b4502c; --hibiscus:#c77ddb; --sun:#ffc06a; --bg:#1b0f12; --surface-2:#2c1a1c; --line:#3a2226; --accent-ink:#032325}
+:root[data-skin="reef"]{--accent:#1565c0; --accent-soft:#d6e6fa; --mine:#1565c0; --hibiscus:#ef5a4c; --sun:#1aa0d8; --bg:#eaf2fb; --surface-2:#d9e7f7; --line:#c9daf0; --accent-ink:#ffffff}
+@media (prefers-color-scheme: dark){ :root[data-skin="reef"]:not([data-theme="light"]){--accent:#5aa9ff; --accent-soft:#13294a; --mine:#2463b0; --hibiscus:#ff8678; --sun:#4cc3f5; --bg:#07131f; --surface-2:#0f2236; --line:#173150; --accent-ink:#032325} }
+:root[data-skin="reef"][data-theme="dark"]{--accent:#5aa9ff; --accent-soft:#13294a; --mine:#2463b0; --hibiscus:#ff8678; --sun:#4cc3f5; --bg:#07131f; --surface-2:#0f2236; --line:#173150; --accent-ink:#032325}
+:root[data-skin="carnival"]{--accent:#a3126f; --accent-soft:#f6d6ea; --mine:#a3126f; --hibiscus:#e6a700; --sun:#1d9a55; --bg:#fbeef6; --surface-2:#f3dcea; --line:#ebcadf; --accent-ink:#ffffff}
+@media (prefers-color-scheme: dark){ :root[data-skin="carnival"]:not([data-theme="light"]){--accent:#ff5cc0; --accent-soft:#3d1230; --mine:#a72479; --hibiscus:#ffcf3d; --sun:#4fd38c; --bg:#1a0a16; --surface-2:#2a1424; --line:#3a1c32; --accent-ink:#032325} }
+:root[data-skin="carnival"][data-theme="dark"]{--accent:#ff5cc0; --accent-soft:#3d1230; --mine:#a72479; --hibiscus:#ffcf3d; --sun:#4fd38c; --bg:#1a0a16; --surface-2:#2a1424; --line:#3a1c32; --accent-ink:#032325}
+:root[data-skin="palm"]{--accent:#2e7d32; --accent-soft:#d7ecd8; --mine:#2e7d32; --hibiscus:#ef6c00; --sun:#f9a825; --bg:#eef6ea; --surface-2:#dcebd6; --line:#cfe2c8; --accent-ink:#ffffff}
+@media (prefers-color-scheme: dark){ :root[data-skin="palm"]:not([data-theme="light"]){--accent:#6fcf73; --accent-soft:#173a19; --mine:#2f7d33; --hibiscus:#ff9d4d; --sun:#ffd04f; --bg:#0b170c; --surface-2:#132615; --line:#1d361f; --accent-ink:#032325} }
+:root[data-skin="palm"][data-theme="dark"]{--accent:#6fcf73; --accent-soft:#173a19; --mine:#2f7d33; --hibiscus:#ff9d4d; --sun:#ffd04f; --bg:#0b170c; --surface-2:#132615; --line:#1d361f; --accent-ink:#032325}
+.msgs[data-wall="waves"]{background-image:radial-gradient(circle at 50% 100%, transparent 13px, color-mix(in srgb,var(--accent) 12%,transparent) 14px, color-mix(in srgb,var(--accent) 12%,transparent) 15px, transparent 16px);background-size:34px 17px}
+.msgs[data-wall="hibiscus"]{background-image:radial-gradient(color-mix(in srgb,var(--hibiscus) 22%,transparent) 3px, transparent 4px),radial-gradient(color-mix(in srgb,var(--sun) 30%,transparent) 2px, transparent 3px);background-size:30px 30px,30px 30px;background-position:0 0,15px 15px}
+.msgs[data-wall="pan"]{background-image:repeating-radial-gradient(circle at 100% 100%, transparent 0 26px, color-mix(in srgb,var(--accent) 10%,transparent) 26px 28px),repeating-radial-gradient(circle at 0 0, transparent 0 40px, color-mix(in srgb,var(--sun) 14%,transparent) 40px 42px);background-attachment:local}
+.msgs{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+.quick{display:flex;gap:8px;overflow-x:auto;padding-block:8px 0;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));background:var(--surface);scrollbar-width:none}
+.quick::-webkit-scrollbar{display:none}
+.quick button{flex:none;min-height:36px;padding:0 14px;border-radius:999px;border:1px solid color-mix(in srgb,var(--accent) 40%,var(--line));background:var(--accent-soft);color:var(--ink);font-size:14px;font-weight:500}
+.timer{font-size:11px;color:var(--muted);text-align:center}
+body.curtain .app{filter:blur(18px)}
+.swatches{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px}
+.swatch{border:2px solid var(--line);border-radius:14px;padding:8px 4px;background:var(--surface);display:flex;flex-direction:column;align-items:center;gap:6px;font-size:12px;font-weight:600}
+.swatch[aria-pressed="true"]{border-color:var(--ink)}
+.swatch i{display:flex;width:36px;height:36px;border-radius:50%;overflow:hidden}
+.swatch i b{flex:1}
+.walls{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+.wall{height:64px;border-radius:12px;border:2px solid var(--line);background-color:var(--bg);font-size:12px;font-weight:600;display:flex;align-items:flex-end;justify-content:center;padding-bottom:4px}
+.wall[aria-pressed="true"]{border-color:var(--ink)}
+.seg3{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;padding:4px;border-radius:12px;background:var(--surface-2)}
+.seg3 button{min-height:40px;border:0;border-radius:9px;background:transparent;font-weight:600;color:var(--muted)}
+.seg3 button[aria-pressed="true"]{background:var(--surface);color:var(--ink)}
+textarea.in{min-height:140px;padding:10px 14px;resize:vertical;font:inherit}
+.notice{display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap;padding:12px 14px;border-radius:14px;background:color-mix(in srgb,var(--sun) 22%,var(--surface));border:1px solid color-mix(in srgb,var(--sun) 60%,var(--line))}
+.code{font:600 14px var(--mono);letter-spacing:.04em;word-break:break-all;background:var(--bg);border:1px dashed var(--accent);border-radius:10px;padding:10px;user-select:all}
+.scan{position:absolute;inset:0;z-index:40;background:#000;display:flex;flex-direction:column}
+.scan video{flex:1;width:100%;object-fit:cover}
+.scan .frame{position:absolute;left:50%;top:45%;width:min(70vw,280px);aspect-ratio:1;transform:translate(-50%,-50%);border:3px solid var(--sun);border-radius:22px;box-shadow:0 0 0 100vmax rgba(0,0,0,.45)}
+.scan .bottom{position:absolute;left:0;right:0;bottom:0;padding:18px 16px calc(24px + env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;gap:10px;align-items:center;color:#fff;text-align:center}
+
 </style>
 </head>
 <body>
 <div class="app" id="app">
+
+  <section class="screen" id="s-loading"><div class="body" style="justify-content:center;align-items:center"><div class="brand"><svg class="shell" viewBox="0 0 32 32" aria-hidden="true"><path d="M16 3C8.5 3 3 8.6 3 15.2c0 3.2 1.3 6 3.4 8.1L10 27h12l3.6-3.7c2.1-2.1 3.4-4.9 3.4-8.1C29 8.6 23.5 3 16 3z"/><path class="rib" d="M16 26V6M12 26 8.5 9M20 26l3.5-17M9 25.5 5 15M23 25.5 27 15"/><path class="hinge" d="M11 26h10l-1.6 3.4h-6.8z"/></svg>Shelly</div></div></section>
 
   <!-- first run -->
   <section class="screen" id="s-welcome" hidden>
     <div class="body" style="justify-content:center">
       <div class="welcome-hero"><div class="brand"><svg class="shell" viewBox="0 0 32 32" aria-hidden="true"><path d="M16 3C8.5 3 3 8.6 3 15.2c0 3.2 1.3 6 3.4 8.1L10 27h12l3.6-3.7c2.1-2.1 3.4-4.9 3.4-8.1C29 8.6 23.5 3 16 3z"/><path class="rib" d="M16 26V6M12 26 8.5 9M20 26l3.5-17M9 25.5 5 15M23 25.5 27 15"/><path class="hinge" d="M11 26h10l-1.6 3.4h-6.8z"/></svg>Shelly</div>
       <h1>Lime with your people, privately.</h1>
-      <p class="lede">Chat, voice and video calls go straight from your device to theirs, locked with AES-256 encryption. Only people you invite can reach you.</p></div>
+      <p class="lede">Chat, voice and video calls go straight from your device to theirs, locked with AES-256 encryption. Only people you invite can reach you. Messages disappear after 6 hours.</p></div>
       <label class="f" for="w-name">Your name, as your contacts will see it
         <input class="in" id="w-name" maxlength="30" autocomplete="name" placeholder="Kammie"></label>
       <button class="btn pri" id="w-go">Start Shelly</button>
@@ -147,33 +199,36 @@ input.in{min-height:48px;border-radius:12px;border:1px solid var(--line);backgro
     </header>
     <div class="waves" aria-hidden="true"><svg viewBox="0 0 400 16" preserveAspectRatio="none"><path class="w2" d="M0 9 Q25 2 50 9 T100 9 T150 9 T200 9 T250 9 T300 9 T350 9 T400 9 V16 H0z"/><path class="w1" d="M0 12 Q25 6 50 12 T100 12 T150 12 T200 12 T250 12 T300 12 T350 12 T400 12 V16 H0z"/></svg></div>
     <div class="body">
+      <div class="notice" id="n-push" hidden><span id="n-push-t">Turn on notifications so Shelly can ring you when it's closed.</span><button class="btn sun" id="n-push-go">Turn on</button></div>
       <div class="tabs" role="tablist">
         <button role="tab" id="t-people" aria-selected="true">People</button>
-        <button role="tab" id="t-invite" aria-selected="false">Invite someone</button>
+        <button role="tab" id="t-invite" aria-selected="false">Invite or join</button>
       </div>
       <div id="p-people" style="display:flex;flex-direction:column;gap:10px">
-        <div id="requests"></div>
         <div id="contacts" style="display:flex;flex-direction:column;gap:10px"></div>
-        <p class="small">Keep Shelly open to receive calls and messages. On a phone, add it to your home screen from the browser menu.</p>
+        <p class="small" id="keep-open">Messages and call records delete themselves after 6 hours.</p>
       </div>
       <div id="p-invite" hidden style="display:flex;flex-direction:column;gap:12px">
         <div class="card">
           <h2>Invite someone</h2>
-          <p class="small">Each invite works once and holds a secret 256-bit key. Send it privately: show the QR code in person, or send the link in a direct message. Anyone who has the link can become your contact.</p>
+          <p class="small">Each invite works once and carries its own secret 256-bit key. Let them scan the QR code in person, or send the link or passcode privately.</p>
           <button class="btn sun" id="inv-make">Create an invite</button>
           <div id="inv-out" hidden style="display:flex;flex-direction:column;gap:10px">
             <canvas class="qr" id="inv-qr" width="240" height="240" aria-label="Invite QR code"></canvas>
-            <div class="link" id="inv-link"></div>
-            <div class="row"><button class="btn" id="inv-copy">Copy link</button><button class="btn" id="inv-share">Share</button></div>
+            <p class="small" style="text-align:center">Scan with Shelly: <b>Invite or join → Scan a QR code</b></p>
+            <h2 style="font-size:16px">256-bit passcode</h2>
+            <div class="code" id="inv-code"></div>
+            <div class="row"><button class="btn" id="inv-copy-code">Copy passcode</button><button class="btn" id="inv-copy">Copy link</button><button class="btn" id="inv-share">Share link</button></div>
           </div>
         </div>
-        <div class="card"><h2>Open invites</h2><div id="inv-list" class="small">None</div></div>
         <div class="card">
-          <h2>Got an invite?</h2>
-          <p class="small">Open the link on this device, or paste it here.</p>
-          <input class="in" id="inv-paste" placeholder="https://…#join=…" autocomplete="off">
+          <h2>Join someone</h2>
+          <button class="btn pri" id="scan-go">Scan a QR code</button>
+          <label class="f" for="inv-paste">Or paste their passcode or link
+            <input class="in" id="inv-paste" placeholder="SH1.shelly-… or https://…#join=…" autocomplete="off" spellcheck="false"></label>
           <button class="btn" id="inv-join">Add contact</button>
         </div>
+        <div class="card"><h2>Open invites</h2><div id="inv-list" class="small">None</div></div>
       </div>
     </div>
   </section>
@@ -188,6 +243,7 @@ input.in{min-height:48px;border-radius:12px;border:1px solid var(--line);backgro
     </header>
     <div class="waves" aria-hidden="true"><svg viewBox="0 0 400 16" preserveAspectRatio="none"><path class="w2" d="M0 9 Q25 2 50 9 T100 9 T150 9 T200 9 T250 9 T300 9 T350 9 T400 9 V16 H0z"/><path class="w1" d="M0 12 Q25 6 50 12 T100 12 T150 12 T200 12 T250 12 T300 12 T350 12 T400 12 V16 H0z"/></svg></div>
     <div class="msgs" id="c-msgs" aria-live="polite"></div>
+    <div class="quick" id="c-quick" role="group" aria-label="Quick replies"></div>
     <form class="compose" id="c-form">
       <label for="c-text" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">Message</label>
       <input class="in" id="c-text" placeholder="Message" autocomplete="off" maxlength="4000">
@@ -199,36 +255,55 @@ input.in{min-height:48px;border-radius:12px;border:1px solid var(--line);backgro
   <section class="screen" id="s-settings" hidden>
     <header class="bar">
       <button class="icon-btn" id="st-back" aria-label="Back"><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg></button>
-      <div class="brand" style="font-size:22px">Settings</div>
+      <div class="brand" style="font-size:24px">Settings</div>
     </header>
     <div class="waves" aria-hidden="true"><svg viewBox="0 0 400 16" preserveAspectRatio="none"><path class="w2" d="M0 9 Q25 2 50 9 T100 9 T150 9 T200 9 T250 9 T300 9 T350 9 T400 9 V16 H0z"/><path class="w1" d="M0 12 Q25 6 50 12 T100 12 T150 12 T200 12 T250 12 T300 12 T350 12 T400 12 V16 H0z"/></svg></div>
     <div class="body">
+      <div class="card">
+        <h2>Colour theme</h2>
+        <div class="swatches" id="st-skins"></div>
+        <h2 style="margin-top:6px">Light or dark</h2>
+        <div class="seg3" id="st-mode"><button data-mode="system">Automatic</button><button data-mode="light">Light</button><button data-mode="dark">Dark</button></div>
+        <h2 style="margin-top:6px">Chat wallpaper</h2>
+        <div class="walls" id="st-walls"></div>
+      </div>
+      <div class="card">
+        <h2>Sounds</h2>
+        <p class="small">Three steel-pan tones so you know what's coming before you look.</p>
+        <div class="row"><button class="btn" data-tone="msg">▶ Message</button><button class="btn" data-tone="voice">▶ Voice call</button><button class="btn" data-tone="video">▶ Video call</button></div>
+      </div>
+      <div class="card">
+        <h2>Quick replies</h2>
+        <label class="f" for="st-quick">One per line (up to 8)<textarea class="in" id="st-quick" maxlength="400"></textarea></label>
+        <button class="btn" id="st-save-quick">Save quick replies</button>
+      </div>
       <div class="card">
         <label class="f" for="st-name">Your name<input class="in" id="st-name" maxlength="30"></label>
         <button class="btn" id="st-save-name">Save name</button>
       </div>
       <div class="card">
-        <h2>Encryption on this device</h2>
+        <h2>Notifications</h2>
+        <div id="st-push" class="small"></div>
+        <button class="btn" id="st-push-go">Turn on notifications</button>
+      </div>
+      <div class="card">
+        <h2>Privacy and encryption</h2>
         <div id="st-crypto" class="small"></div>
       </div>
       <div class="card">
-        <h2>Relay server (optional)</h2>
-        <p class="small">Most calls connect directly. Some mobile networks block direct connections; a TURN relay fixes that. It only passes along encrypted data it cannot read.</p>
+        <h2>Relay server for difficult networks (optional)</h2>
+        <p class="small">Most calls connect directly. Some mobile networks block that; a TURN relay fixes it. It only passes along encrypted data it cannot read.</p>
         <label class="f" for="st-turn">TURN address<input class="in" id="st-turn" placeholder="turns:relay.example.com:443" autocomplete="off"></label>
         <label class="f" for="st-tuser">Username<input class="in" id="st-tuser" autocomplete="off"></label>
         <label class="f" for="st-tpass">Password<input class="in" id="st-tpass" type="password" autocomplete="off"></label>
         <button class="btn" id="st-save-turn">Save relay</button>
       </div>
       <div class="card">
-        <h2>Your Shelly ID</h2>
-        <div class="link" id="st-id"></div>
-        <p class="small">Your ID only finds you; it can't be used to reach you without an invite key.</p>
-      </div>
-      <div class="card">
-        <h2>Privacy</h2>
-        <button class="btn" id="st-clear">Delete all chat history on this device</button>
+        <h2>Delete</h2>
+        <button class="btn" id="st-clear">Delete all messages and call records now</button>
         <button class="btn danger" id="st-reset">Reset Shelly (removes contacts and keys)</button>
         <div id="st-confirm" hidden class="row"><span class="small" id="st-confirm-t"></span><button class="btn danger" id="st-yes">Yes, do it</button><button class="btn" id="st-no">Cancel</button></div>
+        <p class="small">Your Shelly ID: <span id="st-id" style="font-family:var(--mono)"></span></p>
       </div>
     </div>
   </section>
@@ -261,6 +336,13 @@ input.in{min-height:48px;border-radius:12px;border:1px solid var(--line);backgro
       <button class="round go" id="r-voice" aria-label="Answer with voice"><svg viewBox="0 0 24 24"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8 9.8a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.7 2z"/></svg></button>
       <button class="round go" id="r-video" aria-label="Answer with video"><svg viewBox="0 0 24 24"><path d="M23 7l-7 5 7 5V7z"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg></button>
     </div>
+  </div>
+
+  <!-- QR scanner -->
+  <div class="scan" id="scan" hidden role="dialog" aria-label="Scan an invite QR code">
+    <video id="scan-v" autoplay playsinline muted></video>
+    <div class="frame" aria-hidden="true"></div>
+    <div class="bottom"><span id="scan-st">Point the camera at a Shelly invite QR code</span><button class="btn" id="scan-x">Cancel</button></div>
   </div>
 
   <div class="toast" id="toast" role="status" hidden></div>
@@ -346,6 +428,7 @@ function qrDraw(canvas, text, px){
 
 </script>
 <script id="shelly-crypto">
+
 /* ===================== Shelly crypto =====================
    Pairing: each invite carries a random 256-bit secret K (out of band).
    Session: both sides send a fresh ECDH P-256 public key. Keys =
@@ -420,28 +503,127 @@ const E2EE = {
       if (vp8.length) t.setCodecPreferences([...vp8, ...rest]); } }); } catch(e){}
   },
 };
+
+/* ---- encrypted storage: everything Shelly keeps on the device is one AES-256-GCM sealed "vault".
+   The vault key is a non-extractable Web Crypto key kept in IndexedDB: scripts can use it but never read it out. */
+const Vault = {
+  key: null, data: null, timer: null, persistent: true,
+  idb(){ return new Promise((res, rej)=>{ const r = indexedDB.open('shelly', 1); r.onupgradeneeded = ()=>r.result.createObjectStore('keys');
+    r.onsuccess = ()=>res(r.result); r.onerror = ()=>rej(r.error); }); },
+  async getKey(){
+    try {
+      const db = await Vault.idb();
+      const get = () => new Promise((res, rej)=>{ const q = db.transaction('keys').objectStore('keys').get('vault'); q.onsuccess = ()=>res(q.result); q.onerror = ()=>rej(q.error); });
+      let k = await get();
+      if (!k){ k = await crypto.subtle.generateKey({name:'AES-GCM', length:256}, false, ['encrypt','decrypt']);
+        await new Promise((res, rej)=>{ const tx = db.transaction('keys','readwrite'); tx.objectStore('keys').put(k, 'vault'); tx.oncomplete = res; tx.onerror = ()=>rej(tx.error); }); }
+      return k;
+    } catch(e){ Vault.persistent = false; return crypto.subtle.generateKey({name:'AES-GCM', length:256}, false, ['encrypt','decrypt']); }
+  },
+  blank(){ return {me:null, contacts:{}, invites:{}, msgs:{}, settings:{}, prefs:{skin:'calypso', wall:'waves', mode:'system',
+    quick:['On my way','Call you back','Wuh happenin?','Lime later?','Safe home','Busy right now']}}; },
+  async load(){
+    Vault.key = await Vault.getKey();
+    let raw = null; try { raw = localStorage.getItem('shelly_vault'); } catch(e){}
+    if (raw){ try { const b = JSON.parse(raw); Vault.data = JSON.parse(SC.td.decode(await crypto.subtle.decrypt({name:'AES-GCM', iv:SC.unb64(b.iv)}, Vault.key, SC.unb64(b.ct)))); }
+      catch(e){ Vault.data = null; } }
+    if (!Vault.data) Vault.data = Vault.blank();
+    const d = Vault.data, b = Vault.blank();
+    for (const k of Object.keys(b)) if (d[k] == null) d[k] = b[k];
+    for (const k of Object.keys(b.prefs)) if (d.prefs[k] == null) d.prefs[k] = b.prefs[k];
+    try { ['me','contacts','invites','settings'].forEach(k=>localStorage.removeItem('shelly_'+k));        // old unencrypted copies
+      Object.keys(localStorage).filter(k=>k.startsWith('shelly_msgs_')).forEach(k=>localStorage.removeItem(k)); } catch(e){}
+    return Vault.data;
+  },
+  save(){ clearTimeout(Vault.timer); Vault.timer = setTimeout(Vault.flush, 250); },
+  async flush(){
+    if (!Vault.key || !Vault.data) return;
+    const iv = SC.rand(12), ct = await crypto.subtle.encrypt({name:'AES-GCM', iv}, Vault.key, SC.te.encode(JSON.stringify(Vault.data)));
+    try { localStorage.setItem('shelly_vault', JSON.stringify({v:1, iv:SC.b64(iv), ct:SC.b64(ct)})); } catch(e){}
+  },
+  async wipe(){ try { localStorage.removeItem('shelly_vault'); } catch(e){}
+    try { await new Promise(r=>{ const q = indexedDB.deleteDatabase('shelly'); q.onsuccess = q.onerror = q.onblocked = r; }); } catch(e){} },
+};
+
+/* ---- Web Push payload encryption (RFC 8291, aes128gcm), done here so the relay only ever sees ciphertext ---- */
+async function hkdf(salt, ikm, info, bytes){
+  const k = await crypto.subtle.importKey('raw', ikm, 'HKDF', false, ['deriveBits']);
+  return new Uint8Array(await crypto.subtle.deriveBits({name:'HKDF', hash:'SHA-256', salt, info}, k, bytes*8));
+}
+async function webPushEncrypt(sub, payload){
+  const uaPub = SC.unb64(sub.keys.p256dh), auth = SC.unb64(sub.keys.auth);
+  const as = await crypto.subtle.generateKey({name:'ECDH', namedCurve:'P-256'}, true, ['deriveBits']);
+  const asPub = new Uint8Array(await crypto.subtle.exportKey('raw', as.publicKey));
+  const uaKey = await crypto.subtle.importKey('raw', uaPub, {name:'ECDH', namedCurve:'P-256'}, false, []);
+  const shared = new Uint8Array(await crypto.subtle.deriveBits({name:'ECDH', public:uaKey}, as.privateKey, 256));
+  const cat = (...a) => { const n = a.reduce((s,x)=>s+x.length,0), o = new Uint8Array(n); let i=0; for (const x of a){ o.set(x,i); i+=x.length; } return o; };
+  const ikm = await hkdf(auth, shared, cat(SC.te.encode('WebPush: info\0'), uaPub, asPub), 32);
+  const salt = SC.rand(16);
+  const cek = await hkdf(salt, ikm, SC.te.encode('Content-Encoding: aes128gcm\0'), 16);
+  const nonce = await hkdf(salt, ikm, SC.te.encode('Content-Encoding: nonce\0'), 12);
+  const key = await crypto.subtle.importKey('raw', cek, 'AES-GCM', false, ['encrypt']);
+  const ct = new Uint8Array(await crypto.subtle.encrypt({name:'AES-GCM', iv:nonce}, key, cat(SC.te.encode(JSON.stringify(payload)), new Uint8Array([2]))));
+  const rs = new Uint8Array([0, 0, 16, 0]);                       // record size 4096
+  return cat(salt, rs, new Uint8Array([asPub.length]), asPub, ct);
+}
+
 </script>
 <script>
 /* ===================== Shelly app ===================== */
-const $ = s => document.querySelector(s);
+const $ = s => document.querySelector(s), $$ = s => [...document.querySelectorAll(s)];
 const esc = v => String(v==null?'':v).replace(/[&<>"]/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'})[c]);
-const LS = {
-  get(k, d){ try { const v = localStorage.getItem('shelly_'+k); return v==null ? d : JSON.parse(v); } catch(e){ return d; } },
-  set(k, v){ try { localStorage.setItem('shelly_'+k, JSON.stringify(v)); } catch(e){} },
-  del(k){ try { localStorage.removeItem('shelly_'+k); } catch(e){} },
-};
-let me = LS.get('me', null), contacts = LS.get('contacts', {}), invites = LS.get('invites', {}), settings = LS.get('settings', {});
-const sessions = {};       // contact id -> {conn, kp, keys, ready, online}
-let peer = null, cur = null, call = null, ringing = null, toastT = null;
-const saveContacts = () => LS.set('contacts', contacts), saveInvites = () => LS.set('invites', invites);
-const msgsOf = id => LS.get('msgs_'+id, []), setMsgs = (id, m) => LS.set('msgs_'+id, m.slice(-500));
+const KEEP_MS = 6 * 3600 * 1000;                        // messages and call records live 6 hours
+const INVITE_MS = 7 * 86400 * 1000;                     // unused invites expire after 7 days
+const NATIVE = !!(window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform());
+let V = null, me = null, contacts = {}, invites = {}, settings = {}, prefs = {};
+let CONFIG = {relay:''};
+const sessions = {};                                    // contact id -> {conn, kp, keys, ready}
+let peer = null, cur = null, call = null, ringing = null, toastT = null, myPush = null;
+const save = () => Vault.save();
+const msgsOf = id => (V.msgs[id] = V.msgs[id] || []);
+const setMsgs = (id, m) => { V.msgs[id] = m.slice(-500); save(); };
 const initials = n => (n||'?').trim().split(/\s+/).map(w=>w[0]).join('').slice(0,2).toUpperCase() || '?';
 const fmtT = t => new Date(t).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
+const left = t => { const ms = t + KEEP_MS - Date.now(); if (ms <= 0) return 'deleting'; const h = Math.floor(ms/3600000), m = Math.ceil((ms%3600000)/60000); return h ? `${h} h ${m} min left` : `${m} min left`; };
 function toast(t, ms=3200){ const el=$('#toast'); el.textContent=t; el.hidden=false; clearTimeout(toastT); toastT=setTimeout(()=>el.hidden=true, ms); }
-function show(id){ ['#s-welcome','#s-home','#s-chat','#s-settings'].forEach(s=>$(s).hidden = s!==id); }
+function show(id){ ['#s-loading','#s-welcome','#s-home','#s-chat','#s-settings'].forEach(s=>$(s).hidden = s!==id); }
 function newId(){ const a='abcdefghijkmnpqrstuvwxyz23456789', r=SC.rand(20); return 'shelly-'+[...r].map(b=>a[b%a.length]).join(''); }
 
-/* ---------- peer connection to the broker (only finds peers; never sees content) ---------- */
+/* ---------- 6-hour rule: purge old messages and call records ---------- */
+function purge(){
+  if (!V) return; const cut = Date.now() - KEEP_MS; let changed = false;
+  for (const id of Object.keys(V.msgs)){ const m = V.msgs[id], k = m.filter(x=>x.ts > cut); if (k.length !== m.length){ changed = true; V.msgs[id] = k; } }
+  for (const id of Object.keys(contacts)){ const c = contacts[id]; if (c.unread && !msgsOf(id).some(x=>!x.me && !x.sys)){ c.unread = 0; changed = true; } }
+  for (const k of Object.keys(invites)) if (Date.now() - invites[k].created > INVITE_MS){ delete invites[k]; changed = true; }
+  if (changed){ save(); drawAll(); }
+}
+setInterval(()=>{ purge(); if (cur && !$('#s-chat').hidden) drawChat(); }, 60000);
+
+/* ---------- looks: theme, light/dark, wallpaper ---------- */
+const SKINS = {calypso:['Calypso','#0a8c8a','#e0475b','#f6b52b'], sunset:['Sunset','#c8471f','#8e3fa8','#f2a93b'], reef:['Reef','#1565c0','#ef5a4c','#1aa0d8'],
+               carnival:['Carnival','#a3126f','#e6a700','#1d9a55'], palm:['Palm','#2e7d32','#ef6c00','#f9a825']};
+const WALLS = {plain:'Plain', waves:'Waves', hibiscus:'Hibiscus', pan:'Steel pan'};
+function applyLook(){
+  const r = document.documentElement; r.dataset.skin = SKINS[prefs.skin] ? prefs.skin : 'calypso';
+  if (prefs.mode === 'light' || prefs.mode === 'dark') r.dataset.theme = prefs.mode; else delete r.dataset.theme;
+  $('#c-msgs').dataset.wall = WALLS[prefs.wall] ? prefs.wall : 'plain';
+  const m = document.querySelector('meta[name="theme-color"]'); if (m) m.content = (SKINS[prefs.skin]||SKINS.calypso)[1];
+}
+function drawLookSettings(){
+  $('#st-skins').innerHTML = Object.entries(SKINS).map(([k,[n,a,b,c]])=>`<button class="swatch" data-skin="${k}" aria-pressed="${prefs.skin===k}"><i><b style="background:${a}"></b><b style="background:${b}"></b><b style="background:${c}"></b></i>${n}</button>`).join('');
+  $('#st-walls').innerHTML = Object.entries(WALLS).map(([k,n])=>`<button class="wall msgs" data-wall="${k}" data-pick="${k}" aria-pressed="${prefs.wall===k}">${n}</button>`).join('');
+  $$('#st-mode button').forEach(b=>b.setAttribute('aria-pressed', String((prefs.mode||'system')===b.dataset.mode)));
+  $$('#st-skins [data-skin]').forEach(b=>b.onclick=()=>{ prefs.skin=b.dataset.skin; save(); applyLook(); drawLookSettings(); });
+  $$('#st-walls [data-pick]').forEach(b=>b.onclick=()=>{ prefs.wall=b.dataset.pick; save(); applyLook(); drawLookSettings(); });
+  $$('#st-mode button').forEach(b=>b.onclick=()=>{ prefs.mode=b.dataset.mode; save(); applyLook(); drawLookSettings(); });
+}
+
+/* ---------- privacy: no copying out of chats, hide content in the app switcher ---------- */
+['copy','cut','contextmenu','dragstart','selectstart'].forEach(ev=>$('#c-msgs').addEventListener(ev, e=>e.preventDefault()));
+document.addEventListener('copy', e=>{ const s = getSelection(); if (s && s.anchorNode && $('#c-msgs').contains(s.anchorNode)) e.preventDefault(); });
+document.addEventListener('visibilitychange', ()=>document.body.classList.toggle('curtain', document.hidden && !call));
+
+/* ---------- connection broker (finds peers only; never sees content) ---------- */
 function iceServers(){
   const s = [{urls:'stun:stun.l.google.com:19302'}, {urls:'stun:stun.cloudflare.com:3478'}];
   if (settings.turn) s.push({urls:settings.turn, username:settings.tuser||'', credential:settings.tpass||''});
@@ -449,7 +631,7 @@ function iceServers(){
 }
 function setStatus(kind, text){ $('#h-dot').className = 'dot' + (kind==='on'?' on':kind==='wait'?' wait':''); $('#h-st').textContent = text; }
 function startPeer(){
-  if (typeof Peer === 'undefined'){ setStatus('off', 'No connection library - check internet'); return; }
+  if (typeof Peer === 'undefined'){ setStatus('off', 'No internet'); setTimeout(()=>location.reload(), 30000); return; }
   setStatus('wait', 'Connecting');
   peer = new Peer(me.id, {config:{iceServers:iceServers(), ...E2EE.pcConfig()}, debug:0});
   peer.on('open', ()=>{ setStatus('on', 'Online'); Object.keys(contacts).forEach(id=>connect(id)); });
@@ -457,154 +639,258 @@ function startPeer(){
   peer.on('call', c=>incomingCall(c));
   peer.on('disconnected', ()=>{ setStatus('wait', 'Reconnecting'); setTimeout(()=>{ try { peer.reconnect(); } catch(e){} }, 2000); });
   peer.on('error', err=>{
-    if (err.type === 'peer-unavailable'){ const id=(String(err.message).match(/shelly-[a-z0-9]+/)||[])[0]; if (id && sessions[id]) { sessions[id].online=false; drawAll(); } return; }
-    if (err.type === 'unavailable-id'){ setStatus('off', 'Open in another tab'); toast('Shelly is already open in another tab or device with this identity.'); return; }
-    if (err.type === 'network' || err.type === 'server-error' || err.type === 'socket-error'){ setStatus('wait', 'Waiting for internet'); }
+    if (err.type === 'peer-unavailable'){ const id=(String(err.message).match(/shelly-[a-z0-9]+/)||[])[0]; if (id && sessions[id]) { sessions[id].ready=false; drawAll(); } return; }
+    if (err.type === 'unavailable-id'){ setStatus('off', 'Open elsewhere'); toast('Shelly is already open in another tab or window on this device.'); return; }
+    if (['network','server-error','socket-error','socket-closed'].includes(err.type)) setStatus('wait', 'Waiting for internet');
   });
 }
 setInterval(()=>{ if (peer && peer.open) Object.keys(contacts).forEach(id=>{ const s=sessions[id]; if (!s || !s.conn || !s.conn.open) connect(id); }); }, 45000);
+document.addEventListener('visibilitychange', ()=>{ if (!document.hidden && peer && peer.open) Object.keys(contacts).forEach(id=>connect(id)); });
 
 /* ---------- secure channel per contact ---------- */
-async function connect(id){
-  if (!peer || !peer.open || !contacts[id]) return;
+function connect(id){
+  if (!peer || !peer.open || !contacts[id] || contacts[id].blocked) return;
   const s = sessions[id] || (sessions[id] = {});
   if (s.conn && s.conn.open) return;
-  const conn = peer.connect(id, {reliable:true, metadata:{v:1}});
-  wire(conn, id);
+  wire(peer.connect(id, {reliable:true, metadata:{v:2}}), id);
 }
 function incoming(conn){
   const id = conn.peer;
   if (contacts[id] && contacts[id].blocked) { conn.on('open', ()=>conn.close()); return; }
-  wire(conn, id);                       // unknown callers must prove an invite key in their hello
+  wire(conn, id);                                       // strangers must prove an invite key in their hello
 }
 function wire(conn, id){
   const s = sessions[id] || (sessions[id] = {});
   conn.on('open', async ()=>{
     if (s.conn && s.conn !== conn && s.conn.open && s.ready){ conn.close(); return; }
-    s.conn = conn; s.ready = false; s.kp = await SC.ecdh();
-    const c = contacts[id];
-    conn.send({t:'hello', name:me.name, pub:SC.b64(await SC.pub(s.kp)), invite: c && !c.bound ? c.invite : undefined});
+    s.conn = conn; s.ready = false; await sayHello(conn, id);
   });
   conn.on('data', d=>onData(id, conn, d));
-  conn.on('close', ()=>{ if (s.conn === conn){ s.conn=null; s.ready=false; s.online=false; drawAll(); } });
+  conn.on('close', ()=>{ if (s.conn === conn){ s.conn=null; s.ready=false; drawAll(); } });
   conn.on('error', ()=>{});
+}
+function sayHello(conn, id){                            // exactly one key pair and one hello per connection
+  if (!conn._kp) conn._kp = (async ()=>{ const kp = await SC.ecdh(), c = contacts[id];
+    conn.send({t:'hello', name:me.name, pub:SC.b64(await SC.pub(kp)), invite: c && !c.bound ? c.invite : undefined}); return kp; })();
+  return conn._kp;
 }
 async function onData(id, conn, d){
   const s = sessions[id] || (sessions[id] = {});
   if (!d || typeof d !== 'object') return;
   if (d.t === 'hello'){
     let c = contacts[id];
-    if (!c){                                           // a new contact must hold one of our invite keys
+    if (!c){
       const inv = d.invite && invites[d.invite];
       if (!inv){ conn.close(); return; }
       c = contacts[id] = {name:String(d.name||'Contact').slice(0,30), K:inv.K, invite:d.invite, bound:true, added:Date.now()};
-      delete invites[d.invite]; saveInvites(); saveContacts();
+      delete invites[d.invite]; save();
       sysMsg(id, `${c.name} joined from your invite.`); toast(`${c.name} is now a contact`);
     }
     if (c.blocked){ conn.close(); return; }
-    if (!s.kp){ s.conn = conn; s.kp = await SC.ecdh(); conn.send({t:'hello', name:me.name, pub:SC.b64(await SC.pub(s.kp))}); }
-    try { s.keys = await SC.derive(s.kp, SC.unb64(d.pub), SC.unb64(c.K), me.id, id); }
-    catch(e){ conn.close(); return; }
-    if (d.name && !c.renamed) c.name = String(d.name).slice(0,30);
+    s.conn = conn; const kp = await sayHello(conn, id);
+    try { s.keys = await SC.derive(kp, SC.unb64(d.pub), SC.unb64(c.K), me.id, id); } catch(e){ conn.close(); return; }
+    if (d.name) c.name = String(d.name).slice(0,30);
     conn.send({t:'confirm', box: await SC.seal(s.keys.chatTx, {ok:'shelly', id:me.id})});
     return;
   }
   if (d.t === 'confirm'){
     try { const o = await SC.open(s.keys.chatRx, d.box); if (o.ok!=='shelly' || o.id!==id) throw 0; }
     catch(e){ sysMsg(id, 'Security check failed - keys do not match. Connection closed.'); conn.close(); return; }
-    s.ready = true; s.online = true; const c = contacts[id]; if (c && !c.bound){ c.bound = true; saveContacts(); }
-    drawAll(); flushQueue(id); return;
+    s.ready = true; const c = contacts[id]; if (c && !c.bound){ c.bound = true; save(); }
+    drawAll(); flushQueue(id);
+    if (myPush) sendSealed(id, {t:'push', p:myPush});
+    if (call && call.waitFor === id) call.go && call.go();
+    return;
   }
   if (!s.ready || !d.box) return;
   let o; try { o = await SC.open(s.keys.chatRx, d.box); } catch(e){ return; }      // anything not sealed with our key is dropped
+  const c = contacts[id];
   if (o.t === 'msg'){
-    const m = msgsOf(id); if (!m.some(x=>x.id===o.id)){ m.push({id:o.id, me:false, text:String(o.text).slice(0,4000), ts:o.ts||Date.now()}); setMsgs(id, m); }
+    const m = msgsOf(id);
+    if (!m.some(x=>x.id===o.id) && Date.now() - (o.ts||0) < KEEP_MS){ m.push({id:o.id, me:false, text:String(o.text).slice(0,4000), ts:Math.min(o.ts||Date.now(), Date.now())}); setMsgs(id, m); }
     sendSealed(id, {t:'ack', id:o.id});
-    if (cur !== id){ contacts[id].unread = (contacts[id].unread||0)+1; saveContacts(); notify(contacts[id].name, o.text); }
+    if (cur !== id || document.hidden){ c.unread = (c.unread||0)+1; save(); notifyLocal(c.name, 'New message'); }
+    if (!call) playTone('msg');
     drawAll();
   } else if (o.t === 'ack'){
     const m = msgsOf(id), x = m.find(x=>x.id===o.id); if (x){ x.state='delivered'; setMsgs(id, m); drawChat(); }
+  } else if (o.t === 'push'){
+    c.push = o.p && typeof o.p === 'object' ? {web:o.p.web||null, fcm:o.p.fcm||null} : null; save();
   } else if (o.t === 'bye'){ endCall(false); }
 }
 async function sendSealed(id, obj){ const s=sessions[id]; if (!s || !s.ready || !s.conn || !s.conn.open) return false; s.conn.send({box: await SC.seal(s.keys.chatTx, obj)}); return true; }
-async function flushQueue(id){ const m=msgsOf(id); for (const x of m) if (x.me && x.state==='waiting') await sendSealed(id, {t:'msg', id:x.id, text:x.text, ts:x.ts}); }
-function sysMsg(id, text){ const m=msgsOf(id); m.push({id:'s'+Date.now(), sys:true, text, ts:Date.now()}); setMsgs(id, m); drawChat(); }
-function notify(title, body){ try { if (document.hidden && 'Notification' in window && Notification.permission==='granted') new Notification(title, {body:String(body).slice(0,120)}); } catch(e){} }
+async function flushQueue(id){ const m=msgsOf(id); for (const x of m) if (x.me && x.state==='waiting') if (await sendSealed(id, {t:'msg', id:x.id, text:x.text, ts:x.ts})) x.state='sent'; setMsgs(id, m); drawChat(); }
+function sysMsg(id, text){ const m=msgsOf(id); m.push({id:'s'+Date.now()+Math.random(), sys:true, text, ts:Date.now()}); setMsgs(id, m); drawChat(); }
+function notifyLocal(title, body){ try { if (document.hidden && 'Notification' in window && Notification.permission==='granted') new Notification(title, {body, icon:'icon-192.png'}); } catch(e){} }
 
-/* ---------- invites ---------- */
-function inviteLink(inv, invId){ const base = location.href.split('#')[0]; return `${base}#join=${me.id}.${invId}.${inv.K}.${encodeURIComponent(me.name)}`; }
+/* ---------- push: ring and alert a contact whose Shelly is closed ---------- */
+const pushLast = {};
+async function pushTo(id, kind){
+  const c = contacts[id]; if (!c || !c.push || !CONFIG.relay) return false;
+  if (kind === 'msg'){ if (Date.now() - (pushLast[id]||0) < 60000) return true; pushLast[id] = Date.now(); }   // at most one message alert a minute
+  const relay = CONFIG.relay.replace(/\/+$/, '');
+  try {
+    if (c.push.web){
+      const body = await webPushEncrypt(c.push.web, {k:kind, n:me.name, ts:Date.now()});
+      await fetch(relay + '/web', {method:'POST', headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({endpoint:c.push.web.endpoint, body:SC.b64(body), ttl: kind==='msg' ? 21600 : 60, urgency:'high'})});
+    }
+    if (c.push.fcm) await fetch(relay + '/fcm', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({token:c.push.fcm, kind})});
+    return true;
+  } catch(e){ return false; }
+}
+function pushSupported(){ return NATIVE || ('serviceWorker' in navigator && 'PushManager' in window && 'Notification' in window); }
+async function setupPush(fromClick){
+  if (!CONFIG.relay || !pushSupported()) return drawPushState();
+  try {
+    if (NATIVE){
+      const PN = window.Capacitor.Plugins.PushNotifications; if (!PN) return;
+      let p = await PN.checkPermissions(); if (p.receive !== 'granted' && fromClick) p = await PN.requestPermissions();
+      if (p.receive !== 'granted') return drawPushState();
+      try { await PN.createChannel({id:'calls_voice', name:'Voice calls', importance:5, visibility:1, vibration:true, sound:'shelly_voice.wav'});
+            await PN.createChannel({id:'calls_video', name:'Video calls', importance:5, visibility:1, vibration:true, sound:'shelly_video.wav'});
+            await PN.createChannel({id:'messages', name:'Messages', importance:4, visibility:0, vibration:true, sound:'shelly_msg.wav'}); } catch(e){}
+      PN.addListener('registration', t=>{ myPush = {fcm:t.value}; me.push = myPush; save(); sharePush(); drawPushState(); });
+      PN.addListener('registrationError', ()=>toast('Could not register for notifications.'));
+      await PN.register();
+    } else {
+      if (Notification.permission !== 'granted'){ if (!fromClick) return drawPushState(); if (await Notification.requestPermission() !== 'granted') return drawPushState(); }
+      const reg = await navigator.serviceWorker.ready;
+      let sub = await reg.pushManager.getSubscription();
+      if (!sub){ const vapid = (await (await fetch(CONFIG.relay.replace(/\/+$/,'') + '/vapid')).text()).trim();
+        sub = await reg.pushManager.subscribe({userVisibleOnly:true, applicationServerKey:SC.unb64(vapid)}); }
+      const j = sub.toJSON(); myPush = {web:{endpoint:j.endpoint, keys:{p256dh:j.keys.p256dh, auth:j.keys.auth}}}; me.push = myPush; save(); sharePush();
+    }
+  } catch(e){ if (fromClick) toast('Notifications could not be turned on here.'); }
+  drawPushState();
+}
+function sharePush(){ Object.keys(contacts).forEach(id=>sendSealed(id, {t:'push', p:myPush})); }
+function drawPushState(){
+  const on = !!myPush, can = !!CONFIG.relay && pushSupported();
+  const ios = /iPhone|iPad/.test(navigator.userAgent) && !window.navigator.standalone && !NATIVE;
+  $('#n-push').hidden = on || !can;
+  if (ios && !on) { $('#n-push').hidden = false; $('#n-push-t').textContent = 'On iPhone: tap Share → Add to Home Screen, open Shelly from there, then turn on notifications.'; }
+  $('#st-push').textContent = !CONFIG.relay ? 'Notifications need the Shelly relay to be set up (config.json).' :
+    !pushSupported() ? 'This browser cannot receive notifications. On iPhone, add Shelly to your Home Screen first.' :
+    on ? 'On - Shelly can ring you and show "New message" while it is closed. Message text is never sent in a notification.' : 'Off';
+  $('#st-push-go').hidden = on || !can;
+}
+
+/* ---------- invites: QR code, link or 256-bit passcode ---------- */
+const INV_RE = /(?:#join=|SH1\.)(shelly-[a-z0-9]+)\.([A-Za-z0-9_-]+)\.([A-Za-z0-9_-]{43})\.([^\s]*)/;
+function siteBase(){ return NATIVE ? (CONFIG.site || 'https://bajanbob.github.io/Shelly/') : location.href.split('#')[0]; }
 function makeInvite(){
   const invId = SC.b64(SC.rand(9)), K = SC.b64(SC.rand(32));
-  invites[invId] = {K, created:Date.now()}; saveInvites();
-  const link = inviteLink(invites[invId], invId);
-  $('#inv-out').hidden = false; $('#inv-link').textContent = link; qrDraw($('#inv-qr'), link, 5); drawInvites();
+  invites[invId] = {K, created:Date.now()}; save();
+  const tail = `${me.id}.${invId}.${K}.${encodeURIComponent(me.name)}`;
+  const link = `${siteBase()}#join=${tail}`, code = `SH1.${tail}`;
+  $('#inv-out').hidden = false; $('#inv-out').dataset.link = link; $('#inv-code').textContent = code; qrDraw($('#inv-qr'), link, 5); drawInvites();
 }
 function joinFrom(text){
-  const m = String(text).match(/#join=(shelly-[a-z0-9]+)\.([A-Za-z0-9_-]+)\.([A-Za-z0-9_-]{43})\.([^\s]*)/);
-  if (!m) { toast('That is not a Shelly invite link.'); return false; }
+  const m = String(text).match(INV_RE);
+  if (!m) { toast('That is not a Shelly invite.'); return false; }
   const [, id, invId, K, nm] = m;
-  if (me && id === me.id){ toast('That is your own invite - send it to someone else.'); return false; }
-  contacts[id] = Object.assign(contacts[id]||{}, {name:decodeURIComponent(nm||'Contact').slice(0,30), K, invite:invId, bound:false, added:Date.now(), blocked:false});
-  saveContacts(); toast(`${contacts[id].name} added - connecting securely`); connect(id); drawAll(); return true;
+  if (me && id === me.id){ toast('That is your own invite - give it to someone else.'); return false; }
+  let name = 'Contact'; try { name = decodeURIComponent(nm||'Contact'); } catch(e){}
+  contacts[id] = Object.assign(contacts[id]||{}, {name:name.slice(0,30), K, invite:invId, bound:false, added:Date.now(), blocked:false});
+  save(); toast(`${contacts[id].name} added - connecting securely`); connect(id); drawAll(); return true;
 }
 function drawInvites(){
   const ks = Object.keys(invites);
   $('#inv-list').innerHTML = ks.length ? ks.map(k=>`<div class="row" style="align-items:center;justify-content:space-between"><span>Created ${new Date(invites[k].created).toLocaleString()}</span><button class="btn" data-revoke="${esc(k)}">Cancel invite</button></div>`).join('') : 'None';
-  document.querySelectorAll('[data-revoke]').forEach(b=>b.onclick=()=>{ delete invites[b.dataset.revoke]; saveInvites(); drawInvites(); toast('Invite cancelled - that link no longer works'); });
+  $$('[data-revoke]').forEach(b=>b.onclick=()=>{ delete invites[b.dataset.revoke]; save(); drawInvites(); toast('Invite cancelled - it no longer works'); });
 }
+let scanStream = null, scanOn = false;
+async function startScan(){
+  try { scanStream = await navigator.mediaDevices.getUserMedia({video:{facingMode:'environment'}}); }
+  catch(e){ return toast('Allow the camera to scan an invite.'); }
+  $('#scan').hidden = false; const v = $('#scan-v'); v.srcObject = scanStream; scanOn = true;
+  let detect = null;
+  if ('BarcodeDetector' in window){ try { const bd = new BarcodeDetector({formats:['qr_code']}); detect = async ()=>{ const r = await bd.detect(v); return r[0] && r[0].rawValue; }; } catch(e){} }
+  if (!detect){
+    if (!window.jsQR) await new Promise(res=>{ const s=document.createElement('script'); s.src='https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js'; s.onload=res; s.onerror=res; document.head.appendChild(s); });
+    if (!window.jsQR){ stopScan(); return toast('The scanner could not load - paste the passcode instead.'); }
+    const cv = document.createElement('canvas'), g = cv.getContext('2d', {willReadFrequently:true});
+    detect = async ()=>{ if (!v.videoWidth) return null; cv.width = Math.min(800, v.videoWidth); cv.height = Math.round(cv.width * v.videoHeight / v.videoWidth);
+      g.drawImage(v, 0, 0, cv.width, cv.height); const r = window.jsQR(g.getImageData(0,0,cv.width,cv.height).data, cv.width, cv.height); return r && r.data; };
+  }
+  const loop = async ()=>{ if (!scanOn) return; let t = null; try { t = await detect(); } catch(e){}
+    if (t && INV_RE.test(t)){ stopScan(); if (joinFrom(t)) $('#t-people').click(); return; }
+    if (t) $('#scan-st').textContent = 'That QR code is not a Shelly invite.';
+    setTimeout(loop, 250); };
+  loop();
+}
+function stopScan(){ scanOn = false; $('#scan').hidden = true; if (scanStream) scanStream.getTracks().forEach(t=>t.stop()); scanStream = null; }
 
 /* ---------- drawing ---------- */
 function drawAll(){ drawContacts(); drawChat(); }
 function drawContacts(){
-  const ids = Object.keys(contacts).filter(id=>!contacts[id].blocked)
-    .sort((a,b)=>((msgsOf(b).slice(-1)[0]||{}).ts||contacts[b].added) - ((msgsOf(a).slice(-1)[0]||{}).ts||contacts[a].added));
+  const lastTs = id => ((msgsOf(id).slice(-1)[0]||{}).ts || contacts[id].added);
+  const ids = Object.keys(contacts).filter(id=>!contacts[id].blocked).sort((a,b)=>lastTs(b) - lastTs(a));
   $('#contacts').innerHTML = ids.length ? ids.map(id=>{
     const c = contacts[id], s = sessions[id]||{}, last = msgsOf(id).filter(m=>!m.sys).slice(-1)[0];
-    const st = s.ready ? 'on' : (c.bound ? '' : 'wait');
-    return `<div class="contact"><div class="av">${esc(initials(c.name))}<span class="dot ${st==='on'?'on':st==='wait'?'wait':''}"></span></div>
+    return `<div class="contact"><div class="av">${esc(initials(c.name))}<span class="dot ${s.ready?'on':(c.bound?'':'wait')}"></span></div>
       <button class="who" data-open="${esc(id)}"><b>${esc(c.name)} ${c.unread ? `<span class="unread">${c.unread}</span>` : ''}</b>
-      <span>${last ? esc((last.me?'You: ':'')+last.text) : (c.bound ? (s.ready?'Online - say hello':'Offline') : 'Waiting for them to open Shelly')}</span></button>
+      <span>${last ? esc((last.me?'You: ':'')+last.text) : (c.bound ? (s.ready?'Online - say hello':(c.push?'Offline - a call will ring their phone':'Offline')) : 'Waiting for them to open Shelly')}</span></button>
       <button class="icon-btn" data-call="${esc(id)}" aria-label="Voice call ${esc(c.name)}"><svg viewBox="0 0 24 24"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8 9.8a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.7 2z"/></svg></button>
       <button class="icon-btn acc" data-vcall="${esc(id)}" aria-label="Video call ${esc(c.name)}"><svg viewBox="0 0 24 24"><path d="M23 7l-7 5 7 5V7z"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg></button></div>`;
-  }).join('') : `<div class="empty">Nobody to lime with yet.<br>Tap <b>Invite someone</b> to add your first person.</div>`;
-  document.querySelectorAll('[data-open]').forEach(b=>b.onclick=()=>openChat(b.dataset.open));
-  document.querySelectorAll('[data-call]').forEach(b=>b.onclick=()=>startCall(b.dataset.call, false));
-  document.querySelectorAll('[data-vcall]').forEach(b=>b.onclick=()=>startCall(b.dataset.vcall, true));
+  }).join('') : `<div class="empty">Nobody to lime with yet.<br>Tap <b>Invite or join</b> to add your first person.</div>`;
+  $$('[data-open]').forEach(b=>b.onclick=()=>openChat(b.dataset.open));
+  $$('[data-call]').forEach(b=>b.onclick=()=>startCall(b.dataset.call, false));
+  $$('[data-vcall]').forEach(b=>b.onclick=()=>startCall(b.dataset.vcall, true));
 }
-function openChat(id){ cur = id; contacts[id].unread = 0; saveContacts(); show('#s-chat'); drawChat(); drawContacts(); setTimeout(()=>$('#c-text').focus(), 50); }
+function openChat(id){ cur = id; contacts[id].unread = 0; save(); show('#s-chat'); drawChat(); drawQuick(); drawContacts(); setTimeout(()=>$('#c-text').focus(), 50); }
 function drawChat(){
   if (!cur || !contacts[cur]) return;
   const c = contacts[cur], s = sessions[cur]||{};
   $('#c-name').textContent = c.name;
   $('#c-dot').className = 'dot' + (s.ready ? ' on' : '');
-  $('#c-st').textContent = s.ready ? 'Online · end-to-end encrypted' : (c.bound ? 'Offline - messages send when they open Shelly' : 'Waiting for them to open Shelly');
+  $('#c-st').textContent = s.ready ? 'Online · end-to-end encrypted' : (c.bound ? (c.push ? 'Offline - they get a notification' : 'Offline - messages send when you are both online') : 'Waiting for them to open Shelly');
   const m = msgsOf(cur), box = $('#c-msgs'), atEnd = box.scrollHeight - box.scrollTop - box.clientHeight < 60;
-  box.innerHTML = `<div class="sys"><span class="badge"><svg viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>AES-256-GCM end-to-end · keys only on your two devices</span></div>` +
-    m.map(x=> x.sys ? `<div class="sys">${esc(x.text)}</div>` :
-      `<div class="msg ${x.me?'me':''}">${esc(x.text)}<small>${fmtT(x.ts)}${x.me ? (x.state==='delivered'?' · ✓✓':x.state==='waiting'?' · waiting':' · ✓') : ''}</small></div>`).join('');
+  box.innerHTML = `<div class="sys"><span class="badge"><svg viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>AES-256 end-to-end · messages delete after 6 hours</span></div>` +
+    m.map(x=> x.sys ? `<div class="sys">${esc(x.text)} · ${fmtT(x.ts)}</div>` :
+      `<div class="msg ${x.me?'me':''}">${esc(x.text)}<small>${fmtT(x.ts)}${x.me ? (x.state==='delivered'?' · ✓✓':x.state==='waiting'?' · waiting':' · ✓') : ''} · ${left(x.ts)}</small></div>`).join('');
   if (atEnd) box.scrollTop = box.scrollHeight;
 }
+function drawQuick(){
+  $('#c-quick').innerHTML = (prefs.quick||[]).map((q,i)=>`<button type="button" data-q="${i}">${esc(q)}</button>`).join('');
+  $('#c-quick').hidden = !(prefs.quick||[]).length;
+  $$('#c-quick [data-q]').forEach(b=>b.onclick=()=>sendText(prefs.quick[+b.dataset.q]));
+}
+async function sendText(text){
+  text = String(text||'').trim(); if (!text || !cur) return;
+  const id = cur, msg = {id:SC.b64(SC.rand(9)), me:true, text:text.slice(0,4000), ts:Date.now(), state:'waiting'};
+  const m = msgsOf(id); m.push(msg); setMsgs(id, m); drawChat();
+  if (await sendSealed(id, {t:'msg', id:msg.id, text:msg.text, ts:msg.ts})){ const x=msgsOf(id).find(x=>x.id===msg.id); if (x && x.state==='waiting'){ x.state='sent'; save(); drawChat(); } }
+  else pushTo(id, 'msg');
+}
 
-/* ---------- calls (media frames AES-256-GCM encrypted end to end) ---------- */
+/* ---------- calls (every audio/video frame AES-256-GCM encrypted end to end) ---------- */
 async function getMedia(video){
-  return navigator.mediaDevices.getUserMedia({audio:{echoCancellation:true, noiseSuppression:true}, video: video ? {facingMode: call && call.facing || 'user', width:{ideal:1280}, height:{ideal:720}} : false});
+  return navigator.mediaDevices.getUserMedia({audio:{echoCancellation:true, noiseSuppression:true}, video: video ? {facingMode:'user', width:{ideal:1280}, height:{ideal:720}} : false});
 }
 function callUI(id, video, state){
   const c = contacts[id];
   $('#s-call').hidden = false; $('#call-name').textContent = c ? c.name : 'Call'; $('#call-av').textContent = initials(c && c.name);
   $('#call-st').textContent = state; $('#call-voice').hidden = !!video; $('#v-local').hidden = !video; $('#k-cam').hidden = !video; $('#k-flip').hidden = !video;
+  $('#call-safety').hidden = true;
   const enc = $('#call-enc'); enc.className = 'badge' + (E2EE.mode==='none' ? ' weak' : '');
   enc.lastElementChild.textContent = E2EE.mode==='none' ? 'Encrypted (browser standard) - update your browser for AES-256 end-to-end' : 'AES-256-GCM end-to-end';
 }
 async function startCall(id, video){
-  const s = sessions[id];
-  if (!s || !s.ready){ toast(`${contacts[id] ? contacts[id].name : 'They'} is offline - they need Shelly open.`); return; }
+  const c = contacts[id]; if (!c) return;
   if (call) return toast('You are already on a call.');
+  const s = sessions[id];
+  if ((!s || !s.ready) && !(c.push && CONFIG.relay)) return toast(`${c.name} is offline and can't be rung - they need Shelly open, or notifications turned on.`);
   let stream; try { stream = await getMedia(video); } catch(e){ return toast(video ? 'Allow camera and microphone to make a video call.' : 'Allow the microphone to make a call.'); }
   call = {id, video, stream, facing:'user'};
-  callUI(id, video, 'Calling…'); $('#v-local').srcObject = video ? stream : null;
-  const mc = peer.call(id, stream, {metadata:{video}});
-  setupMedia(mc);
+  callUI(id, video, s && s.ready ? 'Calling…' : `Ringing ${c.name}'s phone…`); $('#v-local').srcObject = video ? stream : null;
+  call.go = ()=>{ if (!call || call.mc || call.id !== id) return; call.waitFor = null; clearInterval(call.poll); clearTimeout(call.giveUp);
+    $('#call-st').textContent = 'Calling…'; setupMedia(peer.call(id, stream, {metadata:{video}})); };
+  if (s && s.ready) return call.go();
+  call.waitFor = id; pushTo(id, video ? 'video' : 'voice');                // wake their phone, then keep trying to reach it
+  call.poll = setInterval(()=>connect(id), 2500);
+  call.giveUp = setTimeout(()=>{ if (call && !call.mc){ toast(`${c.name} didn't answer.`); endCall(false, 'No answer'); } }, 50000);
 }
 function incomingCall(mc){
   const id = mc.peer, s = sessions[id];
@@ -612,7 +898,7 @@ function incomingCall(mc){
   ringing = mc; const c = contacts[id], v = !!(mc.metadata && mc.metadata.video);
   $('#ring').hidden = false; $('#ring-name').textContent = c.name; $('#ring-av').textContent = initials(c.name);
   $('#ring-kind').textContent = v ? 'Video call · end-to-end encrypted' : 'Voice call · end-to-end encrypted';
-  ringTone(true); notify(c.name, v ? 'Video call' : 'Voice call');
+  ringTone(true); notifyLocal(c.name, v ? 'Video call' : 'Voice call');
   mc.on('close', ()=>{ if (ringing === mc){ ringing=null; $('#ring').hidden=true; ringTone(false); sysMsg(id, 'Missed call'); } });
 }
 async function answer(video){
@@ -623,61 +909,75 @@ async function answer(video){
   mc.answer(stream); setupMedia(mc);
 }
 function setupMedia(mc){
-  call.mc = mc; const s = sessions[call.id], pc = mc.peerConnection;
-  if (pc){ call.worker = E2EE.attach(pc, s.keys); EM.preferAndHook(pc); }
-  else { const iv = setInterval(()=>{ if (mc.peerConnection){ clearInterval(iv); call.worker = E2EE.attach(mc.peerConnection, s.keys); EM.preferAndHook(mc.peerConnection); } }, 20); }
+  call.mc = mc; const s = sessions[call.id];
+  const hook = pc => { call.worker = E2EE.attach(pc, s.keys); E2EE.preferVP8(pc); setTimeout(()=>{ if (call && call.worker && call.worker.hookSenders) call.worker.hookSenders(); }, 0); };
+  if (mc.peerConnection) hook(mc.peerConnection); else { const iv = setInterval(()=>{ if (mc.peerConnection){ clearInterval(iv); hook(mc.peerConnection); } }, 20); }
   $('#call-safety').hidden = false; $('#call-safety').textContent = 'Safety code ' + s.keys.safety;
   mc.on('stream', rs=>{
-    $('#v-remote').srcObject = rs; $('#call-st').textContent = 'Connected'; call.t0 = Date.now();
+    $('#v-remote').srcObject = rs; call.t0 = Date.now();
     const hasV = rs.getVideoTracks().length > 0; $('#call-voice').hidden = hasV; $('#v-remote').hidden = !hasV;
     clearInterval(call.tick); call.tick = setInterval(()=>{ const t=Math.floor((Date.now()-call.t0)/1000); $('#call-st').textContent = `${Math.floor(t/60)}:${String(t%60).padStart(2,'0')}`; }, 1000);
+    $('#call-st').textContent = '0:00';
   });
   mc.on('close', ()=>endCall(false));
   mc.on('error', ()=>endCall(false));
 }
-const EM = { preferAndHook(pc){ E2EE.preferVP8(pc); setTimeout(()=>{ if (call && call.worker && call.worker.hookSenders) call.worker.hookSenders(); }, 0); } };
-function endCall(tell=true){
+function endCall(tell=true, why){
   if (!call) return; const c = call; call = null;
   if (tell) sendSealed(c.id, {t:'bye'});
-  clearInterval(c.tick); try { c.mc && c.mc.close(); } catch(e){}
+  clearInterval(c.tick); clearInterval(c.poll); clearTimeout(c.giveUp); try { c.mc && c.mc.close(); } catch(e){}
   c.stream && c.stream.getTracks().forEach(t=>t.stop()); c.worker && c.worker.terminate();
   $('#s-call').hidden = true; $('#v-remote').srcObject = null; $('#v-local').srcObject = null;
   const dur = c.t0 ? Math.round((Date.now()-c.t0)/1000) : 0;
-  sysMsg(c.id, `${c.video?'Video':'Voice'} call${dur ? ` · ${Math.floor(dur/60)}:${String(dur%60).padStart(2,'0')}` : ' · not connected'}`);
+  sysMsg(c.id, `${c.video?'Video':'Voice'} call${dur ? ` · ${Math.floor(dur/60)}:${String(dur%60).padStart(2,'0')}` : ' · ' + (why || 'not connected')}`);
 }
-let ringCtx = null, ringIv = null;
-function ringTone(on){
-  clearInterval(ringIv); if (!on) return;
-  try { ringCtx = ringCtx || new (window.AudioContext || window.webkitAudioContext)();
-    // steel pan: a bright struck tone (fundamental + octave + a slightly sharp twelfth) playing a little calypso phrase
-    const pan = (hz, at, len=.9) => { [[1,.5],[2,.28],[3.02,.12]].forEach(([m,v])=>{ const o=ringCtx.createOscillator(), g=ringCtx.createGain();
-      o.type='sine'; o.frequency.value=hz*m; g.gain.setValueAtTime(.0001, at); g.gain.exponentialRampToValueAtTime(v*.35, at+.012);
-      g.gain.exponentialRampToValueAtTime(.0001, at+len/m); o.connect(g).connect(ringCtx.destination); o.start(at); o.stop(at+len); }); };
-    const phrase = ()=>{ const t=ringCtx.currentTime+.05, N={C5:523.25,D5:587.33,E5:659.25,G5:783.99,A5:880,C6:1046.5};
-      [['C5',0],['E5',.18],['G5',.36],['A5',.63],['G5',.81],['E5',.99],['G5',1.26],['C6',1.44]].forEach(([n,d])=>pan(N[n], t+d)); };
-    phrase(); ringIv = setInterval(phrase, 2600); } catch(e){}
+/* ---------- three steel-pan tones: message, voice call, video call ---------- */
+const TONES = {
+  // note list: [name, beat time (s)]; pan = struck steel-pan tone, drum = low conga thump
+  msg:   {every:0,   notes:[['G5',0],['C6',.12]]},
+  voice: {every:2.6, notes:[['C5',0],['E5',.18],['G5',.36],['A5',.63],['G5',.81],['E5',.99],['G5',1.26],['C6',1.44]]},
+  video: {every:2.2, notes:[['A5',0],['A5',.15],['C6',.3],['A5',.6],['E6',.75],['D6',.9],['C6',1.2]], drum:[0,.3,.6,.9,1.05,1.2]},
+};
+const NOTE = {C5:523.25,E5:659.25,G5:783.99,A5:880,C6:1046.5,D6:1174.66,E6:1318.51};
+let toneCtx = null, toneIv = null;
+function audioCtx(){ toneCtx = toneCtx || new (window.AudioContext || window.webkitAudioContext)(); if (toneCtx.state === 'suspended') toneCtx.resume(); return toneCtx; }
+function panNote(ctx, hz, at, vol=1, len=.9){
+  [[1,.5],[2,.28],[3.02,.12]].forEach(([m,v])=>{ const o=ctx.createOscillator(), g=ctx.createGain();
+    o.type='sine'; o.frequency.value=hz*m; g.gain.setValueAtTime(.0001, at); g.gain.exponentialRampToValueAtTime(v*.35*vol, at+.012);
+    g.gain.exponentialRampToValueAtTime(.0001, at+len/m); o.connect(g).connect(ctx.destination); o.start(at); o.stop(at+len); });
 }
+function drum(ctx, at){ const o=ctx.createOscillator(), g=ctx.createGain(); o.type='sine';
+  o.frequency.setValueAtTime(190, at); o.frequency.exponentialRampToValueAtTime(70, at+.18);
+  g.gain.setValueAtTime(.0001, at); g.gain.exponentialRampToValueAtTime(.45, at+.008); g.gain.exponentialRampToValueAtTime(.0001, at+.25);
+  o.connect(g).connect(ctx.destination); o.start(at); o.stop(at+.3); }
+function playTone(kind, loop){
+  clearInterval(toneIv); toneIv = null; if (!kind) return;
+  try { const ctx = audioCtx(), T = TONES[kind];
+    const once = ()=>{ const t = ctx.currentTime + .05; T.notes.forEach(([n,d])=>panNote(ctx, NOTE[n], t+d, kind==='msg'?.8:1, kind==='msg'?.6:.9)); (T.drum||[]).forEach(d=>drum(ctx, t+d)); };
+    once(); if (loop && T.every) toneIv = setInterval(once, T.every*1000);
+    if (navigator.vibrate) navigator.vibrate(kind==='msg' ? [60,60,60] : [400,200,400]);
+  } catch(e){}
+}
+const ringTone = on => playTone(on ? (ringing && ringing.metadata && ringing.metadata.video ? 'video' : 'voice') : null, true);
 
 /* ---------- controls ---------- */
 $('#w-go').onclick = ()=>{ const n=$('#w-name').value.trim(); if (!n) return toast('Enter your name first.');
-  me = {id:newId(), name:n.slice(0,30)}; LS.set('me', me); boot(); };
+  me = V.me = {id:newId(), name:n.slice(0,30)}; save(); boot(); };
 $('#t-people').onclick = ()=>{ $('#t-people').setAttribute('aria-selected','true'); $('#t-invite').setAttribute('aria-selected','false'); $('#p-people').hidden=false; $('#p-invite').hidden=true; };
 $('#t-invite').onclick = ()=>{ $('#t-invite').setAttribute('aria-selected','true'); $('#t-people').setAttribute('aria-selected','false'); $('#p-people').hidden=true; $('#p-invite').hidden=false; drawInvites(); };
 $('#inv-make').onclick = makeInvite;
-$('#inv-copy').onclick = async ()=>{ const t=$('#inv-link').textContent; try { await navigator.clipboard.writeText(t); toast('Invite link copied'); } catch(e){ const r=document.createRange(); r.selectNodeContents($('#inv-link')); getSelection().removeAllRanges(); getSelection().addRange(r); toast('Link selected - copy it'); } };
-$('#inv-share').onclick = async ()=>{ const t=$('#inv-link').textContent; if (navigator.share){ try { await navigator.share({title:'Shelly invite', text:`${me.name} invited you to Shelly (private calls and chat):`, url:t}); } catch(e){} } else $('#inv-copy').click(); };
+async function copyText(t, el, ok){ try { await navigator.clipboard.writeText(t); toast(ok); } catch(e){ const r=document.createRange(); r.selectNodeContents(el); getSelection().removeAllRanges(); getSelection().addRange(r); toast('Selected - copy it'); } }
+$('#inv-copy').onclick = ()=>copyText($('#inv-out').dataset.link, $('#inv-code'), 'Invite link copied');
+$('#inv-copy-code').onclick = ()=>copyText($('#inv-code').textContent, $('#inv-code'), 'Passcode copied');
+$('#inv-share').onclick = async ()=>{ const t=$('#inv-out').dataset.link; if (navigator.share){ try { await navigator.share({title:'Shelly invite', text:`${me.name} invited you to Shelly (private calls and chat):`, url:t}); } catch(e){} } else $('#inv-copy').click(); };
 $('#inv-join').onclick = ()=>{ if (joinFrom($('#inv-paste').value)) { $('#inv-paste').value=''; $('#t-people').click(); } };
+$('#scan-go').onclick = startScan; $('#scan-x').onclick = stopScan;
+$('#n-push-go').onclick = ()=>setupPush(true); $('#st-push-go').onclick = ()=>setupPush(true);
 $('#c-back').onclick = ()=>{ cur=null; show('#s-home'); drawContacts(); };
 $('#c-voice').onclick = ()=>startCall(cur, false);
 $('#c-video').onclick = ()=>startCall(cur, true);
-$('#c-form').addEventListener('submit', async e=>{
-  e.preventDefault(); const text=$('#c-text').value.trim(); if (!text || !cur) return;
-  const id = cur, msg = {id:SC.b64(SC.rand(9)), me:true, text, ts:Date.now(), state:'waiting'};
-  const m = msgsOf(id); m.push(msg); setMsgs(id, m); $('#c-text').value=''; drawChat();
-  if (await sendSealed(id, {t:'msg', id:msg.id, text, ts:msg.ts})){ const m2=msgsOf(id), x=m2.find(x=>x.id===msg.id); if (x && x.state==='waiting'){ x.state='sent'; setMsgs(id, m2); drawChat(); } }
-  if ('Notification' in window && Notification.permission==='default') try { Notification.requestPermission(); } catch(e){}
-});
-$('#k-end').onclick = ()=>endCall(true);
+$('#c-form').addEventListener('submit', e=>{ e.preventDefault(); const t=$('#c-text').value; $('#c-text').value=''; sendText(t); });
+$('#k-end').onclick = ()=>endCall(true, 'cancelled');
 $('#k-mute').onclick = ()=>{ if (!call) return; const t=call.stream.getAudioTracks()[0]; t.enabled=!t.enabled; $('#k-mute').classList.toggle('off', !t.enabled); $('#k-mute').setAttribute('aria-pressed', String(!t.enabled)); };
 $('#k-cam').onclick = ()=>{ if (!call) return; const t=call.stream.getVideoTracks()[0]; if (!t) return; t.enabled=!t.enabled; $('#k-cam').classList.toggle('off', !t.enabled); $('#k-cam').setAttribute('aria-pressed', String(!t.enabled)); };
 $('#k-flip').onclick = async ()=>{
@@ -692,27 +992,39 @@ $('#r-no').onclick = ()=>{ const mc=ringing; ringing=null; $('#ring').hidden=tru
 $('#r-voice').onclick = ()=>answer(false);
 $('#r-video').onclick = ()=>answer(true);
 $('#h-settings').onclick = ()=>{ $('#st-name').value=me.name; $('#st-turn').value=settings.turn||''; $('#st-tuser').value=settings.tuser||''; $('#st-tpass').value=settings.tpass||'';
-  $('#st-id').textContent = me.id;
-  $('#st-crypto').innerHTML = `Chat: <b>AES-256-GCM</b> (Web Crypto)<br>Keys: fresh <b>ECDH P-256</b> per session + 256-bit invite secret, <b>HKDF-SHA-256</b><br>Calls: ${E2EE.mode==='none' ? '<b>browser standard DTLS-SRTP</b> - this browser cannot add AES-256 frame encryption; update it' : '<b>AES-256-GCM</b> on every audio and video frame, inside the browser\'s DTLS-SRTP'}`;
-  show('#s-settings'); };
+  $('#st-quick').value = (prefs.quick||[]).join('\n'); $('#st-id').textContent = me.id;
+  $('#st-crypto').innerHTML = `Messages: <b>AES-256-GCM</b> end to end, deleted from this device after <b>6 hours</b>.<br>Stored on this device: sealed with <b>AES-256-GCM</b> using a key the browser keeps locked${Vault.persistent?'':' (this browser blocks storage, so nothing is kept after closing)'}.<br>Keys: fresh <b>ECDH P-256</b> for every session plus each contact's 256-bit invite secret (<b>HKDF-SHA-256</b>).<br>Calls: ${E2EE.mode==='none' ? '<b>browser standard DTLS-SRTP</b> - update this browser for AES-256 frame encryption' : '<b>AES-256-GCM</b> on every audio and video frame'}.<br>Chats can't be selected or copied. ${NATIVE ? 'Screenshots and screen recording are blocked in this app.' : 'Screenshots can only be blocked in the Android app.'}`;
+  drawLookSettings(); drawPushState(); show('#s-settings'); };
+$$('[data-tone]').forEach(b=>b.onclick=()=>playTone(b.dataset.tone, false));
 $('#st-back').onclick = ()=>{ show('#s-home'); drawContacts(); };
-$('#st-save-name').onclick = ()=>{ const n=$('#st-name').value.trim(); if (!n) return; me.name=n.slice(0,30); LS.set('me', me); toast('Name saved - contacts see it next time you connect'); };
-$('#st-save-turn').onclick = ()=>{ settings = {turn:$('#st-turn').value.trim(), tuser:$('#st-tuser').value.trim(), tpass:$('#st-tpass').value}; LS.set('settings', settings); toast('Relay saved - restart Shelly to use it'); };
+$('#st-save-name').onclick = ()=>{ const n=$('#st-name').value.trim(); if (!n) return; me.name=n.slice(0,30); save(); toast('Name saved - contacts see it next time you connect'); };
+$('#st-save-quick').onclick = ()=>{ prefs.quick = $('#st-quick').value.split('\n').map(x=>x.trim()).filter(Boolean).slice(0,8).map(x=>x.slice(0,60)); save(); toast('Quick replies saved'); };
+$('#st-save-turn').onclick = ()=>{ Object.assign(settings, {turn:$('#st-turn').value.trim(), tuser:$('#st-tuser').value.trim(), tpass:$('#st-tpass').value}); save(); toast('Relay saved - reopen Shelly to use it'); };
 let pending = null;
 function confirmStep(text, fn){ pending = fn; $('#st-confirm-t').textContent = text; $('#st-confirm').hidden = false; }
-$('#st-clear').onclick = ()=>confirmStep('Delete every message on this device?', ()=>{ Object.keys(contacts).forEach(id=>LS.del('msgs_'+id)); toast('Chat history deleted'); });
-$('#st-reset').onclick = ()=>confirmStep('Remove your identity, contacts and keys from this device?', ()=>{ try { Object.keys(localStorage).filter(k=>k.startsWith('shelly_')).forEach(k=>localStorage.removeItem(k)); } catch(e){} location.hash=''; location.reload(); });
+$('#st-clear').onclick = ()=>confirmStep('Delete every message and call record on this device?', ()=>{ V.msgs = {}; Object.values(contacts).forEach(c=>c.unread=0); save(); toast('Deleted'); });
+$('#st-reset').onclick = ()=>confirmStep('Remove your identity, contacts and keys from this device?', async ()=>{ await Vault.wipe(); location.hash=''; location.reload(); });
 $('#st-yes').onclick = ()=>{ $('#st-confirm').hidden = true; const f=pending; pending=null; f && f(); };
 $('#st-no').onclick = ()=>{ $('#st-confirm').hidden = true; pending = null; };
 window.addEventListener('hashchange', ()=>{ if (me && location.hash.startsWith('#join=')){ joinFrom(location.hash); history.replaceState(null, '', location.pathname + location.search); } });
+window.addEventListener('beforeunload', ()=>{ Vault.flush(); });
 
-function boot(){
-  show('#s-home'); drawContacts();
+async function boot(){
+  show('#s-home'); applyLook(); drawContacts(); purge();
   if (location.hash.startsWith('#join=')){ joinFrom(location.hash); history.replaceState(null, '', location.pathname + location.search); }
-  if (!window.isSecureContext) toast('Open Shelly from an https:// address - browsers block calls on plain pages.', 6000);
+  if (!window.isSecureContext && !NATIVE) toast('Open Shelly from an https:// address - browsers block calls on plain pages.', 6000);
+  myPush = me.push || null;
   startPeer();
+  drawPushState(); setupPush(false);
 }
-if (me) boot(); else { show('#s-welcome'); if (location.hash.startsWith('#join=')) $('#w-name').focus(); }
+(async function start(){
+  try { const r = await fetch('config.json', {cache:'no-store'}); if (r.ok) CONFIG = Object.assign(CONFIG, await r.json()); } catch(e){}
+  if (!NATIVE && 'serviceWorker' in navigator && window.isSecureContext) navigator.serviceWorker.register('sw.js').catch(()=>{});
+  V = await Vault.load(); me = V.me; contacts = V.contacts; invites = V.invites; settings = V.settings; prefs = V.prefs;
+  applyLook();
+  if (me) boot(); else { show('#s-welcome'); }
+})();
+
 </script>
 </body>
 </html>

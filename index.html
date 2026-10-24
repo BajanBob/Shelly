@@ -352,6 +352,52 @@ hr.hair{border:0;border-top:1px solid var(--line);margin:12px 0 4px;width:100%}
 .inapp-tx{display:flex;flex-direction:column;min-width:0}
 .inapp-tx b{font-size:14.5px}
 .inapp-tx span{font-size:13px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:60vw}
+/* ---- connection banner in a chat ---- */
+.connbar{display:flex;align-items:center;gap:10px;padding:9px 14px;font-size:13.5px;font-weight:600}
+.connbar.connecting{background:color-mix(in srgb,var(--sun,#e8a93c) 20%,transparent);color:#7a5600}
+.connbar.ready{background:color-mix(in srgb,var(--ok,#1f9d55) 16%,transparent);color:var(--ok,#1f9d55)}
+.connbar.stuck{background:color-mix(in srgb,var(--danger,#d4453f) 14%,transparent);color:var(--danger,#d4453f)}
+.connbar #c-conn-tx{flex:1;min-width:0}
+.connbar .btn{padding:6px 14px;font-size:13px;flex:none}
+.connspin{width:15px;height:15px;flex:none;border-radius:50%;border:2.5px solid currentColor;border-top-color:transparent;animation:cspin .8s linear infinite;display:none}
+.connbar.connecting .connspin{display:inline-block}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .connbar.connecting{color:var(--sun,#f2bd57)}}
+:root[data-theme="dark"] .connbar.connecting{color:var(--sun,#f2bd57)}
+@keyframes cspin{to{transform:rotate(360deg)}}
+@media (prefers-reduced-motion:reduce){.connspin{animation:none}}
+/* ===================== WhatsApp-style navigation ===================== */
+#s-home{display:flex;flex-direction:column;height:100%}
+.homebody{flex:1;overflow-y:auto;position:relative;padding-bottom:12px}
+#s-home{position:relative}
+.hpage{display:flex;flex-direction:column;gap:10px}
+.pgh{font-size:22px}
+/* bottom tab bar */
+.navbar{display:flex;background:var(--surface,#fff);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom,0px);flex:none}
+.navb{flex:1;border:0;background:transparent;color:var(--muted);font:inherit;font-weight:600;font-size:11px;padding:7px 2px 8px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:1px;transition:color .15s}
+.navb .ni{font-size:20px;line-height:1.35;filter:grayscale(.3) opacity(.85)}
+.navb.on{color:var(--accent,#0d7a74)}
+.navb.on .ni{filter:none}
+.navb:focus-visible{outline:2px solid var(--accent,#0d7a74);outline-offset:-2px;border-radius:8px}
+/* floating add button */
+.fab{position:fixed;right:18px;bottom:calc(66px + env(safe-area-inset-bottom,0px));width:54px;height:54px;border-radius:17px;border:0;
+  background:var(--sun,#e8a93c);color:#3a2600;font-size:30px;font-weight:700;line-height:1;cursor:pointer;
+  box-shadow:0 6px 18px rgba(0,0,0,.28);z-index:8;display:flex;align-items:center;justify-content:center}
+.fab:active{transform:scale(.94)}
+/* calls list rows */
+.callrow-item{display:flex;align-items:center;gap:11px;padding:10px 12px;border-radius:14px;background:var(--surface,#fff);border:1px solid var(--line)}
+.callrow-item .who2{flex:1;min-width:0}
+.callrow-item .who2 b{display:block;font-size:15px}
+.callrow-item .who2 span{font-size:12.5px;color:var(--muted)}
+.callrow-item .cbtn{width:40px;height:40px;border-radius:50%;border:1px solid var(--line);background:transparent;color:var(--accent,#0d7a74);display:flex;align-items:center;justify-content:center;cursor:pointer}
+.callrow-item .cbtn svg{width:19px;height:19px;fill:none;stroke:currentColor;stroke-width:1.9}
+.callrow-item .cbtn.vid{background:var(--accent,#0d7a74);color:#fff;border-color:transparent}
+/* clearer incoming-call ring */
+.ring-top{display:flex;flex-direction:column;align-items:center;gap:10px}
+.ring-tag{color:#bfe8e3;letter-spacing:.07em;text-transform:uppercase;font-size:12px;font-weight:700;margin:0 0 4px}
+.ring-actions{display:flex;justify-content:space-around;width:100%;max-width:340px;margin-top:14px}
+.ring-act{display:flex;flex-direction:column;align-items:center;gap:7px}
+.ring-act span{color:#eafcfa;font-size:13px;font-weight:600}
+.ring-act .round{width:64px;height:64px}
 
 <style>/* required styles */
 
@@ -1042,31 +1088,48 @@ svg.leaflet-image-layer.leaflet-interactive path {
       <button class="icon-btn" id="h-settings" aria-label="Settings" title="Settings"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg></button>
     </header>
     <div class="waves" aria-hidden="true"><svg viewBox="0 0 400 16" preserveAspectRatio="none"><path class="w2" d="M0 9 Q25 2 50 9 T100 9 T150 9 T200 9 T250 9 T300 9 T350 9 T400 9 V16 H0z"/><path class="w1" d="M0 12 Q25 6 50 12 T100 12 T150 12 T200 12 T250 12 T300 12 T350 12 T400 12 V16 H0z"/></svg></div>
-    <div class="body">
-      <div class="emg-banner" id="emg-banner" hidden><b id="emg-name"></b><span class="small" id="emg-sub"></span><button class="btn" id="emg-checkin">Check in</button></div>
-      <div class="notice" id="n-push" hidden><span id="n-push-t">Turn on notifications so Shelly can ring you when it's closed.</span><button class="btn sun" id="n-push-go">Turn on</button></div>
-      <div class="ultra-bar" id="u-bar" hidden>
-        <button class="sos-btn" id="u-sos" aria-label="SOS: hold for 2 seconds to alert your family"><span class="sos-ring" id="u-sos-ring"></span><b>SOS</b><small>hold 2 s</small></button>
-        <div class="ultra-side">
-          <span class="ultra-badge">SHELLY ULTRA</span>
-          <div class="row"><button class="btn" id="u-newgroup" title="Create a family group with its own keys">New family group</button><button class="btn live-btn" id="u-live">🔴 Go live to family</button><button class="btn" id="u-board">🟢 Family safe board</button></div>
-          <span class="small" id="u-modes"></span>
+    <div class="body homebody">
+      <!-- CHATS -->
+      <div class="hpage" id="pg-chats">
+        <div class="modepick" role="radiogroup" aria-label="Choose how you use Shelly">
+          <button class="modebtn" id="mode-solo" role="radio" aria-checked="true" title="One-to-one private chats, up to 4 people">👤 1-to-1</button>
+          <button class="modebtn" id="mode-fam" role="radio" aria-checked="false" title="Family mode: family circle up to 7, groups, SOS, safe board">👪 Family</button>
+        </div>
+        <p class="small modedesc" id="mode-desc"></p>
+        <div class="emg-banner" id="emg-banner" hidden><b id="emg-name"></b><span class="small" id="emg-sub"></span><button class="btn" id="emg-checkin">Check in</button></div>
+        <div class="notice" id="n-push" hidden><span id="n-push-t">Turn on notifications so Shelly can ring you when it's closed.</span><button class="btn sun" id="n-push-go">Turn on</button></div>
+        <div id="p-people" style="display:flex;flex-direction:column;gap:10px">
+          <div id="contacts" style="display:flex;flex-direction:column;gap:10px"></div>
+          <p class="small" id="keep-open">Chats and call records are destroyed after 3 hours. Contacts are erased 3 hours after they are added. Every night at 1 am Shelly wipes everything and starts fresh.</p>
         </div>
       </div>
-      <div class="modepick" role="radiogroup" aria-label="Choose how you use Shelly">
-        <button class="modebtn" id="mode-solo" role="radio" aria-checked="true" title="One-to-one private chats, up to 4 people">👤 1-to-1</button>
-        <button class="modebtn" id="mode-fam" role="radio" aria-checked="false" title="Family mode (Shelly Ultra): family circle up to 7, groups, SOS, safe board">👪 Family</button>
+
+      <!-- CALLS -->
+      <div class="hpage" id="pg-calls" hidden>
+        <h2 class="pgh">Calls</h2>
+        <p class="small">Tap a name to start a voice or video call.</p>
+        <div id="call-list" style="display:flex;flex-direction:column;gap:10px"></div>
       </div>
-      <p class="small modedesc" id="mode-desc"></p>
-      <div class="tabs" role="tablist">
-        <button role="tab" id="t-people" aria-selected="true">People</button>
-        <button role="tab" id="t-invite" aria-selected="false">Invite or join</button>
+
+      <!-- FAMILY -->
+      <div class="hpage" id="pg-family" hidden>
+        <div class="ultra-bar" id="u-bar" hidden>
+          <button class="sos-btn" id="u-sos" aria-label="SOS: hold for 2 seconds to alert your family"><span class="sos-ring" id="u-sos-ring"></span><b>SOS</b><small>hold 2 s</small></button>
+          <div class="ultra-side">
+            <span class="ultra-badge">SHELLY ULTRA</span>
+            <div class="row"><button class="btn" id="u-newgroup" title="Create a family group with its own keys">New family group</button><button class="btn live-btn" id="u-live">🔴 Go live to family</button><button class="btn" id="u-board">🟢 Family safe board</button></div>
+            <span class="small" id="u-modes"></span>
+          </div>
+        </div>
+        <div class="card" id="fam-note" hidden>
+          <h2>Family mode is off</h2>
+          <p class="small">Turn it on for your family circle (up to 7), family groups, SOS, live location and the safe board.</p>
+          <button class="btn pri" id="fam-on">Turn on Family mode</button>
+        </div>
       </div>
-      <div id="p-people" style="display:flex;flex-direction:column;gap:10px">
-        <div id="contacts" style="display:flex;flex-direction:column;gap:10px"></div>
-        <p class="small" id="keep-open">Chats and call records are destroyed after 3 hours. Contacts are erased 3 hours after they are added. Every night at 1 am Shelly wipes everything and starts fresh.</p>
-      </div>
-      <div id="p-invite" hidden style="display:flex;flex-direction:column;gap:12px">
+
+      <!-- INVITE (opened with the + button) -->
+      <div class="hpage" id="pg-invite" hidden>
         <div class="card">
           <h2>Invite someone</h2>
           <p class="small">Each invite works once and carries its own secret 256-bit key. Let them scan the QR code in person, or send the link or passcode privately.</p>
@@ -1079,7 +1142,7 @@ svg.leaflet-image-layer.leaflet-interactive path {
           </div>
           <div id="inv-out" hidden style="display:flex;flex-direction:column;gap:10px">
             <canvas class="qr" id="inv-qr" width="240" height="240" aria-label="Invite QR code"></canvas>
-            <p class="small" style="text-align:center">Scan with Shelly: <b>Invite or join → Scan a QR code</b></p>
+            <p class="small" style="text-align:center">Scan with Shelly: the <b>+</b> button → <b>Scan a QR code</b></p>
             <h2 style="font-size:16px">256-bit passcode</h2>
             <div class="code" id="inv-code"></div>
             <div class="row"><button class="btn" id="inv-copy-code">Copy passcode</button><button class="btn" id="inv-copy">Copy link</button><button class="btn" id="inv-share">Share link</button></div>
@@ -1102,7 +1165,15 @@ svg.leaflet-image-layer.leaflet-interactive path {
         </div>
         <div class="card"><h2>Open invites</h2><div id="inv-list" class="small">None</div></div>
       </div>
+
+      <button class="fab" id="fab-add" title="Add a contact (invite or join)" aria-label="Add a contact">+</button>
     </div>
+    <nav class="navbar" id="navbar" role="tablist" aria-label="Main">
+      <button class="navb on" id="nav-chats" role="tab" title="Your chats"><span class="ni">💬</span>Chats</button>
+      <button class="navb" id="nav-calls" role="tab" title="Make a call"><span class="ni">📞</span>Calls</button>
+      <button class="navb" id="nav-family" role="tab" title="Family features"><span class="ni">👪</span>Family</button>
+      <button class="navb" id="nav-settings" role="tab" title="Settings"><span class="ni">⚙️</span>Settings</button>
+    </nav>
   </section>
 
   <!-- conversation -->
@@ -1119,6 +1190,7 @@ svg.leaflet-image-layer.leaflet-interactive path {
       <button type="button" class="chip" id="c-loc">📍 Share location</button>
       <span class="small" id="c-members"></span>
     </div>
+    <div class="connbar" id="c-conn" hidden><span class="connspin" id="c-conn-spin"></span><span id="c-conn-tx"></span><button type="button" class="btn" id="c-recon" hidden>Reconnect</button></div>
     <div class="msgs" id="c-msgs" aria-live="polite"></div>
     <div class="replybar" id="c-reply" hidden><span id="c-reply-t"></span><button type="button" class="btn" id="c-reply-x" aria-label="Cancel reply">✕</button></div>
     <div class="quick" id="c-quick" role="group" aria-label="Quick replies"></div>
@@ -1237,12 +1309,15 @@ svg.leaflet-image-layer.leaflet-interactive path {
 
   <!-- incoming call -->
   <div class="ring" id="ring" hidden role="dialog" aria-labelledby="ring-name">
-    <div class="av" id="ring-av">?</div>
-    <div><h1 id="ring-name" style="color:#fff">Name</h1><p id="ring-kind" style="margin:6px 0 0;color:#a9cfc7">is calling</p></div>
-    <div class="row" style="justify-content:center;gap:18px">
-      <button class="round end" id="r-no" aria-label="Decline"><svg viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
-      <button class="round go" id="r-voice" aria-label="Answer with voice"><svg viewBox="0 0 24 24"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8 9.8a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.7 2z"/></svg></button>
-      <button class="round go" id="r-video" aria-label="Answer with video"><svg viewBox="0 0 24 24"><path d="M23 7l-7 5 7 5V7z"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg></button>
+    <div class="ring-top">
+      <p class="ring-tag">Incoming Shelly call</p>
+      <div class="av" id="ring-av">?</div>
+      <div><h1 id="ring-name" style="color:#fff">Name</h1><p id="ring-kind" style="margin:6px 0 0;color:#a9cfc7">is calling</p></div>
+    </div>
+    <div class="ring-actions">
+      <div class="ring-act"><button class="round end" id="r-no" aria-label="Decline" title="Decline"><svg viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg></button><span>Decline</span></div>
+      <div class="ring-act"><button class="round go" id="r-voice" aria-label="Answer with voice" title="Answer (voice)"><svg viewBox="0 0 24 24"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8 9.8a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.7 2z"/></svg></button><span>Answer</span></div>
+      <div class="ring-act" id="r-video-wrap"><button class="round go" id="r-video" aria-label="Answer with video" title="Answer (video)"><svg viewBox="0 0 24 24"><path d="M23 7l-7 5 7 5V7z"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg></button><span>Video</span></div>
     </div>
   </div>
 
@@ -1912,6 +1987,7 @@ function connect(id){
     if (s.ready || Date.now() - (s.conn._opened || 0) < 8000) return;   // working, or still shaking hands
     try { s.conn.close(); } catch(e){} s.conn = null;                   // stuck half-open: drop it and redial
   }
+  if (!s.since) s.since = Date.now();                                   // remember when we started trying, for the connecting/stuck banner
   const conn = peer.connect(id, {reliable:true, metadata:{v:2}}); conn._mine = true; wire(conn, id);
 }
 function incoming(conn){
@@ -2143,7 +2219,7 @@ async function startScan(){
       g.drawImage(v, 0, 0, cv.width, cv.height); const r = window.jsQR(g.getImageData(0,0,cv.width,cv.height).data, cv.width, cv.height); return r && r.data; };
   }
   const loop = async ()=>{ if (!scanOn) return; let t = null; try { t = await detect(); } catch(e){}
-    if (t && (INV_RE.test(t) || /SH1B\./.test(t))){ stopScan(); if (await joinFrom(t)) $('#t-people').click(); return; }
+    if (t && (INV_RE.test(t) || /SH1B\./.test(t))){ stopScan(); if (await joinFrom(t)) homeTab('chats'); return; }
     if (t) $('#scan-st').textContent = 'That QR code is not a Shelly invite.';
     setTimeout(loop, 250); };
   loop();
@@ -2425,7 +2501,7 @@ function drawContacts(){
     const c = contacts[id], s = sessions[id]||{}, last = msgsOf(id).filter(m=>!m.sys).slice(-1)[0];
     return `<div class="contact"><div class="av">${esc(initials(c.name))}<span class="dot ${s.ready?'on':(c.bound?'':'wait')}"></span></div>
       <button class="who" data-open="${esc(id)}"><b>${esc(c.name)}${c.family && ULTRA() ? ' <span class="famtag">FAMILY</span>' : ''}${protBadge(id)} ${c.unread ? `<span class="unread">${c.unread}</span>` : ''}</b>
-      <span>${last ? esc((last.me?'You: ':'')+(last.loc ? '📍 Location' : last.file ? fileLabel(last.file) : last.text)) : (c.bound ? (s.ready?'Online - say hello':(c.push?'Offline - a call will ring their phone':'Offline')) : 'Waiting for them to open Shelly')}</span>
+      <span>${last ? esc((last.me?'You: ':'')+(last.loc ? '📍 Location' : last.file ? fileLabel(last.file) : last.text)) : (s.ready ? 'Connected - say hello' : (peer && peer.open ? 'Connecting…' : 'Offline'))}</span>
       <span class="timer" style="text-align:left">${isKept(id) ? 'Family - kept' : 'Contact erased in ' + left(c.added||Date.now(), CONTACT_MS).replace(' left','')}</span></button>
       <button class="icon-btn" data-call="${esc(id)}" aria-label="Voice call ${esc(c.name)}"><svg viewBox="0 0 24 24"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8 9.8a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.7 2z"/></svg></button>
       <button class="icon-btn acc" data-vcall="${esc(id)}" aria-label="Video call ${esc(c.name)}"><svg viewBox="0 0 24 24"><path d="M23 7l-7 5 7 5V7z"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg></button></div>`;
@@ -2445,8 +2521,7 @@ function drawChat(){
   const c = contacts[cur], s = sessions[cur]||{};
   drawChatTools();
   $('#c-name').textContent = c.name;
-  $('#c-dot').className = 'dot' + (s.ready ? ' on' : '');
-  $('#c-st').textContent = s.ready ? 'Online · end-to-end encrypted' : (c.bound ? (c.push ? 'Offline - they get a notification' : 'Offline - messages send when you are both online') : 'Waiting for them to open Shelly');
+  drawConnBar();
   const m = msgsOf(cur), box = $('#c-msgs'), atEnd = box.scrollHeight - box.scrollTop - box.clientHeight < 60;
   box.innerHTML = `<div class="sys"><span class="badge"><svg viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>AES-256 end-to-end · messages destroyed after 3 hours</span></div>` +
     m.map(x=> x.sys ? `<div class="sys">${esc(x.text)} · ${fmtT(x.ts)}</div>` :
@@ -2454,6 +2529,25 @@ function drawChat(){
   if (atEnd) box.scrollTop = box.scrollHeight;
   hydrateFiles();
 }
+/* ---------- clear connection status: Connecting… / Connected / Can't reach, with a Reconnect button ---------- */
+function drawConnBar(){
+  if (!cur || isGroup(cur) || !contacts[cur] || $('#s-chat').hidden) return;
+  const c = contacts[cur], s = sessions[cur] || {};
+  $('#c-dot').className = 'dot' + (s.ready ? ' on' : '');
+  $('#c-st').textContent = s.ready ? 'Connected · end-to-end encrypted' : (!peer || !peer.open ? 'You are offline' : 'Connecting…');
+  const bar = $('#c-conn'); if (!bar) return;
+  if (s.ready){ bar.hidden = true; return; }
+  const offline = !peer || !peer.open, since = s.since || 0, stuck = offline || (since && Date.now() - since > 18000);
+  bar.hidden = false; bar.className = 'connbar ' + (stuck ? 'stuck' : 'connecting');
+  $('#c-conn-tx').textContent = offline ? 'You are offline — check your internet connection.'
+    : stuck ? `Still can't reach ${c.name}. Keep Shelly open on both phones and on the internet. On Brave, open Shelly in Chrome or lower Brave Shields for this site.`
+    : `Connecting to ${c.name}… keep both phones open.`;
+  $('#c-recon').hidden = !stuck;
+}
+setInterval(()=>{ if (!document.hidden) drawConnBar(); }, 3000);
+$('#c-recon') && ($('#c-recon').onclick = ()=>{ if (!cur || isGroup(cur)) return; const s = sessions[cur] || (sessions[cur] = {});
+  s.since = Date.now(); if (s.conn){ try { s.conn.close(); } catch(e){} s.conn = null; } s.ready = false; connect(cur); drawConnBar(); toast('Reconnecting…'); });
+
 function drawQuick(){
   $('#c-quick').innerHTML = (prefs.quick||[]).map((q,i)=>`<button type="button" data-q="${i}">${esc(q)}</button>`).join('');
   $('#c-quick').hidden = !(prefs.quick||[]).length;
@@ -2646,14 +2740,54 @@ const ringTone = on => playTone(on ? (ringing && ringing.metadata && ringing.met
 /* ---------- controls ---------- */
 $('#w-go').onclick = ()=>{ const n=$('#w-name').value.trim(); if (!n) return toast('Enter your name first.');
   me = V.me = {id:newId(), name:n.slice(0,30)}; V.lastWipe = Date.now(); save(); boot(); };
-$('#t-people').onclick = ()=>{ $('#t-people').setAttribute('aria-selected','true'); $('#t-invite').setAttribute('aria-selected','false'); $('#p-people').hidden=false; $('#p-invite').hidden=true; };
-$('#t-invite').onclick = ()=>{ $('#t-invite').setAttribute('aria-selected','true'); $('#t-people').setAttribute('aria-selected','false'); $('#p-people').hidden=true; $('#p-invite').hidden=false; drawInvites(); };
+/* ===================== bottom-tab navigation (Chats · Calls · Family · Settings) ===================== */
+let homePage = 'chats';
+function homeTab(name){
+  homePage = name;
+  const pages = {chats:'#pg-chats', calls:'#pg-calls', family:'#pg-family', invite:'#pg-invite'};
+  for (const [k, sel] of Object.entries(pages)) $(sel).hidden = (k !== name);
+  [['chats','#nav-chats'],['calls','#nav-calls'],['family','#nav-family']].forEach(([k,sel])=>{
+    const on = (k === name) || (name==='invite' && k==='chats'); $(sel).classList.toggle('on', on); $(sel).setAttribute('aria-selected', String(on));
+  });
+  $('#fab-add').hidden = (name !== 'chats');
+  if (name === 'calls') drawCalls();
+  if (name === 'family') drawFamilyPage();
+  if (name === 'invite') drawInvites();
+  const body = $('.homebody'); if (body) body.scrollTop = 0;
+}
+$('#nav-chats') && ($('#nav-chats').onclick = ()=>homeTab('chats'));
+$('#nav-calls') && ($('#nav-calls').onclick = ()=>homeTab('calls'));
+$('#nav-family') && ($('#nav-family').onclick = ()=>homeTab('family'));
+$('#nav-settings') && ($('#nav-settings').onclick = ()=>openSettings());
+$('#fab-add') && ($('#fab-add').onclick = ()=>homeTab('invite'));
+$('#fam-on') && ($('#fam-on').onclick = ()=>{ setMode(true); drawFamilyPage(); });
+
+/* Calls tab: pick a person to call */
+function drawCalls(){
+  const ids = Object.keys(contacts).filter(id=>!contacts[id].blocked);
+  const list = $('#call-list'); if (!list) return;
+  if (!ids.length){ list.innerHTML = '<p class="small">No contacts yet. Tap the + on Chats to add someone, then call them here.</p>'; return; }
+  list.innerHTML = ids.map(id=>{ const c = contacts[id], s = sessions[id]||{};
+    return `<div class="callrow-item"><div class="av">${esc(initials(c.name))}</div>
+      <div class="who2"><b>${esc(c.name)}</b><span>${s.ready ? 'Connected' : (peer&&peer.open?'Connecting…':'Offline')}</span></div>
+      <button class="cbtn" data-call="${esc(id)}" title="Voice call" aria-label="Voice call ${esc(c.name)}"><svg viewBox="0 0 24 24"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8 9.8a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.7 2z"/></svg></button>
+      <button class="cbtn vid" data-vcall="${esc(id)}" title="Video call" aria-label="Video call ${esc(c.name)}"><svg viewBox="0 0 24 24"><path d="M23 7l-7 5 7 5V7z"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg></button></div>`;
+  }).join('');
+  list.querySelectorAll('[data-call]').forEach(b=>b.onclick=()=>startCall(b.dataset.call, false));
+  list.querySelectorAll('[data-vcall]').forEach(b=>b.onclick=()=>startCall(b.dataset.vcall, true));
+}
+/* Family tab: show the Ultra bar when Family mode is on, else a prompt to turn it on */
+function drawFamilyPage(){
+  const on = ULTRA();
+  if ($('#u-bar')){ $('#u-bar').hidden = !on; if (on) drawUltraHome(); }
+  if ($('#fam-note')) $('#fam-note').hidden = on;
+}
 $('#inv-make').onclick = makeInvite;
 async function copyText(t, el, ok){ try { await navigator.clipboard.writeText(t); toast(ok); } catch(e){ const r=document.createRange(); r.selectNodeContents(el); getSelection().removeAllRanges(); getSelection().addRange(r); toast('Selected - copy it'); } }
 $('#inv-copy').onclick = ()=>copyText($('#inv-out').dataset.link, $('#inv-code'), 'Invite link copied');
 $('#inv-copy-code').onclick = ()=>copyText($('#inv-code').textContent, $('#inv-code'), 'Passcode copied');
 $('#inv-share').onclick = async ()=>{ const t=$('#inv-out').dataset.link; if (navigator.share){ try { await navigator.share({title:'Shelly invite', text:`${me.name} invited you to Shelly (private calls and chat):`, url:t}); } catch(e){} } else $('#inv-copy').click(); };
-$('#inv-join').onclick = async ()=>{ if (await joinFrom($('#inv-paste').value)) { $('#inv-paste').value=''; $('#t-people').click(); } };
+$('#inv-join').onclick = async ()=>{ if (await joinFrom($('#inv-paste').value)) { $('#inv-paste').value=''; homeTab('chats'); } };
 $('#scan-go').onclick = startScan; $('#scan-x').onclick = stopScan;
 $('#n-push-go').onclick = ()=>setupPush(true); $('#st-push-go').onclick = ()=>setupPush(true);
 $('#c-back').onclick = ()=>{ cur=null; replyTo = null; $('#c-reply').hidden = true; show('#s-home'); drawContacts(); };
@@ -2675,10 +2809,11 @@ $('#k-flip').onclick = async ()=>{
 $('#r-no').onclick = ()=>{ const mc=ringing; ringing=null; $('#ring').hidden=true; ringTone(false); if (mc) { sysMsg(mc.peer, 'Declined call'); mc.close(); } };
 $('#r-voice').onclick = ()=>answer(false);
 $('#r-video').onclick = ()=>answer(true);
-$('#h-settings').onclick = ()=>{ $('#st-name').value=me.name; $('#st-turn').value=settings.turn||''; $('#st-tuser').value=settings.tuser||''; $('#st-tpass').value=settings.tpass||''; $('#st-relayonly').checked=!!settings.relayOnly;
+function openSettings(){ $('#st-name').value=me.name; $('#st-turn').value=settings.turn||''; $('#st-tuser').value=settings.tuser||''; $('#st-tpass').value=settings.tpass||''; $('#st-relayonly').checked=!!settings.relayOnly;
   $('#st-quick').value = (prefs.quick||[]).join('\n'); $('#st-id').textContent = me.id;
   $('#st-crypto').innerHTML = `Messages: <b>AES-256-GCM</b> end to end, destroyed after <b>3 hours</b>. Contacts are erased <b>3 hours</b> after they are added. Every night at <b>1 am</b> Shelly destroys all its data and keys and starts over with a new identity.<br>Stored on this device: sealed with <b>AES-256-GCM</b> using a key the browser keeps locked${Vault.persistent?'':' (this browser blocks storage, so nothing is kept after closing)'}.<br>Handshake: fresh <b>ECDH P-384</b> (192-bit) + post-quantum <b>ML-KEM-768</b> both ways + each contact's 256-bit invite secret, mixed with <b>HKDF-SHA-384</b> and bound to the whole handshake.<br>Calls: ${E2EE.mode==='none' ? '<b>browser standard DTLS-SRTP</b> - update this browser for AES-256 frame encryption' : '<b>AES-256-GCM</b> on every audio and video frame'}.<br>Chats can't be selected or copied. ${NATIVE ? 'Screenshots and screen recording are blocked in this app.' : 'Screenshots can only be blocked in the Android app.'}`;
-  drawLookSettings(); drawPushState(); drawUltraSettings(); show('#s-settings'); };
+  drawLookSettings(); drawPushState(); drawUltraSettings(); show('#s-settings'); }
+$('#h-settings').onclick = openSettings;
 $$('[data-tone]').forEach(b=>b.onclick=()=>playTone(b.dataset.tone, false));
 $('#st-back').onclick = ()=>{ show('#s-home'); drawContacts(); };
 $('#st-save-name').onclick = ()=>{ const n=$('#st-name').value.trim(); if (!n) return; me.name=n.slice(0,30); save(); toast('Name saved - contacts see it next time you connect'); };
@@ -2830,6 +2965,7 @@ function applyUltra(){
   if ($('#u-bar')) drawUltraHome();
   drawEmergency();
   if (typeof drawModePick === 'function') drawModePick();
+  if (typeof drawFamilyPage === 'function') drawFamilyPage();
 }
 
 /* ---------- family circle cap: keep at most 7; adding an 8th drops the longest-standing family member (FIFO) ---------- */

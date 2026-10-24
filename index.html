@@ -4,7 +4,9 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Shelly</title>
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://unpkg.com https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob:; media-src 'self' blob: mediastream:; connect-src 'self' https://0.peerjs.com wss://0.peerjs.com https://*.workers.dev https://cdn.jsdelivr.net; worker-src 'self' blob:; object-src 'none'; base-uri 'none'; form-action 'none'">
 <meta name="theme-color" content="#0a8c8a">
+<meta name="referrer" content="no-referrer">
 <meta name="description" content="Private chat, voice and video calls with the people you invite.">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icon-192.png">
@@ -143,6 +145,42 @@ input.in{min-height:48px;border-radius:12px;border:1px solid var(--line);backgro
 :root[data-skin="palm"]{--accent:#2e7d32; --accent-soft:#d7ecd8; --mine:#2e7d32; --hibiscus:#ef6c00; --sun:#f9a825; --bg:#eef6ea; --surface-2:#dcebd6; --line:#cfe2c8; --accent-ink:#ffffff}
 @media (prefers-color-scheme: dark){ :root[data-skin="palm"]:not([data-theme="light"]){--accent:#6fcf73; --accent-soft:#173a19; --mine:#2f7d33; --hibiscus:#ff9d4d; --sun:#ffd04f; --bg:#0b170c; --surface-2:#132615; --line:#1d361f; --accent-ink:#032325} }
 :root[data-skin="palm"][data-theme="dark"]{--accent:#6fcf73; --accent-soft:#173a19; --mine:#2f7d33; --hibiscus:#ff9d4d; --sun:#ffd04f; --bg:#0b170c; --surface-2:#132615; --line:#1d361f; --accent-ink:#032325}
+:root[data-skin="golden"]{--accent:#c26a0a; --accent-soft:#fbe3c4; --mine:#c26a0a; --hibiscus:#d8452e; --sun:#f0b030; --bg:#fdf3e6; --surface-2:#f8e4cc; --line:#efd5b5; --accent-ink:#ffffff}
+@media (prefers-color-scheme: dark){ :root[data-skin="golden"]:not([data-theme="light"]){--accent:#f5a524; --accent-soft:#3a2408; --mine:#a8560a; --hibiscus:#ff7a5c; --sun:#ffd166; --bg:#1b120a; --surface-2:#2a1c10; --line:#3b2816; --accent-ink:#1b0f08} }
+:root[data-skin="golden"][data-theme="dark"]{--accent:#f5a524; --accent-soft:#3a2408; --mine:#a8560a; --hibiscus:#ff7a5c; --sun:#ffd166; --bg:#1b120a; --surface-2:#2a1c10; --line:#3b2816; --accent-ink:#1b0f08}
+:root[data-skin="hibiscus"]{--accent:#d1344f; --accent-soft:#fbdbe0; --mine:#d1344f; --hibiscus:#7b3fa0; --sun:#ff9f43; --bg:#fff1f1; --surface-2:#fbe0e0; --line:#f2cdcf; --accent-ink:#ffffff}
+@media (prefers-color-scheme: dark){ :root[data-skin="hibiscus"]:not([data-theme="light"]){--accent:#ff6b81; --accent-soft:#3d1520; --mine:#b52a45; --hibiscus:#c792ea; --sun:#ffb26b; --bg:#1c0d12; --surface-2:#2b1520; --line:#3d1d2a; --accent-ink:#1b0f08} }
+:root[data-skin="hibiscus"][data-theme="dark"]{--accent:#ff6b81; --accent-soft:#3d1520; --mine:#b52a45; --hibiscus:#c792ea; --sun:#ffb26b; --bg:#1c0d12; --surface-2:#2b1520; --line:#3d1d2a; --accent-ink:#1b0f08}
+:root[data-skin="mahogany"]{--accent:#8a4b2a; --accent-soft:#f0dccb; --mine:#8a4b2a; --hibiscus:#c99a3d; --sun:#d96c3c; --bg:#f7efe7; --surface-2:#eedfd0; --line:#e2cdb9; --accent-ink:#ffffff}
+@media (prefers-color-scheme: dark){ :root[data-skin="mahogany"]:not([data-theme="light"]){--accent:#d4a24c; --accent-soft:#3a2a14; --mine:#7a4022; --hibiscus:#e98b5a; --sun:#f0c46c; --bg:#170e0b; --surface-2:#251712; --line:#38241b; --accent-ink:#1b0f08} }
+:root[data-skin="mahogany"][data-theme="dark"]{--accent:#d4a24c; --accent-soft:#3a2a14; --mine:#7a4022; --hibiscus:#e98b5a; --sun:#f0c46c; --bg:#170e0b; --surface-2:#251712; --line:#38241b; --accent-ink:#1b0f08}
+:root[data-skin="golden"] .msg{border-radius:20px 20px 20px 6px} :root[data-skin="golden"] .msg.me{border-radius:20px 20px 6px 20px}
+:root[data-skin="golden"] .bar{background:linear-gradient(180deg,color-mix(in srgb,var(--sun) 18%,var(--surface)),var(--surface))}
+:root[data-skin="hibiscus"] .msg{border-radius:22px} :root[data-skin="hibiscus"] .contact{border-radius:22px}
+:root[data-skin="hibiscus"] .bar{background:linear-gradient(180deg,color-mix(in srgb,var(--accent) 12%,var(--surface)),var(--surface))}
+:root[data-skin="mahogany"] .msg{border-radius:10px} :root[data-skin="mahogany"] .contact,:root[data-skin="mahogany"] .card{border-radius:12px}
+:root[data-skin="mahogany"] .bar{background:linear-gradient(180deg,color-mix(in srgb,var(--accent) 10%,var(--surface)),var(--surface))}
+:root[data-skin="mahogany"] .msg.me{background:linear-gradient(160deg,var(--mine),color-mix(in srgb,var(--mine) 70%,#000))}
+@media (prefers-color-scheme: dark){ :root[data-skin="sunset"]:not([data-theme="light"]){--surface:#24141a; --theirs:#2c1a1c; --muted:#c4a39a} }
+:root[data-skin="sunset"][data-theme="dark"]{--surface:#24141a; --theirs:#2c1a1c; --muted:#c4a39a}
+@media (prefers-color-scheme: dark){ :root[data-skin="reef"]:not([data-theme="light"]){--surface:#0b1a2b; --theirs:#0f2236; --muted:#93a9c4} }
+:root[data-skin="reef"][data-theme="dark"]{--surface:#0b1a2b; --theirs:#0f2236; --muted:#93a9c4}
+@media (prefers-color-scheme: dark){ :root[data-skin="carnival"]:not([data-theme="light"]){--surface:#22101d; --theirs:#2a1424; --muted:#c9a1bb} }
+:root[data-skin="carnival"][data-theme="dark"]{--surface:#22101d; --theirs:#2a1424; --muted:#c9a1bb}
+@media (prefers-color-scheme: dark){ :root[data-skin="palm"]:not([data-theme="light"]){--surface:#0f1f10; --theirs:#132615; --muted:#9bb89b} }
+:root[data-skin="palm"][data-theme="dark"]{--surface:#0f1f10; --theirs:#132615; --muted:#9bb89b}
+@media (prefers-color-scheme: dark){ :root[data-skin="golden"]:not([data-theme="light"]){--surface:#22170d; --theirs:#2e2012; --muted:#c9ab88} }
+:root[data-skin="golden"][data-theme="dark"]{--surface:#22170d; --theirs:#2e2012; --muted:#c9ab88}
+@media (prefers-color-scheme: dark){ :root[data-skin="hibiscus"]:not([data-theme="light"]){--surface:#241118; --theirs:#301822; --muted:#cfa0ae} }
+:root[data-skin="hibiscus"][data-theme="dark"]{--surface:#241118; --theirs:#301822; --muted:#cfa0ae}
+@media (prefers-color-scheme: dark){ :root[data-skin="mahogany"]:not([data-theme="light"]){--surface:#1f130f; --theirs:#2b1b14; --muted:#c2a58f} }
+:root[data-skin="mahogany"][data-theme="dark"]{--surface:#1f130f; --theirs:#2b1b14; --muted:#c2a58f}
+:root[data-skin="golden"]:not([data-theme="dark"]){--muted:#7a5a3a}
+@media (prefers-color-scheme: dark){ :root[data-skin="golden"]:not([data-theme="light"]){--muted:#c9ab88} }
+:root[data-skin="hibiscus"]:not([data-theme="dark"]){--muted:#7d5560}
+@media (prefers-color-scheme: dark){ :root[data-skin="hibiscus"]:not([data-theme="light"]){--muted:#cfa0ae} }
+:root[data-skin="mahogany"]:not([data-theme="dark"]){--muted:#6f5646}
+@media (prefers-color-scheme: dark){ :root[data-skin="mahogany"]:not([data-theme="light"]){--muted:#c2a58f} }
 .msgs[data-wall="waves"]{background-image:radial-gradient(circle at 50% 100%, transparent 13px, color-mix(in srgb,var(--accent) 12%,transparent) 14px, color-mix(in srgb,var(--accent) 12%,transparent) 15px, transparent 16px);background-size:34px 17px}
 .msgs[data-wall="hibiscus"]{background-image:radial-gradient(color-mix(in srgb,var(--hibiscus) 22%,transparent) 3px, transparent 4px),radial-gradient(color-mix(in srgb,var(--sun) 30%,transparent) 2px, transparent 3px);background-size:30px 30px,30px 30px;background-position:0 0,15px 15px}
 .msgs[data-wall="pan"]{background-image:repeating-radial-gradient(circle at 100% 100%, transparent 0 26px, color-mix(in srgb,var(--accent) 10%,transparent) 26px 28px),repeating-radial-gradient(circle at 0 0, transparent 0 40px, color-mix(in srgb,var(--sun) 14%,transparent) 40px 42px);background-attachment:local}
@@ -152,7 +190,7 @@ input.in{min-height:48px;border-radius:12px;border:1px solid var(--line);backgro
 .quick button{flex:none;min-height:36px;padding:0 14px;border-radius:999px;border:1px solid color-mix(in srgb,var(--accent) 40%,var(--line));background:var(--accent-soft);color:var(--ink);font-size:14px;font-weight:500}
 .timer{font-size:11px;color:var(--muted);text-align:center}
 body.curtain .app{filter:blur(18px)}
-.swatches{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px}
+.swatches{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
 .swatch{border:2px solid var(--line);border-radius:14px;padding:8px 4px;background:var(--surface);display:flex;flex-direction:column;align-items:center;gap:6px;font-size:12px;font-weight:600}
 .swatch[aria-pressed="true"]{border-color:var(--ink)}
 .swatch i{display:flex;width:36px;height:36px;border-radius:50%;overflow:hidden}
@@ -171,6 +209,37 @@ textarea.in{min-height:140px;padding:10px 14px;resize:vertical;font:inherit}
 .scan .frame{position:absolute;left:50%;top:45%;width:min(70vw,280px);aspect-ratio:1;transform:translate(-50%,-50%);border:3px solid var(--sun);border-radius:22px;box-shadow:0 0 0 100vmax rgba(0,0,0,.45)}
 .scan .bottom{position:absolute;left:0;right:0;bottom:0;padding:18px 16px calc(24px + env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;gap:10px;align-items:center;color:#fff;text-align:center}
 
+/* ---- files and voice notes ---- */
+.compose .icon-btn{width:48px;height:48px}
+.fmsg{display:flex;flex-direction:column;gap:6px;min-width:180px}
+.fthumb{width:220px;max-width:100%;aspect-ratio:4/3;border-radius:12px;background:#0006 center/cover no-repeat;display:grid;place-items:center;border:0;color:#fff;font:600 13px var(--body);cursor:pointer;-webkit-user-drag:none}
+.fthumb svg{width:44px;height:44px;fill:#fff;opacity:.9}
+.fdoc{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:12px;background:color-mix(in srgb,currentColor 10%,transparent)}
+.fdoc b{display:block;font-weight:600;overflow-wrap:anywhere}
+.fvoice{display:flex;align-items:center;gap:10px}
+.fvoice button{width:40px;height:40px;border-radius:50%;border:0;background:var(--sun);color:#3a2600;display:grid;place-items:center;flex:none}
+.fvoice button svg{width:18px;height:18px;fill:currentColor}
+.fbar{flex:1;height:6px;border-radius:3px;background:color-mix(in srgb,currentColor 25%,transparent);overflow:hidden;min-width:90px}
+.fbar i{display:block;height:100%;width:0;background:currentColor}
+.ftag{font-size:11px;font-weight:700;letter-spacing:.04em;opacity:.85}
+.fsave{align-self:flex-start;min-height:34px;padding:0 12px;border-radius:10px;border:1px solid currentColor;background:transparent;color:inherit;font-weight:600}
+.recbar{display:flex;align-items:center;gap:10px;padding-block:8px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));background:var(--surface);border-top:1px solid var(--line)}
+.recdot{width:12px;height:12px;border-radius:50%;background:var(--danger);animation:blink 1s infinite}
+@keyframes blink{50%{opacity:.25}}
+@media (prefers-reduced-motion: reduce){.recdot{animation:none}}
+.sheet-wrap{position:absolute;inset:0;z-index:35;background:rgba(0,0,0,.5);display:flex;align-items:flex-end}
+.sheet{width:100%;background:var(--surface);border-radius:22px 22px 0 0;padding:18px max(16px,env(safe-area-inset-right,0px)) calc(20px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px));display:flex;flex-direction:column;gap:12px}
+.fprev{display:flex;justify-content:center}
+.fprev img,.fprev video{max-width:100%;max-height:38vh;border-radius:12px}
+.seg2{grid-template-columns:1fr 1fr}
+.viewer{position:absolute;inset:0;z-index:45;background:#000;color:#fff;display:flex;flex-direction:column}
+.vbar{display:flex;align-items:center;gap:8px;padding:calc(10px + env(safe-area-inset-top,0px)) max(12px,env(safe-area-inset-right,0px)) 10px max(12px,env(safe-area-inset-left,0px))}
+.vbar #v-name{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:600}
+.vmode{font-size:12px;opacity:.8}
+.vbody{flex:1;display:grid;place-items:center;overflow:hidden;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+.vbody img,.vbody video{max-width:100%;max-height:100%;-webkit-user-drag:none;pointer-events:auto}
+.viewer .btn{background:#222;color:#fff;border-color:#444}
+
 </style>
 </head>
 <body>
@@ -183,7 +252,7 @@ textarea.in{min-height:140px;padding:10px 14px;resize:vertical;font:inherit}
     <div class="body" style="justify-content:center">
       <div class="welcome-hero"><div class="brand"><svg class="shell" viewBox="0 0 32 32" aria-hidden="true"><path d="M16 3C8.5 3 3 8.6 3 15.2c0 3.2 1.3 6 3.4 8.1L10 27h12l3.6-3.7c2.1-2.1 3.4-4.9 3.4-8.1C29 8.6 23.5 3 16 3z"/><path class="rib" d="M16 26V6M12 26 8.5 9M20 26l3.5-17M9 25.5 5 15M23 25.5 27 15"/><path class="hinge" d="M11 26h10l-1.6 3.4h-6.8z"/></svg>Shelly</div>
       <h1>Lime with your people, privately.</h1>
-      <p class="lede">Chat, voice and video calls go straight from your device to theirs, locked with AES-256 encryption. Only people you invite can reach you. Messages disappear after 6 hours.</p></div>
+      <p class="lede">Chat, voice and video calls go straight from your device to theirs, locked with AES-256 encryption. Only people you invite can reach you. Chats and contacts are destroyed after 3 hours, and everything is wiped nightly at 1 am.</p></div>
       <label class="f" for="w-name">Your name, as your contacts will see it
         <input class="in" id="w-name" maxlength="30" autocomplete="name" placeholder="Kammie"></label>
       <button class="btn pri" id="w-go">Start Shelly</button>
@@ -206,7 +275,7 @@ textarea.in{min-height:140px;padding:10px 14px;resize:vertical;font:inherit}
       </div>
       <div id="p-people" style="display:flex;flex-direction:column;gap:10px">
         <div id="contacts" style="display:flex;flex-direction:column;gap:10px"></div>
-        <p class="small" id="keep-open">Messages and call records delete themselves after 6 hours.</p>
+        <p class="small" id="keep-open">Chats and call records are destroyed after 3 hours. Contacts are erased 3 hours after they are added. Every night at 1 am Shelly wipes everything and starts fresh.</p>
       </div>
       <div id="p-invite" hidden style="display:flex;flex-direction:column;gap:12px">
         <div class="card">
@@ -244,9 +313,14 @@ textarea.in{min-height:140px;padding:10px 14px;resize:vertical;font:inherit}
     <div class="waves" aria-hidden="true"><svg viewBox="0 0 400 16" preserveAspectRatio="none"><path class="w2" d="M0 9 Q25 2 50 9 T100 9 T150 9 T200 9 T250 9 T300 9 T350 9 T400 9 V16 H0z"/><path class="w1" d="M0 12 Q25 6 50 12 T100 12 T150 12 T200 12 T250 12 T300 12 T350 12 T400 12 V16 H0z"/></svg></div>
     <div class="msgs" id="c-msgs" aria-live="polite"></div>
     <div class="quick" id="c-quick" role="group" aria-label="Quick replies"></div>
+    <div class="recbar" id="c-rec" hidden><span class="recdot" aria-hidden="true"></span><span id="c-rec-t">0:00</span><span class="small" style="flex:1">Recording voice note</span>
+      <button class="btn" type="button" id="c-rec-x">Cancel</button><button class="btn pri" type="button" id="c-rec-stop">Done</button></div>
     <form class="compose" id="c-form">
+      <button class="icon-btn" type="button" id="c-attach" aria-label="Send a photo, video or file"><svg viewBox="0 0 24 24"><path d="M21 11.5l-8.6 8.6a5.5 5.5 0 0 1-7.8-7.8l8.6-8.6a3.7 3.7 0 0 1 5.2 5.2l-8.6 8.6a1.8 1.8 0 0 1-2.6-2.6l7.9-7.9"/></svg></button>
+      <input type="file" id="c-file" hidden>
       <label for="c-text" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">Message</label>
       <input class="in" id="c-text" placeholder="Message" autocomplete="off" maxlength="4000">
+      <button class="icon-btn" type="button" id="c-mic" aria-label="Record a voice note"><svg viewBox="0 0 24 24"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 10a7 7 0 0 0 14 0M12 17v5"/></svg></button>
       <button class="btn pri" id="c-send">Send</button>
     </form>
   </section>
@@ -296,7 +370,20 @@ textarea.in{min-height:140px;padding:10px 14px;resize:vertical;font:inherit}
         <label class="f" for="st-turn">TURN address<input class="in" id="st-turn" placeholder="turns:relay.example.com:443" autocomplete="off"></label>
         <label class="f" for="st-tuser">Username<input class="in" id="st-tuser" autocomplete="off"></label>
         <label class="f" for="st-tpass">Password<input class="in" id="st-tpass" type="password" autocomplete="off"></label>
+        <label class="chk" for="st-relayonly" style="display:flex;gap:10px;align-items:center;font-size:15px"><input type="checkbox" id="st-relayonly" style="width:20px;height:20px"> Always use the relay: hides your internet address from contacts (needs a TURN relay)</label>
         <button class="btn" id="st-save-turn">Save relay</button>
+      </div>
+      <div class="card">
+        <h2>Security checklist</h2>
+        <p class="small">Shelly's encryption protects messages and calls on the way. These protect the phone itself, which no app can do alone.</p>
+        <ul class="small" style="margin:0;padding-left:18px;display:flex;flex-direction:column;gap:6px">
+          <li><b>Update</b> your phone's system and browser as soon as updates arrive. Spyware like Pegasus relies on unpatched holes.</li>
+          <li><b>Restart your phone daily.</b> Much phone spyware does not survive a restart.</li>
+          <li><b>iPhone:</b> Settings → Privacy &amp; Security → <b>Lockdown Mode</b>. <b>Android:</b> turn on <b>Advanced Protection</b> where offered.</li>
+          <li><b>Fake cell towers (Stingrays):</b> they can see that and where your phone is used, but not read Shelly. On Android: Settings → Network → SIMs → turn off <b>Allow 2G</b>. Prefer trusted Wi-Fi.</li>
+          <li>Don't open links or attachments from people you don't know, even in other apps.</li>
+          <li>Use a strong <b>screen lock</b>, and compare the <b>safety code</b> on your first call with each person.</li>
+        </ul>
       </div>
       <div class="card">
         <h2>Delete</h2>
@@ -344,6 +431,28 @@ textarea.in{min-height:140px;padding:10px 14px;resize:vertical;font:inherit}
     <div class="frame" aria-hidden="true"></div>
     <div class="bottom"><span id="scan-st">Point the camera at a Shelly invite QR code</span><button class="btn" id="scan-x">Cancel</button></div>
   </div>
+
+  <!-- send a file / voice note: the sender decides -->
+  <div class="sheet-wrap" id="fsheet" hidden role="dialog" aria-labelledby="fs-title">
+    <div class="sheet">
+      <h2 id="fs-title">Send</h2>
+      <div id="fs-prev" class="fprev"></div>
+      <div class="small" id="fs-info"></div>
+      <div class="seg3 seg2" id="fs-mode" role="radiogroup" aria-label="What can they do with it">
+        <button type="button" role="radio" data-save="0">View only</button>
+        <button type="button" role="radio" data-save="1">Let them save it</button>
+      </div>
+      <p class="small" id="fs-note"></p>
+      <div class="row" style="justify-content:flex-end"><button class="btn" id="fs-x">Cancel</button><button class="btn pri" id="fs-go">Send</button></div>
+    </div>
+  </div>
+
+  <!-- view a photo or video -->
+  <div class="viewer" id="viewer" hidden role="dialog" aria-label="Viewer">
+    <div class="vbar"><span id="v-name"></span><span class="vmode" id="v-mode"></span><button class="btn" id="v-save" hidden>Save</button><button class="btn" id="v-x">Close</button></div>
+    <div class="vbody" id="v-body"></div>
+  </div>
+  <audio id="vplayer" hidden></audio>
 
   <div class="toast" id="toast" role="status" hidden></div>
 </div>
@@ -441,20 +550,24 @@ const SC = {
   b64(u8){ let s=''; u8=new Uint8Array(u8); for (let i=0;i<u8.length;i++) s+=String.fromCharCode(u8[i]); return btoa(s).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,''); },
   unb64(s){ s=s.replace(/-/g,'+').replace(/_/g,'/'); while (s.length%4) s+='='; const b=atob(s), u=new Uint8Array(b.length); for (let i=0;i<b.length;i++) u[i]=b.charCodeAt(i); return u; },
   rand(n){ return crypto.getRandomValues(new Uint8Array(n)); },
-  async ecdh(){ return crypto.subtle.generateKey({name:'ECDH', namedCurve:'P-256'}, false, ['deriveBits']); },
+  // Hybrid handshake: ECDH P-384 (192-bit) + ML-KEM-768 (post-quantum, both directions) + the invite's 256-bit secret,
+  // mixed with HKDF-SHA-384 and bound to the full handshake transcript. Breaking it needs ALL of: P-384, ML-KEM-768 and the invite secret.
+  async ecdh(){ return crypto.subtle.generateKey({name:'ECDH', namedCurve:'P-384'}, false, ['deriveBits']); },
   async pub(kp){ return new Uint8Array(await crypto.subtle.exportKey('raw', kp.publicKey)); },
-  async derive(kp, theirPubRaw, K, myId, theirId){
-    const theirPub = await crypto.subtle.importKey('raw', theirPubRaw, {name:'ECDH', namedCurve:'P-256'}, false, []);
-    const shared = await crypto.subtle.deriveBits({name:'ECDH', public: theirPub}, kp.privateKey, 256);
-    const ikm = await crypto.subtle.importKey('raw', shared, 'HKDF', false, ['deriveKey', 'deriveBits']);
+  async derive(kp, theirPubRaw, K, myId, theirId, ssToMe, ssToThem, transcript){
+    const theirPub = await crypto.subtle.importKey('raw', theirPubRaw, {name:'ECDH', namedCurve:'P-384'}, false, []);
+    const ecdh = new Uint8Array(await crypto.subtle.deriveBits({name:'ECDH', public: theirPub}, kp.privateKey, 384));
+    const low = myId < theirId, ikmBytes = new Uint8Array(48 + 64);
+    ikmBytes.set(ecdh, 0); ikmBytes.set(low ? ssToMe : ssToThem, 48); ikmBytes.set(low ? ssToThem : ssToMe, 80);
+    const ikm = await crypto.subtle.importKey('raw', ikmBytes, 'HKDF', false, ['deriveKey', 'deriveBits']);
+    const th = new Uint8Array(await crypto.subtle.digest('SHA-384', transcript));
     const ids = [myId, theirId].sort().join(' ');
-    const mk = (info, usages) => crypto.subtle.deriveKey({name:'HKDF', hash:'SHA-256', salt:K, info:SC.te.encode('Shelly v1 '+info+' '+ids)},
-                                                          ikm, {name:'AES-GCM', length:256}, false, usages);
-    const dir = id => 'from:'+id;
-    const safetyBits = new Uint8Array(await crypto.subtle.deriveBits({name:'HKDF', hash:'SHA-256', salt:K, info:SC.te.encode('Shelly v1 safety '+ids)}, ikm, 64));
+    const info = s => { const a = SC.te.encode('Shelly v2 ' + s + ' ' + ids + ' '), o = new Uint8Array(a.length + th.length); o.set(a); o.set(th, a.length); return o; };
+    const mk = (purpose, usages) => crypto.subtle.deriveKey({name:'HKDF', hash:'SHA-384', salt:K, info:info(purpose)}, ikm, {name:'AES-GCM', length:256}, false, usages);
+    const safetyBits = new Uint8Array(await crypto.subtle.deriveBits({name:'HKDF', hash:'SHA-384', salt:K, info:info('safety')}, ikm, 64));
     return {
-      chatTx: await mk('chat '+dir(myId), ['encrypt']), chatRx: await mk('chat '+dir(theirId), ['decrypt']),
-      mediaTx: await mk('media '+dir(myId), ['encrypt']), mediaRx: await mk('media '+dir(theirId), ['decrypt']),
+      chatTx: await mk('chat from:'+myId, ['encrypt']), chatRx: await mk('chat from:'+theirId, ['decrypt']),
+      mediaTx: await mk('media from:'+myId, ['encrypt']), mediaRx: await mk('media from:'+theirId, ['decrypt']),
       safety: [...safetyBits.slice(0,6)].map(b=>String(b%100).padStart(2,'0')).join('').replace(/(\d{4})(?=\d)/g,'$1 ')
     };
   },
@@ -508,7 +621,8 @@ const E2EE = {
    The vault key is a non-extractable Web Crypto key kept in IndexedDB: scripts can use it but never read it out. */
 const Vault = {
   key: null, data: null, timer: null, persistent: true,
-  idb(){ return new Promise((res, rej)=>{ const r = indexedDB.open('shelly', 1); r.onupgradeneeded = ()=>r.result.createObjectStore('keys');
+  idb(){ return new Promise((res, rej)=>{ const r = indexedDB.open('shelly', 2);
+    r.onupgradeneeded = ()=>{ const db = r.result; if (!db.objectStoreNames.contains('keys')) db.createObjectStore('keys'); if (!db.objectStoreNames.contains('files')) db.createObjectStore('files'); };
     r.onsuccess = ()=>res(r.result); r.onerror = ()=>rej(r.error); }); },
   async getKey(){
     try {
@@ -517,6 +631,7 @@ const Vault = {
       let k = await get();
       if (!k){ k = await crypto.subtle.generateKey({name:'AES-GCM', length:256}, false, ['encrypt','decrypt']);
         await new Promise((res, rej)=>{ const tx = db.transaction('keys','readwrite'); tx.objectStore('keys').put(k, 'vault'); tx.oncomplete = res; tx.onerror = ()=>rej(tx.error); }); }
+      db.close();                                    // keep no connection open, so the nightly wipe can delete the database
       return k;
     } catch(e){ Vault.persistent = false; return crypto.subtle.generateKey({name:'AES-GCM', length:256}, false, ['encrypt','decrypt']); }
   },
@@ -545,6 +660,20 @@ const Vault = {
     try { await new Promise(r=>{ const q = indexedDB.deleteDatabase('shelly'); q.onsuccess = q.onerror = q.onblocked = r; }); } catch(e){} },
 };
 
+/* ---- encrypted file store: photos, videos, voice notes and documents, each sealed with the vault key (AES-256-GCM) ---- */
+const Files = {
+  async tx(mode, fn){ const db = await Vault.idb(); try { return await new Promise((res, rej)=>{ const t = db.transaction('files', mode), st = t.objectStore('files');
+    let out; const r = fn(st); if (r) r.onsuccess = ()=>{ out = r.result; }; t.oncomplete = ()=>res(out); t.onerror = ()=>rej(t.error); t.onabort = ()=>rej(t.error); }); } finally { db.close(); } },
+  async put(id, bytes){ const iv = SC.rand(12), ct = await crypto.subtle.encrypt({name:'AES-GCM', iv}, Vault.key, bytes);
+    return Files.tx('readwrite', st=>st.put({iv, ct}, id)); },
+  async get(id){ const r = await Files.tx('readonly', st=>st.get(id)); if (!r) return null;
+    return new Uint8Array(await crypto.subtle.decrypt({name:'AES-GCM', iv:r.iv}, Vault.key, r.ct)); },
+  del(id){ return Files.tx('readwrite', st=>st.delete(id)).catch(()=>{}); },
+  async keys(){ return (await Files.tx('readonly', st=>st.getAllKeys())) || []; },
+};
+async function sealBytes(key, bytes, aad){ const iv = SC.rand(12); return {iv:SC.b64(iv), ct:SC.b64(await crypto.subtle.encrypt({name:'AES-GCM', iv, additionalData:SC.te.encode(aad)}, key, bytes))}; }
+async function openBytes(key, box, aad){ return new Uint8Array(await crypto.subtle.decrypt({name:'AES-GCM', iv:SC.unb64(box.iv), additionalData:SC.te.encode(aad)}, key, SC.unb64(box.ct))); }
+
 /* ---- Web Push payload encryption (RFC 8291, aes128gcm), done here so the relay only ever sees ciphertext ---- */
 async function hkdf(salt, ikm, info, bytes){
   const k = await crypto.subtle.importKey('raw', ikm, 'HKDF', false, ['deriveBits']);
@@ -567,13 +696,141 @@ async function webPushEncrypt(sub, payload){
   return cat(salt, rs, new Uint8Array([asPub.length]), asPub, ct);
 }
 
+
+/* ===================== ML-KEM-768 (NIST FIPS 203) =====================
+   Post-quantum key encapsulation, written out in plain JavaScript because browsers do not offer it yet.
+   Includes SHA3-256/512 and SHAKE128/256 (FIPS 202). Checked against an independent implementation
+   (pyca/cryptography): same public keys from the same seeds, and each side opens the other's ciphertexts. */
+const MLKEM = (() => {
+  // ---- Keccak-f[1600] with 64-bit BigInt lanes ----
+  const M64 = (1n << 64n) - 1n;
+  const RC = ['0x1','0x8082','0x800000000000808a','0x8000000080008000','0x808b','0x80000001','0x8000000080008081','0x8000000000008009',
+    '0x8a','0x88','0x80008009','0x8000000a','0x8000808b','0x800000000000008b','0x8000000000008089','0x8000000000008003',
+    '0x8000000000008002','0x8000000000000080','0x800a','0x800000008000000a','0x8000000080008081','0x8000000000008080','0x80000001','0x8000000080008008'].map(BigInt);
+  const ROT = [[0,36,3,41,18],[1,44,10,45,2],[62,6,43,15,61],[28,55,25,21,56],[27,20,39,8,14]];
+  const rotl = (v, n) => n === 0 ? v : ((v << BigInt(n)) | (v >> BigInt(64 - n))) & M64;
+  function keccakF(A){
+    const C = new Array(5), B = new Array(25);
+    for (let r = 0; r < 24; r++){
+      for (let x = 0; x < 5; x++) C[x] = A[x] ^ A[x+5] ^ A[x+10] ^ A[x+15] ^ A[x+20];
+      for (let x = 0; x < 5; x++){ const D = C[(x+4)%5] ^ rotl(C[(x+1)%5], 1); for (let y = 0; y < 25; y += 5) A[x+y] ^= D; }
+      for (let x = 0; x < 5; x++) for (let y = 0; y < 5; y++) B[y + 5*((2*x + 3*y) % 5)] = rotl(A[x + 5*y], ROT[x][y]);
+      for (let y = 0; y < 25; y += 5) for (let x = 0; x < 5; x++) A[x+y] = B[x+y] ^ ((~B[(x+1)%5+y] & M64) & B[(x+2)%5+y]);
+      A[0] ^= RC[r];
+    }
+  }
+  function sponge(rate, ds, input, outLen){
+    const A = new Array(25).fill(0n);
+    const absorb = blk => { for (let i = 0; i < rate/8; i++){ let v = 0n; for (let b = 7; b >= 0; b--) v = (v << 8n) | BigInt(blk[i*8+b]); A[i] ^= v; } keccakF(A); };
+    let off = 0;
+    for (; off + rate <= input.length; off += rate) absorb(input.subarray(off, off + rate));
+    const last = new Uint8Array(rate); last.set(input.subarray(off)); last[input.length - off] ^= ds; last[rate-1] ^= 0x80; absorb(last);
+    const out = new Uint8Array(outLen);
+    for (let o = 0; ; ){
+      for (let i = 0; i < rate/8 && o < outLen; i++){ let v = A[i]; for (let b = 0; b < 8 && o < outLen; b++){ out[o++] = Number(v & 0xffn); v >>= 8n; } }
+      if (o >= outLen) break; keccakF(A);
+    }
+    return out;
+  }
+  const cat = (...a) => { const n = a.reduce((s,x)=>s+x.length,0), o = new Uint8Array(n); let i = 0; for (const x of a){ o.set(x, i); i += x.length; } return o; };
+  const sha3_256 = m => sponge(136, 0x06, m, 32), sha3_512 = m => sponge(72, 0x06, m, 64);
+  const shake128 = (m, n) => sponge(168, 0x1f, m, n), shake256 = (m, n) => sponge(136, 0x1f, m, n);
+
+  // ---- ML-KEM-768 parameters and arithmetic ----
+  const Q = 3329, N = 256, K = 3, ETA1 = 2, ETA2 = 2, DU = 10, DV = 4;
+  const md = x => ((x % Q) + Q) % Q;
+  const br7 = i => { let r = 0; for (let b = 0; b < 7; b++) if (i & (1 << b)) r |= 1 << (6 - b); return r; };
+  const pw = (b, e) => { let r = 1; b %= Q; while (e > 0){ if (e & 1) r = r * b % Q; b = b * b % Q; e >>= 1; } return r; };
+  const ZETA = Array.from({length:128}, (_, i) => pw(17, br7(i)));
+  const GAMMA = Array.from({length:128}, (_, i) => pw(17, 2*br7(i) + 1));
+  function ntt(f){ f = f.slice(); let i = 1;
+    for (let len = 128; len >= 2; len >>= 1) for (let st = 0; st < N; st += 2*len){ const z = ZETA[i++];
+      for (let j = st; j < st + len; j++){ const t = z * f[j+len] % Q; f[j+len] = md(f[j] - t); f[j] = (f[j] + t) % Q; } }
+    return f; }
+  function intt(f){ f = f.slice(); let i = 127;
+    for (let len = 2; len <= 128; len <<= 1) for (let st = 0; st < N; st += 2*len){ const z = ZETA[i--];
+      for (let j = st; j < st + len; j++){ const t = f[j]; f[j] = (t + f[j+len]) % Q; f[j+len] = z * md(f[j+len] - t) % Q; } }
+    return f.map(x => x * 3303 % Q); }
+  function mulNTT(f, g){ const h = new Array(N);
+    for (let i = 0; i < 128; i++){ const a0 = f[2*i], a1 = f[2*i+1], b0 = g[2*i], b1 = g[2*i+1];
+      h[2*i] = (a0*b0 + (a1*b1 % Q) * GAMMA[i]) % Q; h[2*i+1] = (a0*b1 + a1*b0) % Q; }
+    return h; }
+  const add = (f, g) => f.map((x, i) => (x + g[i]) % Q), sub = (f, g) => f.map((x, i) => md(x - g[i]));
+  function sampleNTT(seed){
+    for (let len = 840; ; len += 504){ const s = shake128(seed, len), a = [];
+      for (let j = 0; j + 3 <= len && a.length < N; j += 3){ const d1 = s[j] + 256*(s[j+1] & 15), d2 = (s[j+1] >> 4) + 16*s[j+2];
+        if (d1 < Q) a.push(d1); if (d2 < Q && a.length < N) a.push(d2); }
+      if (a.length === N) return a; } }
+  function cbd(B, eta){ const f = new Array(N), bit = i => (B[i >> 3] >> (i & 7)) & 1;
+    for (let i = 0; i < N; i++){ let x = 0, y = 0; for (let j = 0; j < eta; j++){ x += bit(2*i*eta + j); y += bit(2*i*eta + eta + j); } f[i] = md(x - y); }
+    return f; }
+  const prf = (s, b, eta) => shake256(cat(s, new Uint8Array([b])), 64*eta);
+  function enc(F, d){ const out = new Uint8Array(32*d); let bitpos = 0;
+    for (let i = 0; i < N; i++){ let a = F[i]; for (let j = 0; j < d; j++){ out[bitpos >> 3] |= (a & 1) << (bitpos & 7); a >>= 1; bitpos++; } }
+    return out; }
+  function dec(B, d){ const F = new Array(N), m = d === 12 ? Q : (1 << d); let bitpos = 0;
+    for (let i = 0; i < N; i++){ let v = 0; for (let j = 0; j < d; j++){ v |= ((B[bitpos >> 3] >> (bitpos & 7)) & 1) << j; bitpos++; } F[i] = v % m; }
+    return F; }
+  const compress = (x, d) => Math.floor(((x * (1 << d)) * 2 + Q) / (2 * Q)) & ((1 << d) - 1);
+  const decompress = (y, d) => Math.floor((y * Q * 2 + (1 << d)) / (1 << (d + 1)));
+  function matrix(rho){ const A = []; for (let i = 0; i < K; i++){ A.push([]); for (let j = 0; j < K; j++) A[i].push(sampleNTT(cat(rho, new Uint8Array([j, i])))); } return A; }
+
+  function pkeKeyGen(d){
+    const g = sha3_512(cat(d, new Uint8Array([K]))), rho = g.subarray(0, 32), sigma = g.subarray(32);
+    const A = matrix(rho); let n = 0;
+    const s = [], e = []; for (let i = 0; i < K; i++) s.push(ntt(cbd(prf(sigma, n++, ETA1), ETA1))); for (let i = 0; i < K; i++) e.push(ntt(cbd(prf(sigma, n++, ETA1), ETA1)));
+    const t = []; for (let i = 0; i < K; i++){ let acc = e[i]; for (let j = 0; j < K; j++) acc = add(acc, mulNTT(A[i][j], s[j])); t.push(acc); }
+    return {ek: cat(...t.map(x => enc(x, 12)), rho), dk: cat(...s.map(x => enc(x, 12)))};
+  }
+  function pkeEncrypt(ek, m, r){
+    const t = []; for (let i = 0; i < K; i++) t.push(dec(ek.subarray(384*i, 384*(i+1)), 12));
+    const rho = ek.subarray(384*K), A = matrix(rho); let n = 0;
+    const y = [], e1 = []; for (let i = 0; i < K; i++) y.push(ntt(cbd(prf(r, n++, ETA1), ETA1))); for (let i = 0; i < K; i++) e1.push(cbd(prf(r, n++, ETA2), ETA2));
+    const e2 = cbd(prf(r, n++, ETA2), ETA2);
+    const u = []; for (let i = 0; i < K; i++){ let acc = new Array(N).fill(0); for (let j = 0; j < K; j++) acc = add(acc, mulNTT(A[j][i], y[j])); u.push(add(intt(acc), e1[i])); }
+    const mu = dec(m, 1).map(b => decompress(b, 1));
+    let acc = new Array(N).fill(0); for (let j = 0; j < K; j++) acc = add(acc, mulNTT(t[j], y[j]));
+    const v = add(add(intt(acc), e2), mu);
+    return cat(...u.map(x => enc(x.map(c => compress(c, DU)), DU)), enc(v.map(c => compress(c, DV)), DV));
+  }
+  function pkeDecrypt(dk, c){
+    const u = []; for (let i = 0; i < K; i++) u.push(dec(c.subarray(32*DU*i, 32*DU*(i+1)), DU).map(x => decompress(x, DU)));
+    const v = dec(c.subarray(32*DU*K), DV).map(x => decompress(x, DV));
+    const s = []; for (let i = 0; i < K; i++) s.push(dec(dk.subarray(384*i, 384*(i+1)), 12));
+    let acc = new Array(N).fill(0); for (let i = 0; i < K; i++) acc = add(acc, mulNTT(s[i], ntt(u[i])));
+    return enc(sub(v, intt(acc)).map(x => compress(x, 1)), 1);
+  }
+  const eq = (a, b) => { if (a.length !== b.length) return false; let d = 0; for (let i = 0; i < a.length; i++) d |= a[i] ^ b[i]; return d === 0; };
+  return {
+    /* seed: 64 random bytes (d || z). Returns {publicKey (1184 bytes), secretKey (2400 bytes)} */
+    keygen(seed){ seed = seed || crypto.getRandomValues(new Uint8Array(64));
+      const d = seed.subarray(0, 32), z = seed.subarray(32, 64), {ek, dk} = pkeKeyGen(d);
+      return {publicKey: ek, secretKey: cat(dk, ek, sha3_256(ek), z)}; },
+    /* returns {cipherText (1088 bytes), sharedSecret (32 bytes)} */
+    encapsulate(ek, m){
+      if (ek.length !== 1184) throw new Error('bad ML-KEM public key');
+      for (let i = 0; i < K; i++){ const t = ek.subarray(384*i, 384*(i+1)); if (!eq(enc(dec(t, 12), 12), t)) throw new Error('bad ML-KEM public key'); }   // FIPS 203 input check
+      m = m || crypto.getRandomValues(new Uint8Array(32));
+      const g = sha3_512(cat(m, sha3_256(ek)));
+      return {cipherText: pkeEncrypt(ek, m, g.subarray(32)), sharedSecret: g.slice(0, 32)}; },
+    decapsulate(dk, c){
+      if (c.length !== 1088 || dk.length !== 2400) throw new Error('bad ML-KEM input');
+      const dkp = dk.subarray(0, 1152), ek = dk.subarray(1152, 2336), h = dk.subarray(2336, 2368), z = dk.subarray(2368);
+      const m = pkeDecrypt(dkp, c), g = sha3_512(cat(m, h)), kbar = shake256(cat(z, c), 32);
+      return eq(c, pkeEncrypt(ek, m, g.subarray(32))) ? g.slice(0, 32) : kbar; },
+    _hash: {sha3_256, sha3_512, shake128, shake256},
+  };
+})();
+
 </script>
 <script>
 /* ===================== Shelly app ===================== */
 const $ = s => document.querySelector(s), $$ = s => [...document.querySelectorAll(s)];
 const esc = v => String(v==null?'':v).replace(/[&<>"]/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'})[c]);
-const KEEP_MS = 6 * 3600 * 1000;                        // messages and call records live 6 hours
-const INVITE_MS = 7 * 86400 * 1000;                     // unused invites expire after 7 days
+const KEEP_MS = 3 * 3600 * 1000;                        // messages and call records are destroyed after 3 hours
+const CONTACT_MS = 3 * 3600 * 1000;                     // contacts are erased 3 hours after they were added
+const INVITE_MS = 3 * 3600 * 1000;                      // unused invites expire after 3 hours
+const WIPE_HOUR = 1;                                    // every night at 1 am Shelly destroys all its data and starts fresh
 const NATIVE = !!(window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform());
 let V = null, me = null, contacts = {}, invites = {}, settings = {}, prefs = {};
 let CONFIG = {relay:''};
@@ -584,7 +841,7 @@ const msgsOf = id => (V.msgs[id] = V.msgs[id] || []);
 const setMsgs = (id, m) => { V.msgs[id] = m.slice(-500); save(); };
 const initials = n => (n||'?').trim().split(/\s+/).map(w=>w[0]).join('').slice(0,2).toUpperCase() || '?';
 const fmtT = t => new Date(t).toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
-const left = t => { const ms = t + KEEP_MS - Date.now(); if (ms <= 0) return 'deleting'; const h = Math.floor(ms/3600000), m = Math.ceil((ms%3600000)/60000); return h ? `${h} h ${m} min left` : `${m} min left`; };
+const left = (t, life=KEEP_MS) => { const ms = t + life - Date.now(); if (ms <= 0) return 'deleting'; const mins = Math.ceil(ms/60000), h = Math.floor(mins/60), m = mins%60; return h ? `${h} h ${m} min left` : `${m} min left`; };
 function toast(t, ms=3200){ const el=$('#toast'); el.textContent=t; el.hidden=false; clearTimeout(toastT); toastT=setTimeout(()=>el.hidden=true, ms); }
 function show(id){ ['#s-loading','#s-welcome','#s-home','#s-chat','#s-settings'].forEach(s=>$(s).hidden = s!==id); }
 function newId(){ const a='abcdefghijkmnpqrstuvwxyz23456789', r=SC.rand(20); return 'shelly-'+[...r].map(b=>a[b%a.length]).join(''); }
@@ -592,16 +849,44 @@ function newId(){ const a='abcdefghijkmnpqrstuvwxyz23456789', r=SC.rand(20); ret
 /* ---------- 6-hour rule: purge old messages and call records ---------- */
 function purge(){
   if (!V) return; const cut = Date.now() - KEEP_MS; let changed = false;
-  for (const id of Object.keys(V.msgs)){ const m = V.msgs[id], k = m.filter(x=>x.ts > cut); if (k.length !== m.length){ changed = true; V.msgs[id] = k; } }
+  for (const id of Object.keys(V.msgs)){ const m = V.msgs[id], k = m.filter(x=>x.ts > cut); if (k.length !== m.length){ changed = true; m.filter(x=>x.ts <= cut && x.file).forEach(x=>forgetFile(x.id)); V.msgs[id] = k; } }
   for (const id of Object.keys(contacts)){ const c = contacts[id]; if (c.unread && !msgsOf(id).some(x=>!x.me && !x.sys)){ c.unread = 0; changed = true; } }
   for (const k of Object.keys(invites)) if (Date.now() - invites[k].created > INVITE_MS){ delete invites[k]; changed = true; }
+  for (const id of Object.keys(contacts)) if (Date.now() - (contacts[id].added||0) > CONTACT_MS && !(call && call.id === id)){
+    const s = sessions[id]; if (s && s.conn) try { s.conn.close(); } catch(e){}
+    (V.msgs[id]||[]).filter(x=>x.file).forEach(x=>forgetFile(x.id));
+    delete sessions[id]; delete contacts[id]; delete V.msgs[id]; changed = true;
+    if (cur === id){ cur = null; show('#s-home'); toast('That contact was erased after 3 hours.'); }
+  }
   if (changed){ save(); drawAll(); }
 }
-setInterval(()=>{ purge(); if (cur && !$('#s-chat').hidden) drawChat(); }, 60000);
+setInterval(()=>{ purge(); nightlyCheck(); if (cur && !$('#s-chat').hidden) drawChat(); else if (!$('#s-home').hidden) drawContacts(); }, 30000);
+
+/* ---------- nightly self-purge at 1 am: everything is destroyed and Shelly starts over with a new identity ---------- */
+function lastWipeTime(now = new Date()){ const t = new Date(now.getFullYear(), now.getMonth(), now.getDate(), WIPE_HOUR, 0, 0, 0); if (now < t) t.setDate(t.getDate() - 1); return t.getTime(); }
+function nightlyCheck(){ if (V && V.me && (V.lastWipe||0) < lastWipeTime()) nightlyWipe(); }
+let wiping = false;
+async function nightlyWipe(){
+  if (wiping) return;
+  if (call || ringing){ V.wipeAfterCall = true; return; }                 // never cut a call off; wipe as soon as it ends
+  wiping = true;
+  try { Object.values(sessions).forEach(s=>{ try { s.conn && s.conn.close(); } catch(e){} }); } catch(e){}
+  try { peer && peer.destroy(); } catch(e){}
+  try { if (!NATIVE && 'serviceWorker' in navigator){ const reg = await navigator.serviceWorker.getRegistration(); const sub = reg && await reg.pushManager.getSubscription(); if (sub) await sub.unsubscribe(); } } catch(e){}
+  const keep = {name: me ? me.name : '', prefs: V.prefs, settings: V.settings};
+  await Vault.wipe();                                                      // deletes the stored data AND the storage key
+  Vault.key = await Vault.getKey();                                        // brand-new storage key
+  Vault.data = Vault.blank(); Vault.data.prefs = keep.prefs; Vault.data.settings = keep.settings;
+  Vault.data.me = keep.name ? {id:newId(), name:keep.name} : null;          // brand-new Shelly ID
+  Vault.data.lastWipe = Date.now(); Vault.data.notice = 'night';
+  await Vault.flush();
+  location.reload();
+}
 
 /* ---------- looks: theme, light/dark, wallpaper ---------- */
 const SKINS = {calypso:['Calypso','#0a8c8a','#e0475b','#f6b52b'], sunset:['Sunset','#c8471f','#8e3fa8','#f2a93b'], reef:['Reef','#1565c0','#ef5a4c','#1aa0d8'],
-               carnival:['Carnival','#a3126f','#e6a700','#1d9a55'], palm:['Palm','#2e7d32','#ef6c00','#f9a825']};
+               carnival:['Carnival','#a3126f','#e6a700','#1d9a55'], palm:['Palm','#2e7d32','#ef6c00','#f9a825'],
+               golden:['Golden Hour','#c26a0a','#d8452e','#f0b030'], hibiscus:['Hibiscus Glow','#d1344f','#7b3fa0','#ff9f43'], mahogany:['Mahogany','#8a4b2a','#c99a3d','#d96c3c']};
 const WALLS = {plain:'Plain', waves:'Waves', hibiscus:'Hibiscus', pan:'Steel pan'};
 function applyLook(){
   const r = document.documentElement; r.dataset.skin = SKINS[prefs.skin] ? prefs.skin : 'calypso';
@@ -633,7 +918,8 @@ function setStatus(kind, text){ $('#h-dot').className = 'dot' + (kind==='on'?' o
 function startPeer(){
   if (typeof Peer === 'undefined'){ setStatus('off', 'No internet'); setTimeout(()=>location.reload(), 30000); return; }
   setStatus('wait', 'Connecting');
-  peer = new Peer(me.id, {config:{iceServers:iceServers(), ...E2EE.pcConfig()}, debug:0});
+  const relayOnly = !!(settings.relayOnly && settings.turn);         // hide this phone's internet address from contacts
+  peer = new Peer(me.id, {config:{iceServers:iceServers(), iceTransportPolicy: relayOnly ? 'relay' : 'all', ...E2EE.pcConfig()}, debug:0});
   peer.on('open', ()=>{ setStatus('on', 'Online'); Object.keys(contacts).forEach(id=>connect(id)); });
   peer.on('connection', conn=>incoming(conn));
   peer.on('call', c=>incomingCall(c));
@@ -665,14 +951,30 @@ function wire(conn, id){
     if (s.conn && s.conn !== conn && s.conn.open && s.ready){ conn.close(); return; }
     s.conn = conn; s.ready = false; await sayHello(conn, id);
   });
-  conn.on('data', d=>onData(id, conn, d));
+  conn.on('data', d=>{ conn._q = (conn._q || Promise.resolve()).then(()=>onData(id, conn, d)).catch(()=>{}); });   // one message at a time
   conn.on('close', ()=>{ if (s.conn === conn){ s.conn=null; s.ready=false; drawAll(); } });
   conn.on('error', ()=>{});
 }
-function sayHello(conn, id){                            // exactly one key pair and one hello per connection
-  if (!conn._kp) conn._kp = (async ()=>{ const kp = await SC.ecdh(), c = contacts[id];
-    conn.send({t:'hello', name:me.name, pub:SC.b64(await SC.pub(kp)), invite: c && !c.bound ? c.invite : undefined}); return kp; })();
+function sayHello(conn, id){                            // exactly one set of fresh keys and one hello per connection
+  if (!conn._kp) conn._kp = (async ()=>{ const ec = await SC.ecdh(), kem = MLKEM.keygen(), c = contacts[id];
+    const kp = {ec, ecPub: await SC.pub(ec), kem};
+    conn.send({t:'hello', v:2, name:me.name, pub:SC.b64(kp.ecPub), kem:SC.b64(kem.publicKey), invite: c && !c.bound ? c.invite : undefined}); return kp; })();
   return conn._kp;
+}
+async function tryDerive(id, conn){                     // keys once we have their hello and both ML-KEM secrets
+  const s = sessions[id], c = contacts[id];
+  if (conn._derived || !conn._peer || !conn._ssToMe || !conn._ssToThem || !c) return;
+  conn._derived = true;
+  const kp = await conn._kp, low = me.id < id;
+  const mine = {pub:kp.ecPub, kem:kp.kem.publicKey}, theirs = {pub:conn._peer.pub, kem:conn._peer.kem};
+  const [A, B] = low ? [mine, theirs] : [theirs, mine];
+  const [ctA, ctB] = low ? [conn._ctToMe, conn._ctToThem] : [conn._ctToThem, conn._ctToMe];   // ciphertext opened by A, by B
+  const tr = new Uint8Array(A.pub.length + A.kem.length + B.pub.length + B.kem.length + ctA.length + ctB.length); let o = 0;
+  for (const x of [A.pub, A.kem, B.pub, B.kem, ctA, ctB]){ tr.set(x, o); o += x.length; }
+  try { s.keys = await SC.derive(kp.ec, conn._peer.pub, SC.unb64(c.K), me.id, id, conn._ssToMe, conn._ssToThem, tr); }
+  catch(e){ conn.close(); return; }
+  s.conn = conn;
+  conn.send({t:'confirm', box: await SC.seal(s.keys.chatTx, {ok:'shelly', id:me.id})});
 }
 async function onData(id, conn, d){
   const s = sessions[id] || (sessions[id] = {});
@@ -687,11 +989,19 @@ async function onData(id, conn, d){
       sysMsg(id, `${c.name} joined from your invite.`); toast(`${c.name} is now a contact`);
     }
     if (c.blocked){ conn.close(); return; }
-    s.conn = conn; const kp = await sayHello(conn, id);
-    try { s.keys = await SC.derive(kp, SC.unb64(d.pub), SC.unb64(c.K), me.id, id); } catch(e){ conn.close(); return; }
+    if (d.v !== 2 || !d.kem){ sysMsg(id, `${c.name} has an older Shelly without post-quantum encryption - ask them to reopen Shelly to update.`); conn.close(); return; }
+    s.conn = conn; await sayHello(conn, id);
+    try { conn._peer = {pub:SC.unb64(d.pub), kem:SC.unb64(d.kem)};
+      const e = MLKEM.encapsulate(conn._peer.kem); conn._ssToThem = e.sharedSecret; conn._ctToThem = e.cipherText;
+      conn.send({t:'kem', ct:SC.b64(e.cipherText)}); } catch(e){ conn.close(); return; }
     if (d.name) c.name = String(d.name).slice(0,30);
-    conn.send({t:'confirm', box: await SC.seal(s.keys.chatTx, {ok:'shelly', id:me.id})});
-    return;
+    return tryDerive(id, conn);
+  }
+  if (d.t === 'kem'){
+    if (conn._ssToMe) return;
+    try { const kp = await conn._kp, ct = SC.unb64(String(d.ct||''));
+      conn._ssToMe = MLKEM.decapsulate(kp.kem.secretKey, ct); conn._ctToMe = ct; } catch(e){ conn.close(); return; }
+    return tryDerive(id, conn);
   }
   if (d.t === 'confirm'){
     try { const o = await SC.open(s.keys.chatRx, d.box); if (o.ok!=='shelly' || o.id!==id) throw 0; }
@@ -702,6 +1012,7 @@ async function onData(id, conn, d){
     if (call && call.waitFor === id) call.go && call.go();
     return;
   }
+  if (d.fc){ if (s.ready) await onFileChunk(id, d); return; }
   if (!s.ready || !d.box) return;
   let o; try { o = await SC.open(s.keys.chatRx, d.box); } catch(e){ return; }      // anything not sealed with our key is dropped
   const c = contacts[id];
@@ -712,6 +1023,8 @@ async function onData(id, conn, d){
     if (cur !== id || document.hidden){ c.unread = (c.unread||0)+1; save(); notifyLocal(c.name, 'New message'); }
     if (!call) playTone('msg');
     drawAll();
+  } else if (o.t === 'file'){ await onFileHeader(id, o);
+  } else if (o.t === 'fack'){ const r = msgsOf(id).find(x=>x.id===o.id && x.me); if (r){ r.state = 'delivered'; save(); drawChat(); }
   } else if (o.t === 'ack'){
     const m = msgsOf(id), x = m.find(x=>x.id===o.id); if (x){ x.state='delivered'; setMsgs(id, m); drawChat(); }
   } else if (o.t === 'push'){
@@ -719,7 +1032,11 @@ async function onData(id, conn, d){
   } else if (o.t === 'bye'){ endCall(false); }
 }
 async function sendSealed(id, obj){ const s=sessions[id]; if (!s || !s.ready || !s.conn || !s.conn.open) return false; s.conn.send({box: await SC.seal(s.keys.chatTx, obj)}); return true; }
-async function flushQueue(id){ const m=msgsOf(id); for (const x of m) if (x.me && x.state==='waiting') if (await sendSealed(id, {t:'msg', id:x.id, text:x.text, ts:x.ts})) x.state='sent'; setMsgs(id, m); drawChat(); }
+async function flushQueue(id){ const m=msgsOf(id);
+  for (const x of m) if (x.me && !x.file && x.state==='waiting') if (await sendSealed(id, {t:'msg', id:x.id, text:x.text, ts:x.ts})) x.state='sent';
+  setMsgs(id, m); drawChat();
+  for (const x of m) if (x.me && x.file && (x.state==='waiting' || x.state==='sending')) await sendFile(id, x);   // files resume from the start
+}
 function sysMsg(id, text){ const m=msgsOf(id); m.push({id:'s'+Date.now()+Math.random(), sys:true, text, ts:Date.now()}); setMsgs(id, m); drawChat(); }
 function notifyLocal(title, body){ try { if (document.hidden && 'Notification' in window && Notification.permission==='granted') new Notification(title, {body, icon:'icon-192.png'}); } catch(e){} }
 
@@ -822,6 +1139,189 @@ async function startScan(){
 }
 function stopScan(){ scanOn = false; $('#scan').hidden = true; if (scanStream) scanStream.getTracks().forEach(t=>t.stop()); scanStream = null; }
 
+/* ---------- files and voice notes: AES-256 pieces phone to phone; the sender decides "view only" or "can save" ---------- */
+const CHUNK = 48 * 1024, MAX_FILE = 25 * 1024 * 1024, VOICE_MAX_S = 300;
+const fileUrls = {}, sendingNow = new Set();
+const kindOf = mime => /^image\//.test(mime) ? 'image' : /^video\//.test(mime) ? 'video' : /^audio\//.test(mime) ? 'voice' : 'doc';
+const fmtSize = n => n < 1024*1024 ? `${Math.max(1, Math.round(n/1024))} KB` : `${(n/1048576).toFixed(1)} MB`;
+const fmtDur = s => `${Math.floor(s/60)}:${String(Math.round(s%60)).padStart(2,'0')}`;
+const fileLabel = f => f.kind==='image' ? '📷 Photo' : f.kind==='video' ? '🎬 Video' : f.kind==='voice' ? `🎤 Voice note ${f.dur ? fmtDur(f.dur) : ''}` : `📄 ${f.name}`;
+const safeName = n => String(n||'file').replace(/[\\/:*?"<>|\u0000-\u001f]/g, '_').slice(0, 80) || 'file';
+async function fileUrl(id, mime){
+  if (fileUrls[id]) return fileUrls[id];
+  const bytes = await Files.get(id); if (!bytes) return null;
+  return (fileUrls[id] = URL.createObjectURL(new Blob([bytes], {type: mime || 'application/octet-stream'})));
+}
+function forgetFile(id){ if (fileUrls[id]){ URL.revokeObjectURL(fileUrls[id]); delete fileUrls[id]; } Files.del(id); }
+function findMsg(id){ for (const cid of Object.keys(V.msgs)){ const m = V.msgs[cid].find(x=>x.id===id); if (m) return {cid, m}; } return null; }
+function setProgress(id, p){ const el = document.querySelector(`[data-prog="${CSS.escape(id)}"] i`); if (el) el.style.width = Math.round(p*100) + '%'; }
+
+// ---- the send sheet: the sender chooses what the receiver may do ----
+let draft = null;
+function openSendSheet(d){
+  draft = d; const f = d;
+  $('#fs-title').textContent = f.kind==='voice' ? 'Send voice note' : f.kind==='image' ? 'Send photo' : f.kind==='video' ? 'Send video' : 'Send file';
+  const url = URL.createObjectURL(new Blob([d.bytes], {type:d.mime})); draft.url = url;
+  $('#fs-prev').innerHTML = f.kind==='image' ? `<img src="${url}" alt="">` : f.kind==='video' ? `<video src="${url}" controls playsinline></video>` : f.kind==='voice' ? `<audio src="${url}" controls></audio>` : `<div class="fdoc"><span>📄</span><span><b>${esc(f.name)}</b></span></div>`;
+  $('#fs-info').textContent = `${f.kind==='voice' && f.dur ? fmtDur(f.dur) + ' · ' : ''}${fmtSize(d.bytes.length)} · encrypted with AES-256 · destroyed after 3 hours`;
+  draft.save = f.kind === 'doc';
+  $('[data-save="0"]').disabled = f.kind === 'doc';
+  drawSaveChoice(); $('#fsheet').hidden = false;
+}
+function drawSaveChoice(){
+  $$('#fs-mode [data-save]').forEach(b=>{ const on = (b.dataset.save==='1') === !!draft.save; b.setAttribute('aria-pressed', String(on)); b.setAttribute('aria-checked', String(on)); });
+  $('#fs-note').textContent = draft.kind === 'doc' ? 'Documents can only be opened by saving them, so they are sent as "Let them save it".'
+    : draft.save ? 'They can save a copy to their phone. A saved copy is outside Shelly and will not be erased.'
+    : 'View only: it opens only inside Shelly - no saving, downloading or long-press. In the Android app screenshots are blocked too.';
+}
+$$('#fs-mode [data-save]').forEach(b=>b.onclick=()=>{ if (b.disabled) return; draft.save = b.dataset.save === '1'; drawSaveChoice(); });
+function closeSheet(){ if (draft && draft.url) URL.revokeObjectURL(draft.url); draft = null; $('#fsheet').hidden = true; $('#fs-prev').innerHTML = ''; }
+$('#fs-x').onclick = closeSheet;
+$('#fs-go').onclick = async ()=>{
+  if (!draft || !cur) return closeSheet();
+  const d = draft, id = SC.b64(SC.rand(12)), cid = cur;
+  closeSheet();
+  await Files.put(id, d.bytes);
+  const msg = {id, me:true, ts:Date.now(), state:'waiting', file:{name:safeName(d.name), mime:d.mime, size:d.bytes.length, kind:d.kind, save:!!d.save, dur:d.dur||0}};
+  const m = msgsOf(cid); m.push(msg); setMsgs(cid, m); drawChat();
+  if (!(await sendFile(cid, msg))) pushTo(cid, 'msg');
+};
+$('#c-attach').onclick = ()=>$('#c-file').click();
+$('#c-file').onchange = async e=>{
+  const f = e.target.files && e.target.files[0]; e.target.value = ''; if (!f) return;
+  if (f.size > MAX_FILE) return toast(`That file is ${fmtSize(f.size)} - the limit is 25 MB.`);
+  const bytes = new Uint8Array(await f.arrayBuffer()), mime = f.type || 'application/octet-stream';
+  openSendSheet({bytes, name:f.name, mime, kind:kindOf(mime)});
+};
+
+// ---- sending: header, then sealed 48 KB pieces; resumes from the start if the link drops ----
+async function sendFile(cid, msg){
+  const s = sessions[cid]; if (!s || !s.ready || !s.conn || !s.conn.open) return false;
+  if (sendingNow.has(msg.id)) return true; sendingNow.add(msg.id);
+  try {
+    const bytes = await Files.get(msg.id); if (!bytes){ msg.state = 'failed'; save(); drawChat(); return true; }
+    const n = Math.max(1, Math.ceil(bytes.length / CHUNK)), conn = s.conn;
+    await sendSealed(cid, {t:'file', id:msg.id, ...msg.file, chunks:n, ts:msg.ts});
+    msg.state = 'sending'; drawChat();
+    for (let i = 0; i < n; i++){
+      if (!conn.open || s.conn !== conn){ msg.state = 'waiting'; save(); drawChat(); return false; }
+      conn.send({fc:msg.id, i, box: await sealBytes(s.keys.chatTx, bytes.subarray(i*CHUNK, (i+1)*CHUNK), msg.id + ':' + i)});
+      const dc = conn.dataChannel;
+      while (dc && dc.bufferedAmount > 2*1024*1024 && conn.open) await new Promise(r=>setTimeout(r, 40));   // don't flood the link
+      if (i % 4 === 3) setProgress(msg.id, (i+1)/n);
+    }
+    msg.state = 'sent'; save(); drawChat(); return true;
+  } finally { sendingNow.delete(msg.id); }
+}
+// ---- receiving ----
+async function onFileHeader(cid, o){
+  const s = sessions[cid], c = contacts[cid];
+  const size = Math.min(+o.size||0, MAX_FILE), chunks = Math.ceil(size / CHUNK) || 1;
+  if (!o.id || +o.size > MAX_FILE || +o.chunks !== chunks || Date.now() - (o.ts||0) > KEEP_MS) return;
+  const kind = ['image','video','voice','doc'].includes(o.kind) ? o.kind : 'doc';
+  const file = {name:safeName(o.name), mime:String(o.mime||'application/octet-stream').slice(0,100), size, kind, save:!!o.save || kind==='doc', dur:+o.dur||0};
+  const m = msgsOf(cid); let x = m.find(y=>y.id===o.id);
+  if (x && x.state === 'ready') return sendSealed(cid, {t:'fack', id:o.id});
+  if (!x){ x = {id:o.id, me:false, ts:Math.min(o.ts||Date.now(), Date.now()), state:'receiving', file}; m.push(x); setMsgs(cid, m);
+    if (cur !== cid || document.hidden){ c.unread = (c.unread||0)+1; save(); notifyLocal(c.name, 'New ' + (kind==='voice' ? 'voice note' : kind==='doc' ? 'file' : kind)); }
+    if (!call) playTone('msg'); }
+  x.state = 'receiving';
+  (s.incoming = s.incoming || {})[o.id] = {parts:new Array(chunks), got:0, chunks, size};
+  drawAll();
+}
+async function onFileChunk(cid, d){
+  const s = sessions[cid], inc = s.incoming && s.incoming[d.fc]; if (!inc || !d.box || !(d.i >= 0 && d.i < inc.chunks) || inc.parts[d.i]) return;
+  try { inc.parts[d.i] = await openBytes(s.keys.chatRx, d.box, d.fc + ':' + d.i); } catch(e){ return; }   // anything not sealed with our key is dropped
+  inc.got++; if (inc.got % 4 === 0) setProgress(d.fc, inc.got / inc.chunks);
+  if (inc.got < inc.chunks) return;
+  delete s.incoming[d.fc];
+  const all = new Uint8Array(inc.parts.reduce((n, p)=>n + p.length, 0)); let o = 0; for (const p of inc.parts){ all.set(p, o); o += p.length; }
+  await Files.put(d.fc, all);
+  const f = findMsg(d.fc); if (f){ f.m.state = 'ready'; save(); }
+  sendSealed(cid, {t:'fack', id:d.fc}); drawAll();
+}
+
+// ---- viewing, playing and saving ----
+async function viewFile(id){
+  const r = findMsg(id); if (!r) return; const f = r.m.file, url = await fileUrl(id, f.mime); if (!url) return toast('This file is no longer on this phone.');
+  $('#v-name').textContent = f.kind==='image' ? 'Photo' : f.kind==='video' ? 'Video' : f.name;
+  $('#v-mode').textContent = f.save ? 'Can save' : 'View only';
+  $('#v-save').hidden = !(f.save && !r.m.me); $('#v-save').dataset.id = id;
+  $('#v-body').innerHTML = f.kind==='image' ? `<img src="${url}" alt="" draggable="false">`
+    : `<video src="${url}" controls autoplay playsinline disablepictureinpicture controlslist="nodownload noremoteplayback noplaybackrate"></video>`;
+  $('#viewer').hidden = false;
+}
+$('#v-x').onclick = ()=>{ $('#viewer').hidden = true; $('#v-body').innerHTML = ''; };
+$('#v-save').onclick = ()=>saveFile($('#v-save').dataset.id);
+['contextmenu','dragstart','copy'].forEach(ev=>$('#viewer').addEventListener(ev, e=>e.preventDefault()));
+let playing = null;
+async function playVoice(id){
+  const p = $('#vplayer');
+  if (playing === id && !p.paused){ p.pause(); drawChat(); return; }
+  const r = findMsg(id); if (!r) return; const url = await fileUrl(id, r.m.file.mime); if (!url) return;
+  if (playing !== id){ p.src = url; playing = id; }
+  p.play().catch(()=>{}); drawChat();
+}
+$('#vplayer').ontimeupdate = ()=>{ const p = $('#vplayer'); if (playing && p.duration) setProgress('v' + playing, p.currentTime / p.duration); };
+$('#vplayer').onended = ()=>{ playing = null; drawChat(); };
+async function saveFile(id){
+  const r = findMsg(id); if (!r || !(r.m.file.save) || r.m.me) return;
+  const f = r.m.file, bytes = await Files.get(id); if (!bytes) return toast('This file is no longer on this phone.');
+  try {
+    if (NATIVE){
+      const {Filesystem, Share} = window.Capacitor.Plugins;
+      let b = ''; for (let i = 0; i < bytes.length; i += 32768) b += String.fromCharCode.apply(null, bytes.subarray(i, i + 32768));
+      await Filesystem.writeFile({path:f.name, data:btoa(b), directory:'CACHE'});
+      const {uri} = await Filesystem.getUri({path:f.name, directory:'CACHE'});
+      await Share.share({title:f.name, files:[uri]});
+    } else {
+      const a = document.createElement('a'); a.href = await fileUrl(id, f.mime); a.download = f.name; document.body.appendChild(a); a.click(); a.remove();
+    }
+    toast('Saved - this copy is outside Shelly and will not be erased.');
+  } catch(e){ toast('Could not save on this phone.'); }
+}
+
+// ---- voice notes ----
+let rec = null;
+$('#c-mic').onclick = async ()=>{
+  if (rec) return;
+  let stream; try { stream = await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:true, noiseSuppression:true}}); } catch(e){ return toast('Allow the microphone to record a voice note.'); }
+  const type = ['audio/webm;codecs=opus','audio/mp4','audio/ogg;codecs=opus'].find(t=>window.MediaRecorder && MediaRecorder.isTypeSupported && MediaRecorder.isTypeSupported(t)) || '';
+  const mr = new MediaRecorder(stream, type ? {mimeType:type, audioBitsPerSecond:32000} : undefined), parts = [];
+  rec = {mr, stream, t0:Date.now(), keep:true};
+  mr.ondataavailable = e=>{ if (e.data && e.data.size) parts.push(e.data); };
+  mr.onstop = async ()=>{ stream.getTracks().forEach(t=>t.stop()); const r = rec; rec = null; clearInterval(r.tick); $('#c-rec').hidden = true;
+    if (!r.keep || !parts.length) return;
+    const blob = new Blob(parts, {type: mr.mimeType || type || 'audio/webm'}), dur = (Date.now() - r.t0)/1000;
+    if (dur < 1) return toast('Hold on a little longer - that voice note was under a second.');
+    openSendSheet({bytes:new Uint8Array(await blob.arrayBuffer()), name:'voice-note.' + (/mp4/.test(blob.type) ? 'm4a' : 'webm'), mime:blob.type.split(';')[0], kind:'voice', dur}); };
+  mr.start(500); $('#c-rec').hidden = false; $('#c-rec-t').textContent = '0:00';
+  rec.tick = setInterval(()=>{ const s = (Date.now() - rec.t0)/1000; $('#c-rec-t').textContent = fmtDur(s); if (s >= VOICE_MAX_S){ rec.mr.stop(); toast('Voice notes can be up to 5 minutes.'); } }, 250);
+};
+$('#c-rec-stop').onclick = ()=>{ if (rec) rec.mr.stop(); };
+$('#c-rec-x').onclick = ()=>{ if (rec){ rec.keep = false; rec.mr.stop(); } };
+
+// ---- a file bubble ----
+function fileBubble(x){
+  const f = x.file, have = x.me || x.state === 'ready', tag = `<span class="ftag">${f.save ? 'CAN SAVE' : 'VIEW ONLY'} · ${fmtSize(f.size)}</span>`;
+  const moving = x.state === 'sending' || x.state === 'receiving';
+  const bar = moving ? `<span class="fbar" data-prog="${esc(x.id)}"><i></i></span>` : '';
+  const play = '<svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>', pause = '<svg viewBox="0 0 24 24"><path d="M6 5h4v14H6zM14 5h4v14h-4z"/></svg>';
+  let body;
+  if (f.kind === 'image') body = `<button type="button" class="fthumb" ${have ? `data-view="${esc(x.id)}" data-thumb="${esc(x.id)}"` : 'disabled'} aria-label="Open photo">${have ? '' : 'Receiving…'}</button>`;
+  else if (f.kind === 'video') body = `<button type="button" class="fthumb" ${have ? `data-view="${esc(x.id)}"` : 'disabled'} aria-label="Play video">${have ? play : 'Receiving…'}</button>`;
+  else if (f.kind === 'voice') body = `<div class="fvoice"><button type="button" ${have ? `data-play="${esc(x.id)}"` : 'disabled'} aria-label="Play voice note">${playing === x.id && !$('#vplayer').paused ? pause : play}</button><span class="fbar" data-prog="v${esc(x.id)}"><i></i></span><span>${fmtDur(f.dur||0)}</span></div>`;
+  else body = `<div class="fdoc"><span aria-hidden="true">📄</span><span><b>${esc(f.name)}</b></span></div>`;
+  const saveBtn = have && !x.me && f.save ? `<button type="button" class="fsave" data-savefile="${esc(x.id)}">Save to phone</button>` : '';
+  return `<div class="fmsg">${body}${bar}${tag}${saveBtn}</div>`;
+}
+async function hydrateFiles(){
+  for (const el of $$('#c-msgs [data-thumb]')){ const r = findMsg(el.dataset.thumb); if (!r) continue; const u = await fileUrl(el.dataset.thumb, r.m.file.mime); if (u) el.style.backgroundImage = `url("${u}")`; }
+  $$('#c-msgs [data-view]').forEach(b=>b.onclick=()=>viewFile(b.dataset.view));
+  $$('#c-msgs [data-play]').forEach(b=>b.onclick=()=>playVoice(b.dataset.play));
+  $$('#c-msgs [data-savefile]').forEach(b=>b.onclick=()=>saveFile(b.dataset.savefile));
+}
+
 /* ---------- drawing ---------- */
 function drawAll(){ drawContacts(); drawChat(); }
 function drawContacts(){
@@ -831,7 +1331,8 @@ function drawContacts(){
     const c = contacts[id], s = sessions[id]||{}, last = msgsOf(id).filter(m=>!m.sys).slice(-1)[0];
     return `<div class="contact"><div class="av">${esc(initials(c.name))}<span class="dot ${s.ready?'on':(c.bound?'':'wait')}"></span></div>
       <button class="who" data-open="${esc(id)}"><b>${esc(c.name)} ${c.unread ? `<span class="unread">${c.unread}</span>` : ''}</b>
-      <span>${last ? esc((last.me?'You: ':'')+last.text) : (c.bound ? (s.ready?'Online - say hello':(c.push?'Offline - a call will ring their phone':'Offline')) : 'Waiting for them to open Shelly')}</span></button>
+      <span>${last ? esc((last.me?'You: ':'')+(last.file ? fileLabel(last.file) : last.text)) : (c.bound ? (s.ready?'Online - say hello':(c.push?'Offline - a call will ring their phone':'Offline')) : 'Waiting for them to open Shelly')}</span>
+      <span class="timer" style="text-align:left">Contact erased in ${left(c.added||Date.now(), CONTACT_MS).replace(' left','')}</span></button>
       <button class="icon-btn" data-call="${esc(id)}" aria-label="Voice call ${esc(c.name)}"><svg viewBox="0 0 24 24"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8 9.8a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.7 2z"/></svg></button>
       <button class="icon-btn acc" data-vcall="${esc(id)}" aria-label="Video call ${esc(c.name)}"><svg viewBox="0 0 24 24"><path d="M23 7l-7 5 7 5V7z"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg></button></div>`;
   }).join('') : `<div class="empty">Nobody to lime with yet.<br>Tap <b>Invite or join</b> to add your first person.</div>`;
@@ -847,10 +1348,11 @@ function drawChat(){
   $('#c-dot').className = 'dot' + (s.ready ? ' on' : '');
   $('#c-st').textContent = s.ready ? 'Online · end-to-end encrypted' : (c.bound ? (c.push ? 'Offline - they get a notification' : 'Offline - messages send when you are both online') : 'Waiting for them to open Shelly');
   const m = msgsOf(cur), box = $('#c-msgs'), atEnd = box.scrollHeight - box.scrollTop - box.clientHeight < 60;
-  box.innerHTML = `<div class="sys"><span class="badge"><svg viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>AES-256 end-to-end · messages delete after 6 hours</span></div>` +
+  box.innerHTML = `<div class="sys"><span class="badge"><svg viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>AES-256 end-to-end · messages destroyed after 3 hours</span></div>` +
     m.map(x=> x.sys ? `<div class="sys">${esc(x.text)} · ${fmtT(x.ts)}</div>` :
-      `<div class="msg ${x.me?'me':''}">${esc(x.text)}<small>${fmtT(x.ts)}${x.me ? (x.state==='delivered'?' · ✓✓':x.state==='waiting'?' · waiting':' · ✓') : ''} · ${left(x.ts)}</small></div>`).join('');
+      `<div class="msg ${x.me?'me':''}">${x.file ? fileBubble(x) : esc(x.text)}<small>${fmtT(x.ts)}${x.me ? (x.state==='delivered'?' · ✓✓':x.state==='waiting'?' · waiting':x.state==='sending'?' · sending':x.state==='failed'?' · not sent':' · ✓') : ''} · ${left(x.ts)}</small></div>`).join('');
   if (atEnd) box.scrollTop = box.scrollHeight;
+  hydrateFiles();
 }
 function drawQuick(){
   $('#c-quick').innerHTML = (prefs.quick||[]).map((q,i)=>`<button type="button" data-q="${i}">${esc(q)}</button>`).join('');
@@ -928,6 +1430,7 @@ function endCall(tell=true, why){
   clearInterval(c.tick); clearInterval(c.poll); clearTimeout(c.giveUp); try { c.mc && c.mc.close(); } catch(e){}
   c.stream && c.stream.getTracks().forEach(t=>t.stop()); c.worker && c.worker.terminate();
   $('#s-call').hidden = true; $('#v-remote').srcObject = null; $('#v-local').srcObject = null;
+  if (V.wipeAfterCall){ V.wipeAfterCall = false; setTimeout(nightlyWipe, 1500); }
   const dur = c.t0 ? Math.round((Date.now()-c.t0)/1000) : 0;
   sysMsg(c.id, `${c.video?'Video':'Voice'} call${dur ? ` · ${Math.floor(dur/60)}:${String(dur%60).padStart(2,'0')}` : ' · ' + (why || 'not connected')}`);
 }
@@ -962,7 +1465,7 @@ const ringTone = on => playTone(on ? (ringing && ringing.metadata && ringing.met
 
 /* ---------- controls ---------- */
 $('#w-go').onclick = ()=>{ const n=$('#w-name').value.trim(); if (!n) return toast('Enter your name first.');
-  me = V.me = {id:newId(), name:n.slice(0,30)}; save(); boot(); };
+  me = V.me = {id:newId(), name:n.slice(0,30)}; V.lastWipe = Date.now(); save(); boot(); };
 $('#t-people').onclick = ()=>{ $('#t-people').setAttribute('aria-selected','true'); $('#t-invite').setAttribute('aria-selected','false'); $('#p-people').hidden=false; $('#p-invite').hidden=true; };
 $('#t-invite').onclick = ()=>{ $('#t-invite').setAttribute('aria-selected','true'); $('#t-people').setAttribute('aria-selected','false'); $('#p-people').hidden=true; $('#p-invite').hidden=false; drawInvites(); };
 $('#inv-make').onclick = makeInvite;
@@ -991,18 +1494,19 @@ $('#k-flip').onclick = async ()=>{
 $('#r-no').onclick = ()=>{ const mc=ringing; ringing=null; $('#ring').hidden=true; ringTone(false); if (mc) { sysMsg(mc.peer, 'Declined call'); mc.close(); } };
 $('#r-voice').onclick = ()=>answer(false);
 $('#r-video').onclick = ()=>answer(true);
-$('#h-settings').onclick = ()=>{ $('#st-name').value=me.name; $('#st-turn').value=settings.turn||''; $('#st-tuser').value=settings.tuser||''; $('#st-tpass').value=settings.tpass||'';
+$('#h-settings').onclick = ()=>{ $('#st-name').value=me.name; $('#st-turn').value=settings.turn||''; $('#st-tuser').value=settings.tuser||''; $('#st-tpass').value=settings.tpass||''; $('#st-relayonly').checked=!!settings.relayOnly;
   $('#st-quick').value = (prefs.quick||[]).join('\n'); $('#st-id').textContent = me.id;
-  $('#st-crypto').innerHTML = `Messages: <b>AES-256-GCM</b> end to end, deleted from this device after <b>6 hours</b>.<br>Stored on this device: sealed with <b>AES-256-GCM</b> using a key the browser keeps locked${Vault.persistent?'':' (this browser blocks storage, so nothing is kept after closing)'}.<br>Keys: fresh <b>ECDH P-256</b> for every session plus each contact's 256-bit invite secret (<b>HKDF-SHA-256</b>).<br>Calls: ${E2EE.mode==='none' ? '<b>browser standard DTLS-SRTP</b> - update this browser for AES-256 frame encryption' : '<b>AES-256-GCM</b> on every audio and video frame'}.<br>Chats can't be selected or copied. ${NATIVE ? 'Screenshots and screen recording are blocked in this app.' : 'Screenshots can only be blocked in the Android app.'}`;
+  $('#st-crypto').innerHTML = `Messages: <b>AES-256-GCM</b> end to end, destroyed after <b>3 hours</b>. Contacts are erased <b>3 hours</b> after they are added. Every night at <b>1 am</b> Shelly destroys all its data and keys and starts over with a new identity.<br>Stored on this device: sealed with <b>AES-256-GCM</b> using a key the browser keeps locked${Vault.persistent?'':' (this browser blocks storage, so nothing is kept after closing)'}.<br>Handshake: fresh <b>ECDH P-384</b> (192-bit) + post-quantum <b>ML-KEM-768</b> both ways + each contact's 256-bit invite secret, mixed with <b>HKDF-SHA-384</b> and bound to the whole handshake.<br>Calls: ${E2EE.mode==='none' ? '<b>browser standard DTLS-SRTP</b> - update this browser for AES-256 frame encryption' : '<b>AES-256-GCM</b> on every audio and video frame'}.<br>Chats can't be selected or copied. ${NATIVE ? 'Screenshots and screen recording are blocked in this app.' : 'Screenshots can only be blocked in the Android app.'}`;
   drawLookSettings(); drawPushState(); show('#s-settings'); };
 $$('[data-tone]').forEach(b=>b.onclick=()=>playTone(b.dataset.tone, false));
 $('#st-back').onclick = ()=>{ show('#s-home'); drawContacts(); };
 $('#st-save-name').onclick = ()=>{ const n=$('#st-name').value.trim(); if (!n) return; me.name=n.slice(0,30); save(); toast('Name saved - contacts see it next time you connect'); };
 $('#st-save-quick').onclick = ()=>{ prefs.quick = $('#st-quick').value.split('\n').map(x=>x.trim()).filter(Boolean).slice(0,8).map(x=>x.slice(0,60)); save(); toast('Quick replies saved'); };
-$('#st-save-turn').onclick = ()=>{ Object.assign(settings, {turn:$('#st-turn').value.trim(), tuser:$('#st-tuser').value.trim(), tpass:$('#st-tpass').value}); save(); toast('Relay saved - reopen Shelly to use it'); };
+$('#st-save-turn').onclick = ()=>{ Object.assign(settings, {turn:$('#st-turn').value.trim(), tuser:$('#st-tuser').value.trim(), tpass:$('#st-tpass').value, relayOnly:$('#st-relayonly').checked});
+  if (settings.relayOnly && !settings.turn) toast('Add a TURN address first - without one, calls could not connect.'); else { save(); toast('Relay saved - reopen Shelly to use it'); } };
 let pending = null;
 function confirmStep(text, fn){ pending = fn; $('#st-confirm-t').textContent = text; $('#st-confirm').hidden = false; }
-$('#st-clear').onclick = ()=>confirmStep('Delete every message and call record on this device?', ()=>{ V.msgs = {}; Object.values(contacts).forEach(c=>c.unread=0); save(); toast('Deleted'); });
+$('#st-clear').onclick = ()=>confirmStep('Delete every message, file and call record on this device?', ()=>{ Object.values(V.msgs).flat().filter(x=>x.file).forEach(x=>forgetFile(x.id)); V.msgs = {}; Object.values(contacts).forEach(c=>c.unread=0); save(); toast('Deleted'); });
 $('#st-reset').onclick = ()=>confirmStep('Remove your identity, contacts and keys from this device?', async ()=>{ await Vault.wipe(); location.hash=''; location.reload(); });
 $('#st-yes').onclick = ()=>{ $('#st-confirm').hidden = true; const f=pending; pending=null; f && f(); };
 $('#st-no').onclick = ()=>{ $('#st-confirm').hidden = true; pending = null; };
@@ -1022,7 +1526,10 @@ async function boot(){
   if (!NATIVE && 'serviceWorker' in navigator && window.isSecureContext) navigator.serviceWorker.register('sw.js').catch(()=>{});
   V = await Vault.load(); me = V.me; contacts = V.contacts; invites = V.invites; settings = V.settings; prefs = V.prefs;
   applyLook();
+  if (V.me && (V.lastWipe||0) < lastWipeTime()) return nightlyWipe();     // closed at 1 am: purge now, before anything loads
   if (me) boot(); else { show('#s-welcome'); }
+  try { const live = new Set(Object.values(V.msgs).flat().filter(x=>x.file).map(x=>x.id)); for (const k of await Files.keys()) if (!live.has(k)) Files.del(k); } catch(e){}
+  if (V.notice === 'night'){ V.notice = null; save(); toast('Nightly clean-up done: contacts, chats and keys were destroyed at 1 am. Invite your people again.', 7000); }
 })();
 
 </script>

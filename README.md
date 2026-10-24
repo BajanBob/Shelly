@@ -3,11 +3,22 @@
 Private chat, voice and video calls with the people you invite, with a calypso feel. By BajanBob.
 
 - **Peer to peer:** messages and calls go straight from one phone to the other.
-- **AES-256-GCM end-to-end:**
-  - every chat message, and every audio and video frame, is encrypted with AES-256-GCM;
-  - keys are agreed fresh for each session (ECDH P-256) and bound to a 256-bit secret from the invite;
-  - a safety code on the call screen lets both people check that nobody is in the middle.
-- **Messages and call records delete themselves after 6 hours.** While stored they are encrypted with AES-256-GCM, using a key the browser keeps locked.
+- **AES-256-GCM end-to-end:** every chat message, and every audio and video frame, is encrypted with AES-256-GCM.
+- **Hybrid post-quantum handshake:** each session agrees fresh keys with **ECDH P-384** (192-bit) plus **ML-KEM-768** (NIST FIPS 203) in both directions.
+  - These are combined with the invite's 256-bit secret using HKDF-SHA-384, and bound to the whole handshake.
+  - An attacker would have to break P-384, ML-KEM-768 *and* steal the invite secret.
+  - Older handshakes without the post-quantum part are refused.
+- **Safety code:** shown on the call screen, so both people can check that nobody is in the middle.
+- **Nothing lasts:**
+  - Chats and call records are destroyed **3 hours** after they're sent.
+  - Contacts are erased **3 hours** after they're added.
+  - Invites expire after 3 hours.
+  - **Every night at 1 am**, Shelly destroys all its data, keys and its own ID, and starts over with a new identity. If Shelly was closed at 1 am, this happens the moment it opens. A call in progress is never cut off.
+  - While stored, everything is encrypted with AES-256-GCM, using a key the browser keeps locked.
+- **Files and voice notes:** photos, videos, documents (up to 25 MB) and voice notes (up to 5 minutes).
+  - They go phone to phone in AES-256-sealed pieces, are stored encrypted, and are destroyed with the chat.
+  - **The sender decides** whether the receiver can only view it inside Shelly or may save it to their phone.
+  - Documents are always "can save", because they can't be opened without saving.
 - **No copying of chats.** The Android app also blocks screenshots and screen recording (Android's secure-screen flag, FLAG_SECURE).
 - **Invites:** scan a QR code, or paste a 256-bit passcode. Each invite works once.
 - **Push notifications:** Shelly rings and alerts you while it is closed. Notifications never contain message text.
@@ -72,6 +83,19 @@ Shelly is then at **https://bajanbob.github.io/Shelly/**.
 2. When it finishes with a green tick, open the run and download **Shelly-android**. It contains **Shelly.apk**.
 3. **First build only:** the download also contains `NEW-SIGNING-KEY.txt`. Add its long line as a repository secret named `SHELLY_KEYSTORE`, so that later versions install over this one.
 4. Send Shelly.apk to your contacts. On the phone, open it and allow "install unknown apps" when asked.
+
+## Stingrays and Pegasus: what Shelly can and can't do
+
+- **Stingrays (fake cell towers):**
+  - They can see *that* and *where* a phone is used. They can't read or listen to Shelly, because everything is end-to-end encrypted.
+  - Turn off **Allow 2G** on Android, and prefer trusted Wi-Fi.
+  - **Always use the relay** (Settings) also hides your internet address from contacts.
+- **Pegasus-type spyware:**
+  - It takes over the *phone itself*, so it can read the screen and microphone before any app encrypts anything. No app can stop that.
+  - Shelly limits what spyware or tampering can grab: messages are destroyed after 3 hours, stored data is encrypted, and copying is blocked.
+  - A strict security policy stops injected code from running or sending data out.
+  - The Android app blocks screenshots and screen recording, and carries all of its own code instead of loading any from the internet.
+  - Protect the phone itself: install updates promptly, restart daily, use Lockdown Mode on iPhone or Advanced Protection on Android, and don't open unknown links. The in-app **Security checklist** covers this.
 
 ## Limits
 

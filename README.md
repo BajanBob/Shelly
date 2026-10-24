@@ -8,7 +8,7 @@ Private chat, voice and video calls with the people you invite, with a calypso f
   - These are combined with the invite's 256-bit secret using HKDF-SHA-384, and bound to the whole handshake.
   - An attacker would have to break P-384, ML-KEM-768 *and* steal the invite secret.
   - Older handshakes without the post-quantum part are refused.
-- **Safety code:** shown on the call screen, so both people can check that nobody is in the middle.
+- **Safety code:** the call screen stays clean - the encryption badge and safety code are hidden by default. **Tap the caller's name at the top of a call** to reveal the "AES-256 end-to-end" badge and the safety code, so both people can check that nobody is in the middle; tap again to hide them.
 - **Nothing lasts:**
   - Chats and call records are destroyed **3 hours** after they're sent.
   - Contacts are erased **3 hours** after they're added.
@@ -34,7 +34,7 @@ Private chat, voice and video calls with the people you invite, with a calypso f
 | `sw.js`, `manifest.webmanifest`, `icon-*.png`, `apple-touch-icon.png` | Make Shelly installable and able to receive notifications |
 | `config.json` | The address of your push relay (filled in at step 3) |
 | `relay/worker.js` | The push relay; paste it into Cloudflare (step 3) |
-| `android/` | Ringtones and notification icon for the Android app |
+| `android/` | Ringtones (message, voice, video, SOS) and notification icon for the Android app |
 | `.github/workflows/build-apk.yml` | Builds the Android app (Shelly.apk) automatically |
 
 ## Setup
@@ -83,6 +83,52 @@ Shelly is then at **https://bajanbob.github.io/Shelly/**.
 2. When it finishes with a green tick, open the run and download **Shelly-android**. It contains **Shelly.apk**.
 3. **First build only:** the download also contains `NEW-SIGNING-KEY.txt`. Add its long line as a repository secret named `SHELLY_KEYSTORE`, so that later versions install over this one.
 4. Send Shelly.apk to your contacts. On the phone, open it and allow "install unknown apps" when asked.
+
+## Shelly Ultra (family mode)
+
+Turn it on in **Settings → Shelly Ultra**. Everything stays end-to-end encrypted.
+
+- **Family contacts:**
+  - Open a chat and tap **☆ Add to family**.
+  - Family stay saved (encrypted) and survive the 3-hour erase and the 1 am clean-up. The 1 am clean-up then keeps your identity, family and family groups, and destroys chats, files and non-family contacts.
+  - Chats with family are still destroyed after 3 hours.
+- **Offline delivery:**
+  - If a family member's Shelly is closed, your message waits on your relay until they open it.
+  - It is sealed with AES-256 using your pair's 256-bit secret, so the relay can't read it, and it expires after 3 hours.
+- **Family groups:**
+  - Tap **New family group**. Shelly introduces the members to each other securely, giving every pair a fresh 256-bit key.
+  - Group chat, plus group calls (video up to 4 people, voice up to 6). Every link in a group call is AES-256 end-to-end.
+- **SOS:**
+  - **Hold the red SOS button for 2 seconds.** Every family member gets a loud alarm, a full-screen alert and your location on a map, even if their Shelly is closed (with push set up).
+  - Hold again within 30 minutes to cancel.
+- **Go live to family (panic broadcast):** tap **🔴 Go live**. Your camera, microphone and location stream **one way** to your family, end-to-end encrypted. They can watch, listen and come help without having to answer.
+  - **You** start it and **only you** can stop it. A "Hide screen" button disguises your phone while it keeps streaming; tap the time three times to bring the controls back.
+  - Family can receive your broadcast; they can never switch it on from their end.
+- **Family safe board (emergency check-in):** tap **🟢 Family safe board**.
+  - In a declared disaster, national emergency or lockdown, anyone in the family can **Declare a family emergency** (name it - Hurricane, Lockdown, Flood). Everyone is alerted to check in.
+  - Each member taps **🟢 I'm safe** or **🔴 I need help** and can add a **landmark** they type (e.g. "by the gas station, Oistins") and, **only if they allow it**, their location - shown with a free OpenStreetMap link so family can find them.
+  - **Location, two ways:** if you allow GPS, the pin is precise. If GPS is off, denied or fails, Shelly uses a **free approximate area from your own internet connection** - worked out by your own relay from the connection's IP address (Cloudflare's built-in edge geo), so **no third-party service** is contacted and your IP isn't exposed to anyone new. It's city-level only and clearly marked "approx. area".
+  - **Free offline map:** the board shows an embedded **OpenStreetMap** map with a coloured pin for each family member (green safe, red needs help). It's free and built into Shelly - the map library is bundled in the app, not loaded from the internet. Map tiles you've viewed are cached, so an area still shows **when the network is down**. Tap **⬇ Save map for offline** to pre-download the area around your family before a storm. (Map tiles come from OpenStreetMap's free tile service; a family's use is well within its fair-use limits.)
+  - The board shows every family member's status, landmark, note, time and map pin, and how many have checked in. A "needs help" check-in rings the family like an SOS.
+  - It is **family-only and consent-based**: a location is shared only when you tap to share it, once, with that check-in - there is no continuous tracking. Everything is end-to-end encrypted and erased after 3 hours like the rest of Shelly. Anyone in the family can end the emergency.
+- **Live location:** in a chat, tap **📍 Share location** for 15 minutes, 1 hour or 3 hours.
+- **Reactions and replies:** tap any message for ❤️ 👍 😂 😮 🙏, or **↩ Reply**.
+- **Read receipts:** shows "Seen". You can turn it off, which hides yours and theirs.
+- **Protected-phone badge:** 🛡 means a contact uses the Shelly Android app, where screenshots are blocked; ⚠ means they use the browser version, where screenshots are possible. **Protected phones only** (a setting) stops Shelly sending view-only photos, videos or voice notes to a ⚠ contact.
+- **HD voice:** calls use Opus at 64 kbps, full-band 48 kHz, with lost-packet repair - richer and clearer. Hurricane mode drops to 20 kbps voice-only to save data.
+- **Simple mode:** bigger text and buttons, for older relatives.
+- **Hurricane mode:** voice-only calls, low-bitrate audio, and smaller photos and voice notes to save data when networks struggle.
+
+### Extra relay step for Ultra (offline delivery)
+1. In Cloudflare, go to **Storage & Databases → KV → Create**, and name it `shelly-box`.
+2. Open your worker: **Settings → Bindings → Add → KV namespace**.
+   - Variable name: `BOX`
+   - Namespace: `shelly-box`
+   
+   Then click **Deploy**.
+3. Paste the new `relay/worker.js` into the worker and click **Deploy**.
+
+Cloudflare's free plan allows 1,000 stored messages a day, which is plenty for a family. A message is only stored when the other person is offline.
 
 ## Stingrays and Pegasus: what Shelly can and can't do
 

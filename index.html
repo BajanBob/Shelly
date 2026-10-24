@@ -335,6 +335,23 @@ body.lowdata .msgs{background-image:none!important}
 .leaflet-popup-content b{display:block}
 .leaflet-control-attribution{font-size:9px;background:rgba(255,255,255,.7)}
 .bd-pin-label{font-weight:700}
+/* ---- mode picker (1-to-1 vs Family) ---- */
+.modepick{display:flex;gap:6px;background:var(--surface-2,rgba(0,0,0,.05));border:1px solid var(--line);border-radius:14px;padding:5px;margin-bottom:4px}
+.modebtn{flex:1;border:0;background:transparent;color:var(--muted);font:inherit;font-weight:700;font-size:15px;padding:10px 8px;border-radius:10px;cursor:pointer;transition:.15s}
+.modebtn[aria-checked="true"]{background:var(--accent,#0d7a74);color:#fff;box-shadow:0 1px 4px rgba(0,0,0,.15)}
+.modedesc{margin:0 2px 8px;color:var(--muted)}
+.card2{background:var(--surface-2,rgba(0,0,0,.04));border:1px solid var(--line);border-radius:12px;padding:12px;display:flex;flex-direction:column;gap:8px;margin-top:4px}
+hr.hair{border:0;border-top:1px solid var(--line);margin:12px 0 4px;width:100%}
+/* ---- in-app alert banner ---- */
+.inapp{position:fixed;left:50%;transform:translateX(-50%) translateY(-6px);top:calc(10px + env(safe-area-inset-top,0px));z-index:60;
+  display:flex;align-items:center;gap:11px;max-width:min(520px,92vw);width:max-content;text-align:left;cursor:pointer;
+  background:var(--surface,#fff);color:var(--ink,#1f2a2e);border:1px solid var(--line);border-radius:14px;padding:11px 15px;
+  box-shadow:0 8px 28px rgba(0,0,0,.22);font:inherit;animation:inappIn .22s ease}
+@keyframes inappIn{from{opacity:0;transform:translateX(-50%) translateY(-18px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
+.inapp-ic{font-size:22px;line-height:1;flex:none}
+.inapp-tx{display:flex;flex-direction:column;min-width:0}
+.inapp-tx b{font-size:14.5px}
+.inapp-tx span{font-size:13px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:60vw}
 
 <style>/* required styles */
 
@@ -1022,7 +1039,7 @@ svg.leaflet-image-layer.leaflet-interactive path {
     <header class="bar">
       <div class="brand"><svg class="shell" viewBox="0 0 32 32" aria-hidden="true"><path d="M16 3C8.5 3 3 8.6 3 15.2c0 3.2 1.3 6 3.4 8.1L10 27h12l3.6-3.7c2.1-2.1 3.4-4.9 3.4-8.1C29 8.6 23.5 3 16 3z"/><path class="rib" d="M16 26V6M12 26 8.5 9M20 26l3.5-17M9 25.5 5 15M23 25.5 27 15"/><path class="hinge" d="M11 26h10l-1.6 3.4h-6.8z"/></svg>Shelly</div>
       <span class="status" id="h-status"><span class="dot" id="h-dot"></span><span id="h-st">Connecting</span></span>
-      <button class="icon-btn" id="h-settings" aria-label="Settings"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg></button>
+      <button class="icon-btn" id="h-settings" aria-label="Settings" title="Settings"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg></button>
     </header>
     <div class="waves" aria-hidden="true"><svg viewBox="0 0 400 16" preserveAspectRatio="none"><path class="w2" d="M0 9 Q25 2 50 9 T100 9 T150 9 T200 9 T250 9 T300 9 T350 9 T400 9 V16 H0z"/><path class="w1" d="M0 12 Q25 6 50 12 T100 12 T150 12 T200 12 T250 12 T300 12 T350 12 T400 12 V16 H0z"/></svg></div>
     <div class="body">
@@ -1032,10 +1049,15 @@ svg.leaflet-image-layer.leaflet-interactive path {
         <button class="sos-btn" id="u-sos" aria-label="SOS: hold for 2 seconds to alert your family"><span class="sos-ring" id="u-sos-ring"></span><b>SOS</b><small>hold 2 s</small></button>
         <div class="ultra-side">
           <span class="ultra-badge">SHELLY ULTRA</span>
-          <div class="row"><button class="btn" id="u-newgroup">New family group</button><button class="btn live-btn" id="u-live">🔴 Go live to family</button><button class="btn" id="u-board">🟢 Family safe board</button></div>
+          <div class="row"><button class="btn" id="u-newgroup" title="Create a family group with its own keys">New family group</button><button class="btn live-btn" id="u-live">🔴 Go live to family</button><button class="btn" id="u-board">🟢 Family safe board</button></div>
           <span class="small" id="u-modes"></span>
         </div>
       </div>
+      <div class="modepick" role="radiogroup" aria-label="Choose how you use Shelly">
+        <button class="modebtn" id="mode-solo" role="radio" aria-checked="true" title="One-to-one private chats, up to 4 people">👤 1-to-1</button>
+        <button class="modebtn" id="mode-fam" role="radio" aria-checked="false" title="Family mode (Shelly Ultra): family circle up to 7, groups, SOS, safe board">👪 Family</button>
+      </div>
+      <p class="small modedesc" id="mode-desc"></p>
       <div class="tabs" role="tablist">
         <button role="tab" id="t-people" aria-selected="true">People</button>
         <button role="tab" id="t-invite" aria-selected="false">Invite or join</button>
@@ -1048,7 +1070,13 @@ svg.leaflet-image-layer.leaflet-interactive path {
         <div class="card">
           <h2>Invite someone</h2>
           <p class="small">Each invite works once and carries its own secret 256-bit key. Let them scan the QR code in person, or send the link or passcode privately.</p>
-          <button class="btn sun" id="inv-make">Create an invite</button>
+          <button class="btn sun" id="inv-make" title="Create a one-time invite anyone can use once">Create an invite</button>
+          <button class="btn" id="inv-bound" title="Make a code that only opens on one specific phone">🔒 Invite one specific phone</button>
+          <div class="card2" id="inv-bound-box" hidden>
+            <p class="small">Paste the <b>device code</b> that person sent you. The invite you get back will <b>only open on their phone</b>.</p>
+            <label class="f" for="inv-dev">Their device code<input class="in" id="inv-dev" placeholder="SHD.…" autocomplete="off" spellcheck="false"></label>
+            <button class="btn pri" id="inv-bound-go">Make phone-locked invite</button>
+          </div>
           <div id="inv-out" hidden style="display:flex;flex-direction:column;gap:10px">
             <canvas class="qr" id="inv-qr" width="240" height="240" aria-label="Invite QR code"></canvas>
             <p class="small" style="text-align:center">Scan with Shelly: <b>Invite or join → Scan a QR code</b></p>
@@ -1059,10 +1087,18 @@ svg.leaflet-image-layer.leaflet-interactive path {
         </div>
         <div class="card">
           <h2>Join someone</h2>
-          <button class="btn pri" id="scan-go">Scan a QR code</button>
+          <button class="btn pri" id="scan-go" title="Scan an invite QR code">Scan a QR code</button>
           <label class="f" for="inv-paste">Or paste their passcode or link
             <input class="in" id="inv-paste" placeholder="SH1.shelly-… or https://…#join=…" autocomplete="off" spellcheck="false"></label>
           <button class="btn" id="inv-join">Add contact</button>
+          <hr class="hair">
+          <button class="btn" id="my-devcode" title="Share this so someone can send you a phone-locked invite">Show my device code</button>
+          <div id="devcode-out" hidden style="display:flex;flex-direction:column;gap:8px;align-items:center">
+            <canvas class="qr" id="dev-qr" width="200" height="200" aria-label="Your device code QR"></canvas>
+            <div class="code" id="dev-code" style="font-size:11px"></div>
+            <div class="row"><button class="btn" id="dev-copy">Copy device code</button></div>
+            <p class="small">Send this to whoever is inviting you, so they can make an invite that only opens on this phone.</p>
+          </div>
         </div>
         <div class="card"><h2>Open invites</h2><div id="inv-list" class="small">None</div></div>
       </div>
@@ -1074,8 +1110,8 @@ svg.leaflet-image-layer.leaflet-interactive path {
     <header class="bar">
       <button class="icon-btn" id="c-back" aria-label="Back"><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg></button>
       <div class="who-head"><b id="c-name">Name</b><span><span class="dot" id="c-dot"></span><span id="c-st">Offline</span></span></div>
-      <button class="icon-btn" id="c-voice" aria-label="Voice call"><svg viewBox="0 0 24 24"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8 9.8a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.7 2z"/></svg></button>
-      <button class="icon-btn acc" id="c-video" aria-label="Video call"><svg viewBox="0 0 24 24"><path d="M23 7l-7 5 7 5V7z"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg></button>
+      <button class="icon-btn" id="c-voice" aria-label="Voice call" title="Voice call"><svg viewBox="0 0 24 24"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8 9.8a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.7 2z"/></svg></button>
+      <button class="icon-btn acc" id="c-video" aria-label="Video call" title="Video call"><svg viewBox="0 0 24 24"><path d="M23 7l-7 5 7 5V7z"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg></button>
     </header>
     <div class="waves" aria-hidden="true"><svg viewBox="0 0 400 16" preserveAspectRatio="none"><path class="w2" d="M0 9 Q25 2 50 9 T100 9 T150 9 T200 9 T250 9 T300 9 T350 9 T400 9 V16 H0z"/><path class="w1" d="M0 12 Q25 6 50 12 T100 12 T150 12 T200 12 T250 12 T300 12 T350 12 T400 12 V16 H0z"/></svg></div>
     <div class="ctools" id="c-tools" hidden>
@@ -1089,11 +1125,11 @@ svg.leaflet-image-layer.leaflet-interactive path {
     <div class="recbar" id="c-rec" hidden><span class="recdot" aria-hidden="true"></span><span id="c-rec-t">0:00</span><span class="small" style="flex:1">Recording voice note</span>
       <button class="btn" type="button" id="c-rec-x">Cancel</button><button class="btn pri" type="button" id="c-rec-stop">Done</button></div>
     <form class="compose" id="c-form">
-      <button class="icon-btn" type="button" id="c-attach" aria-label="Send a photo, video or file"><svg viewBox="0 0 24 24"><path d="M21 11.5l-8.6 8.6a5.5 5.5 0 0 1-7.8-7.8l8.6-8.6a3.7 3.7 0 0 1 5.2 5.2l-8.6 8.6a1.8 1.8 0 0 1-2.6-2.6l7.9-7.9"/></svg></button>
+      <button class="icon-btn" type="button" id="c-attach" aria-label="Send a photo, video or file" title="Send a photo, video or file"><svg viewBox="0 0 24 24"><path d="M21 11.5l-8.6 8.6a5.5 5.5 0 0 1-7.8-7.8l8.6-8.6a3.7 3.7 0 0 1 5.2 5.2l-8.6 8.6a1.8 1.8 0 0 1-2.6-2.6l7.9-7.9"/></svg></button>
       <input type="file" id="c-file" hidden>
       <label for="c-text" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">Message</label>
       <input class="in" id="c-text" placeholder="Message" autocomplete="off" maxlength="4000">
-      <button class="icon-btn" type="button" id="c-mic" aria-label="Record a voice note"><svg viewBox="0 0 24 24"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 10a7 7 0 0 0 14 0M12 17v5"/></svg></button>
+      <button class="icon-btn" type="button" id="c-mic" aria-label="Record a voice note" title="Record a voice note"><svg viewBox="0 0 24 24"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 10a7 7 0 0 0 14 0M12 17v5"/></svg></button>
       <button class="btn pri" id="c-send">Send</button>
     </form>
   </section>
@@ -1369,6 +1405,7 @@ svg.leaflet-image-layer.leaflet-interactive path {
     </div>
   </div>
 
+  <button class="inapp" id="inapp" hidden><span class="inapp-ic" id="inapp-ic">💬</span><span class="inapp-tx"><b id="inapp-who"></b><span id="inapp-msg"></span></span></button>
   <div class="toast" id="toast" role="status" hidden></div>
 </div>
 
@@ -1930,6 +1967,7 @@ async function onData(id, conn, d){
     if (!c){
       const inv = d.invite && invites[d.invite];
       if (!inv){ conn.close(); return; }
+      if (!canAddContact()){ conn.close(); return; }                          // 1-to-1 mode: max 4 contacts
       c = contacts[id] = {name:String(d.name||'Contact').slice(0,30), K:inv.K, invite:d.invite, bound:true, added:Date.now()};
       delete invites[d.invite]; save();
       sysMsg(id, `${c.name} joined from your invite.`); toast(`${c.name} is now a contact`);
@@ -1975,9 +2013,10 @@ async function handleObj(id, o, via){
     if (!m.some(x=>x.id===o.id) && Date.now() - (o.ts||0) < KEEP_MS){ m.push({id:o.id, me:false, text:String(o.text).slice(0,4000), ts:Math.min(o.ts||Date.now(), Date.now()), reply:cleanReply(o.reply)}); setMsgs(id, m); }
     deliverAck(id, o.id);
     if (cur !== id || document.hidden){ c.unread = (c.unread||0)+1; save(); notifyLocal(c.name, 'New message'); }
+    if (cur !== id) inAppAlert(id, '💬', c.name, String(o.text||'').slice(0,80));
     if (!call) playTone('msg');
     drawAll(); sendReadReceipts();
-  } else if (o.t === 'file'){ await onFileHeader(id, o);
+  } else if (o.t === 'file'){ await onFileHeader(id, o); if (cur !== id) inAppAlert(id, '📎', c.name, 'sent you a file');
   } else if (o.t === 'fack'){ const r = msgsOf(id).find(x=>x.id===o.id && x.me); if (r){ r.state = 'delivered'; save(); drawChat(); }
   } else if (o.t === 'ack'){
     const m = msgsOf(id), x = m.find(x=>x.id===o.id); if (x && x.state !== 'read'){ x.state='delivered'; setMsgs(id, m); drawChat(); }
@@ -2053,6 +2092,11 @@ function drawPushState(){
   $('#st-push-go').hidden = on || !can;
 }
 
+/* ---------- contact limits: 1-to-1 mode caps at 4; Family mode caps the family circle at 7 (handled in Ultra) ---------- */
+const P2P_MAX = 4;
+const contactCount = () => Object.keys(contacts).filter(id=>!contacts[id].blocked).length;
+function canAddContact(){ if (ULTRA()) return true; if (contactCount() >= P2P_MAX){ toast(`1-to-1 mode holds up to ${P2P_MAX} contacts. Remove one, or switch to Family mode for more.`, 6000); return false; } return true; }
+
 /* ---------- invites: QR code, link or 256-bit passcode ---------- */
 const INV_RE = /(?:#join=|SH1\.)(shelly-[a-z0-9]+)\.([A-Za-z0-9_-]+)\.([A-Za-z0-9_-]{43})\.([^\s]*)/;
 function siteBase(){ return NATIVE ? (CONFIG.site || 'https://bajanbob.github.io/Shelly/') : location.href.split('#')[0]; }
@@ -2063,11 +2107,18 @@ function makeInvite(){
   const link = `${siteBase()}#join=${tail}`, code = `SH1.${tail}`;
   $('#inv-out').hidden = false; $('#inv-out').dataset.link = link; $('#inv-code').textContent = code; qrDraw($('#inv-qr'), link, 5); drawInvites();
 }
-function joinFrom(text){
-  const m = String(text).match(INV_RE);
+async function joinFrom(text){
+  text = String(text).trim();
+  if (/SH1B\./.test(text)){                                    // a phone-locked invite: unwrap it with this device's key
+    const un = await unwrapBound(text);
+    if (un === false){ toast('This invite was made for a different phone. Send your device code and ask for one made for this phone.', 7000); return false; }
+    if (un) text = un;
+  }
+  const m = text.match(INV_RE);
   if (!m) { toast('That is not a Shelly invite.'); return false; }
   const [, id, invId, K, nm] = m;
   if (me && id === me.id){ toast('That is your own invite - give it to someone else.'); return false; }
+  if (!contacts[id] && !canAddContact()) return false;                       // 1-to-1 mode: max 4 contacts
   let name = 'Contact'; try { name = decodeURIComponent(nm||'Contact'); } catch(e){}
   contacts[id] = Object.assign(contacts[id]||{}, {name:name.slice(0,30), K, invite:invId, bound:false, added:Date.now(), blocked:false});
   save(); toast(`${contacts[id].name} added - connecting securely`); connect(id); drawAll(); return true;
@@ -2092,12 +2143,93 @@ async function startScan(){
       g.drawImage(v, 0, 0, cv.width, cv.height); const r = window.jsQR(g.getImageData(0,0,cv.width,cv.height).data, cv.width, cv.height); return r && r.data; };
   }
   const loop = async ()=>{ if (!scanOn) return; let t = null; try { t = await detect(); } catch(e){}
-    if (t && INV_RE.test(t)){ stopScan(); if (joinFrom(t)) $('#t-people').click(); return; }
+    if (t && (INV_RE.test(t) || /SH1B\./.test(t))){ stopScan(); if (await joinFrom(t)) $('#t-people').click(); return; }
     if (t) $('#scan-st').textContent = 'That QR code is not a Shelly invite.';
     setTimeout(loop, 250); };
   loop();
 }
 function stopScan(){ scanOn = false; $('#scan').hidden = true; if (scanStream) scanStream.getTracks().forEach(t=>t.stop()); scanStream = null; }
+
+/* ===================== device-bound invites =====================
+   Each install has an ECDH P-256 device key kept in its own store that survives the nightly wipe.
+   A "device code" is that device's public key. An invite can be wrapped to a device code so the
+   encrypted invite ONLY opens on that one phone - forward it elsewhere and it won't decrypt.
+   (Phones don't expose IMEI/IMSI to any app, so this device key is the privacy-respecting equivalent.) */
+function devDB(){ return new Promise((res,rej)=>{ const r = indexedDB.open('shelly-device',1);
+  r.onupgradeneeded = ()=>r.result.createObjectStore('k'); r.onsuccess = ()=>res(r.result); r.onerror = ()=>rej(r.error); }); }
+async function devGet(k){ try{ const db = await devDB(); return await new Promise(res=>{ const q = db.transaction('k').objectStore('k').get(k); q.onsuccess = ()=>{ res(q.result); db.close(); }; q.onerror = ()=>{ res(null); db.close(); }; }); }catch(e){ return null; } }
+async function devPut(k,v){ try{ const db = await devDB(); await new Promise(res=>{ const tx = db.transaction('k','readwrite'); tx.objectStore('k').put(v,k); tx.oncomplete = ()=>{ res(); db.close(); }; tx.onerror = ()=>{ res(); db.close(); }; }); }catch(e){} }
+let DEV = null;
+async function deviceKeys(){
+  if (DEV) return DEV;
+  let kp = await devGet('kp');
+  if (!kp || !kp.privateKey){ kp = await crypto.subtle.generateKey({name:'ECDH', namedCurve:'P-256'}, true, ['deriveBits']); await devPut('kp', kp); }
+  const rawPub = new Uint8Array(await crypto.subtle.exportKey('raw', kp.publicKey));
+  return (DEV = {kp, code:'SHD.' + SC.b64(rawPub)});
+}
+async function ecdhKey(priv, pubRaw){
+  const pub = await crypto.subtle.importKey('raw', pubRaw, {name:'ECDH', namedCurve:'P-256'}, false, []);
+  const bits = await crypto.subtle.deriveBits({name:'ECDH', public:pub}, priv, 256);
+  const ikm = await crypto.subtle.importKey('raw', bits, 'HKDF', false, ['deriveKey']);
+  return crypto.subtle.deriveKey({name:'HKDF', hash:'SHA-256', salt:SC.te.encode('shelly-bound-invite-v1'), info:new Uint8Array()}, ikm, {name:'AES-GCM', length:256}, false, ['encrypt','decrypt']);
+}
+async function showMyDeviceCode(){
+  const d = await deviceKeys();
+  $('#devcode-out').hidden = false; $('#dev-code').textContent = d.code; try { qrDraw($('#dev-qr'), d.code, 4); } catch(e){}
+}
+async function makeBoundInvite(devCode){
+  const m = String(devCode||'').trim().match(/SHD\.([A-Za-z0-9_-]+)/);
+  if (!m) return toast('That is not a device code - it should start with SHD.');
+  let pubRaw; try { pubRaw = SC.unb64(m[1]); } catch(e){ pubRaw = null; }
+  if (!pubRaw || pubRaw.length !== 65) return toast('That device code looks damaged - ask for it again.');
+  const invId = SC.b64(SC.rand(9)), K = SC.b64(SC.rand(32)); invites[invId] = {K, created:Date.now()}; save();
+  const tail = `${me.id}.${invId}.${K}.${encodeURIComponent(me.name)}`;
+  try {
+    const eph = await crypto.subtle.generateKey({name:'ECDH', namedCurve:'P-256'}, true, ['deriveBits']);
+    const aes = await ecdhKey(eph.privateKey, pubRaw), iv = SC.rand(12);
+    const ct = new Uint8Array(await crypto.subtle.encrypt({name:'AES-GCM', iv}, aes, SC.te.encode(tail)));
+    const ephPub = new Uint8Array(await crypto.subtle.exportKey('raw', eph.publicKey));
+    const code = `SH1B.${SC.b64(ephPub)}.${SC.b64(iv)}.${SC.b64(ct)}`;
+    $('#inv-out').hidden = false; $('#inv-out').dataset.link = code; $('#inv-code').textContent = code;
+    try { qrDraw($('#inv-qr'), code, 4); } catch(e){}
+    $('#inv-bound-box').hidden = true; $('#inv-dev').value = ''; drawInvites();
+    toast('Phone-locked invite made - it only opens on that phone.', 6000);
+  } catch(e){ toast('Could not make the phone-locked invite.'); }
+}
+async function unwrapBound(text){
+  const b = String(text).match(/SH1B\.([A-Za-z0-9_-]+)\.([A-Za-z0-9_-]+)\.([A-Za-z0-9_-]+)/);
+  if (!b) return null;
+  try { const dev = await deviceKeys();
+    const aes = await ecdhKey(dev.kp.privateKey, SC.unb64(b[1]));
+    const pt = await crypto.subtle.decrypt({name:'AES-GCM', iv:SC.unb64(b[2])}, aes, SC.unb64(b[3]));
+    return 'SH1.' + SC.td.decode(pt);
+  } catch(e){ return false; }   // false = a bound invite that isn't for this phone
+}
+$('#inv-bound') && ($('#inv-bound').onclick = ()=>{ const x = $('#inv-bound-box'); x.hidden = !x.hidden; if (!x.hidden) setTimeout(()=>$('#inv-dev').focus(),50); });
+$('#inv-bound-go') && ($('#inv-bound-go').onclick = ()=>makeBoundInvite($('#inv-dev').value));
+$('#my-devcode') && ($('#my-devcode').onclick = ()=>{ const x = $('#devcode-out'); if (x.hidden) showMyDeviceCode(); else x.hidden = true; });
+$('#dev-copy') && ($('#dev-copy').onclick = async ()=>{ try { await navigator.clipboard.writeText($('#dev-code').textContent); toast('Device code copied.'); } catch(e){ toast('Copy failed - select and copy it.'); } });
+
+/* ===================== mode picker: 1-to-1 vs Family (Shelly Ultra) ===================== */
+function setMode(ultra){ prefs.ultra = !!ultra; save(); applyUltra(); drawModePick(); drawContacts(); if ($('#st-ultra')) $('#st-ultra').checked = prefs.ultra;
+  toast(prefs.ultra ? 'Family mode on - add family in a chat with ☆.' : '1-to-1 mode - private chats with up to 4 people.', 4000); }
+function drawModePick(){ const u = ULTRA();
+  if ($('#mode-solo')){ $('#mode-solo').setAttribute('aria-checked', String(!u)); $('#mode-fam').setAttribute('aria-checked', String(u)); }
+  if ($('#mode-desc')) $('#mode-desc').textContent = u
+    ? 'Family mode: your family circle (up to 7), family groups, SOS, live location and the safe board.'
+    : 'One-to-one private chats with up to 4 people. Switch to Family for the family features.';
+}
+$('#mode-solo') && ($('#mode-solo').onclick = ()=>setMode(false));
+$('#mode-fam') && ($('#mode-fam').onclick = ()=>setMode(true));
+
+/* ===================== in-app alert banner (visible notification while the app is open) ===================== */
+let inappT = null;
+function inAppAlert(id, icon, who, msg){
+  const el = $('#inapp'); if (!el) return;
+  $('#inapp-ic').textContent = icon; $('#inapp-who').textContent = who; $('#inapp-msg').textContent = msg;
+  el.hidden = false; el.onclick = ()=>{ el.hidden = true; if (id){ cur = id; openChat(id); } };
+  clearTimeout(inappT); inappT = setTimeout(()=>{ el.hidden = true; }, 5000);
+}
 
 /* ---------- files and voice notes: AES-256 pieces phone to phone; the sender decides "view only" or "can save" ---------- */
 const CHUNK = 48 * 1024, MAX_FILE = 25 * 1024 * 1024, VOICE_MAX_S = 300;
@@ -2398,18 +2530,30 @@ function incomingCall(mc){
   if (mc.metadata && mc.metadata.gcall) return groupIncoming(mc);
   if (mc.metadata && mc.metadata.reconnect && call && call.id === mc.peer) return swapReconnect(mc);
   const id = mc.peer, s = sessions[id];
-  if (!contacts[id] || contacts[id].blocked || !s || !s.ready || call){ try { mc.close(); } catch(e){} return; }   // only verified contacts can ring you
+  if (!contacts[id] || contacts[id].blocked || call){ try { mc.close(); } catch(e){} return; }   // only known, un-blocked contacts can ring you
+  if (!s || !s.ready) connect(id);   // the media call can arrive before the secure data-link is ready - bring it up now, but ring right away
   ringing = mc; const c = contacts[id], v = !!(mc.metadata && mc.metadata.video);
   $('#ring').hidden = false; $('#ring-name').textContent = c.name; $('#ring-av').textContent = initials(c.name);
   $('#ring-kind').textContent = v ? 'Video call · end-to-end encrypted' : 'Voice call · end-to-end encrypted';
   ringTone(true); notifyLocal(c.name, v ? 'Video call' : 'Voice call');
   mc.on('close', ()=>{ if (ringing === mc){ ringing=null; $('#ring').hidden=true; ringTone(false); sysMsg(id, 'Missed call'); } });
 }
+function waitReady(id, ms){                                   // resolve true once the secure session has keys, or false after ms
+  return new Promise(res=>{ const t0 = Date.now();
+    const iv = setInterval(()=>{ const s = sessions[id];
+      if (s && s.ready && s.keys){ clearInterval(iv); res(true); }
+      else if (Date.now() - t0 > ms){ clearInterval(iv); res(false); } }, 100); });
+}
 async function answer(video){
   const mc = ringing; if (!mc) return; ringing = null; $('#ring').hidden = true; ringTone(false);
+  const id = mc.peer;
+  if (!sessions[id] || !sessions[id].ready){                 // secure the end-to-end line before answering, so every frame is encrypted
+    toast('Connecting securely…'); connect(id);
+    if (!(await waitReady(id, 9000))){ toast('Could not set up a secure line - ask them to call back.', 6000); try { mc.close(); } catch(e){} return; }
+  }
   let stream; try { stream = await getMedia(video); } catch(e){ toast('Allow the microphone (and camera) to answer.'); mc.close(); return; }
-  call = {id:mc.peer, video, stream, facing:'user'};
-  callUI(mc.peer, video, 'Connecting…'); $('#v-local').srcObject = video ? stream : null;
+  call = {id, video, stream, facing:'user'};
+  callUI(id, video, 'Connecting…'); $('#v-local').srcObject = video ? stream : null;
   mc.answer(stream, callOpts()); setupMedia(mc);
 }
 function setupMedia(mc){
@@ -2509,7 +2653,7 @@ async function copyText(t, el, ok){ try { await navigator.clipboard.writeText(t)
 $('#inv-copy').onclick = ()=>copyText($('#inv-out').dataset.link, $('#inv-code'), 'Invite link copied');
 $('#inv-copy-code').onclick = ()=>copyText($('#inv-code').textContent, $('#inv-code'), 'Passcode copied');
 $('#inv-share').onclick = async ()=>{ const t=$('#inv-out').dataset.link; if (navigator.share){ try { await navigator.share({title:'Shelly invite', text:`${me.name} invited you to Shelly (private calls and chat):`, url:t}); } catch(e){} } else $('#inv-copy').click(); };
-$('#inv-join').onclick = ()=>{ if (joinFrom($('#inv-paste').value)) { $('#inv-paste').value=''; $('#t-people').click(); } };
+$('#inv-join').onclick = async ()=>{ if (await joinFrom($('#inv-paste').value)) { $('#inv-paste').value=''; $('#t-people').click(); } };
 $('#scan-go').onclick = startScan; $('#scan-x').onclick = stopScan;
 $('#n-push-go').onclick = ()=>setupPush(true); $('#st-push-go').onclick = ()=>setupPush(true);
 $('#c-back').onclick = ()=>{ cur=null; replyTo = null; $('#c-reply').hidden = true; show('#s-home'); drawContacts(); };
@@ -2551,7 +2695,8 @@ window.addEventListener('hashchange', ()=>{ if (me && location.hash.startsWith('
 window.addEventListener('beforeunload', ()=>{ Vault.flush(); });
 
 async function boot(){
-  show('#s-home'); applyLook(); drawContacts(); purge();
+  show('#s-home'); applyLook(); drawContacts(); drawModePick(); purge();
+  deviceKeys();                                     // make/load this phone's device key (for phone-locked invites)
   if (location.hash.startsWith('#join=')){ joinFrom(location.hash); history.replaceState(null, '', location.pathname + location.search); }
   if (!window.isSecureContext && !NATIVE) toast('Open Shelly from an https:// address - browsers block calls on plain pages.', 6000);
   myPush = me.push || null;
@@ -2684,6 +2829,21 @@ function applyUltra(){
   document.body.classList.toggle('lowdata', lowData());
   if ($('#u-bar')) drawUltraHome();
   drawEmergency();
+  if (typeof drawModePick === 'function') drawModePick();
+}
+
+/* ---------- family circle cap: keep at most 7; adding an 8th drops the longest-standing family member (FIFO) ---------- */
+const FAMILY_MAX = 7;
+function enforceFamilyCap(){
+  const fam = familyIds().sort((a,b)=>(contacts[a].added||0)-(contacts[b].added||0));
+  while (fam.length > FAMILY_MAX){
+    const oldId = fam.shift(), c = contacts[oldId]; if (!c) continue;
+    c.family = false; save();
+    try { sendOrDrop(oldId, {t:'fam', on:false}); } catch(e){}
+    sysMsg(oldId, `${c.name} was removed from family to keep the limit of ${FAMILY_MAX}.`);
+    toast(`Family is full (${FAMILY_MAX}). ${c.name} was removed to make room.`, 6000);
+  }
+  drawAll();
 }
 function drawUltraHome(){
   $('#u-bar').hidden = !ULTRA();
@@ -2701,7 +2861,8 @@ function drawChatTools(){
   $('#c-video').hidden = lowData();
 }
 $('#c-fam').onclick = ()=>{ const c = contacts[cur]; if (!c) return; c.family = !c.family; save();
-  sendOrDrop(cur, {t:'fam', on:c.family}); toast(c.family ? `${c.name} is family - kept on your phone (encrypted), and messages wait on your relay when they're offline.` : `${c.name} is no longer family - they'll be erased after 3 hours.`, 5000); drawAll(); };
+  sendOrDrop(cur, {t:'fam', on:c.family}); toast(c.family ? `${c.name} is family - kept on your phone (encrypted), and messages wait on your relay when they're offline.` : `${c.name} is no longer family - they'll be erased after 3 hours.`, 5000);
+  if (c.family) enforceFamilyCap(); drawAll(); };
 
 /* ---------- reactions and replies ---------- */
 const EMOJI = ['❤️','👍','😂','😮','🙏'];
@@ -3056,7 +3217,7 @@ function onGroupIntro(cid, o){
   const p = o.peer; if (!p || !/^shelly-[a-z0-9]+$/.test(p.id||'') || p.id === me.id || !/^[A-Za-z0-9_-]{43}$/.test(p.K||'')) return;
   const g = groups()[o.gid]; if (!g || g.owner !== cid) return;                    // only the group's creator may introduce
   if (!contacts[p.id]){ contacts[p.id] = {name:String(p.name||'Family').slice(0,30), K:p.K, bound:true, family:true, added:Date.now(), via:o.gid,
-    inbox: /^[0-9a-f]{64}$/.test(p.inbox||'') ? p.inbox : null}; save(); connect(p.id); }
+    inbox: /^[0-9a-f]{64}$/.test(p.inbox||'') ? p.inbox : null}; save(); connect(p.id); enforceFamilyCap(); }
 }
 function sysGroup(gid, text){ const k = 'g:'+gid, m = msgsOf(k); m.push({id:'s'+Date.now()+Math.random(), sys:true, text, ts:Date.now()}); setMsgs(k, m); }
 function groupFanout(gid, obj){ const g = groups()[gid]; if (!g) return; for (const m of g.members) if (m !== me.id && contacts[m]) sendOrDrop(m, obj); }
@@ -3074,6 +3235,7 @@ function onGroupMsg(cid, o){
   if (!m.some(x=>x.id===o.id) && Date.now() - (o.ts||0) < KEEP_MS){ m.push({id:o.id, me:false, from:cid, text:String(o.text).slice(0,4000), ts:Math.min(o.ts||Date.now(), Date.now()), reply:cleanReply(o.reply)}); setMsgs(k, m); }
   sendOrDrop(cid, {t:'gack', gid:o.gid, id:o.id});
   if (cur !== k || document.hidden){ g.unread = (g.unread||0)+1; save(); notifyLocal(g.name, 'New message'); }
+  if (cur !== k && typeof inAppAlert === 'function') inAppAlert(k, '👪', g.name, `${(contacts[cid]||{}).name||'Someone'}: ${String(o.text||'').slice(0,60)}`);
   if (!call && !gcall) playTone('msg'); drawAll();
 }
 function memberName(g, id){ return id === me.id ? 'You' : (contacts[id] && contacts[id].name) || (g.names && g.names[id]) || 'Member'; }

@@ -20,7 +20,11 @@ Private chat, voice and video calls with the people you invite, with a calypso f
   - **The sender decides** whether the receiver can only view it inside Shelly or may save it to their phone.
   - Documents are always "can save", because they can't be opened without saving.
 - **No copying of chats.** The Android app also blocks screenshots and screen recording (Android's secure-screen flag, FLAG_SECURE).
+- **Two modes, clearly chosen:** a picker on the home screen switches between **1-to-1** (private chats, up to **4 contacts**) and **Family** (Shelly Ultra).
 - **Invites:** scan a QR code, or paste a 256-bit passcode. Each invite works once.
+  - **Phone-locked invites:** tap **🔒 Invite one specific phone**, paste the device code the person sends you, and the invite you get back **only opens on that one phone** - forward it anywhere else and it won't decrypt. (Phones don't let any app read IMEI/IMSI, so Shelly binds to a device key kept on the phone instead - harder to spoof than IMEI.) Each phone shows its own code under **Show my device code**.
+- **In-app alerts:** a tappable banner shows new messages and calls while Shelly is open on another screen.
+- **Incoming calls** ring right away with Accept/Decline; the secure line is set up the moment you answer.
 - **Push notifications:** Shelly rings and alerts you while it is closed. Notifications never contain message text.
 - **Three steel-pan tones** for messages, voice calls and video calls.
 - **Colour themes:** Calypso, Sunset, Reef, Carnival and Palm.
@@ -96,6 +100,7 @@ Turn it on in **Settings → Shelly Ultra**. Everything stays end-to-end encrypt
   - If a family member's Shelly is closed, your message waits on your relay until they open it.
   - It is sealed with AES-256 using your pair's 256-bit secret, so the relay can't read it, and it expires after 3 hours.
 - **Family groups:**
+  - The family circle holds up to **7** people. Adding an 8th automatically drops the longest-standing member to keep it at 7.
   - Tap **New family group**. Shelly introduces the members to each other securely, giving every pair a fresh 256-bit key.
   - Group chat, plus group calls (video up to 4 people, voice up to 6). Every link in a group call is AES-256 end-to-end.
 - **SOS:**

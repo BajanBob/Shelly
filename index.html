@@ -2013,6 +2013,9 @@ async function pushTo(id, kind){
 function pushSupported(){ return NATIVE || ('serviceWorker' in navigator && 'PushManager' in window && 'Notification' in window); }
 async function setupPush(fromClick){
   if (!CONFIG.relay || !pushSupported()) return drawPushState();
+  // On the Android app, registering for notifications needs Firebase to be set up in the build (google-services.json).
+  // Without it, PushNotifications.register() crashes natively, which JS can't catch - so don't attempt it until config says Firebase is ready.
+  if (NATIVE && !CONFIG.androidPush){ if (fromClick) toast('Android notifications need a one-time Firebase setup first. Calls and messages still work while Shelly is open.', 6000); return drawPushState(); }
   try {
     if (NATIVE){
       const PN = window.Capacitor.Plugins.PushNotifications; if (!PN) return;
@@ -2038,11 +2041,13 @@ async function setupPush(fromClick){
 }
 function sharePush(){ Object.keys(contacts).forEach(id=>sendSealed(id, {t:'push', p:myPush})); }
 function drawPushState(){
-  const on = !!myPush, can = !!CONFIG.relay && pushSupported();
+  const nativeBlocked = NATIVE && !CONFIG.androidPush;                       // Android app without Firebase set up: don't offer push (it would crash)
+  const on = !!myPush, can = !!CONFIG.relay && pushSupported() && !nativeBlocked;
   const ios = /iPhone|iPad/.test(navigator.userAgent) && !window.navigator.standalone && !NATIVE;
   $('#n-push').hidden = on || !can;
   if (ios && !on) { $('#n-push').hidden = false; $('#n-push-t').textContent = 'On iPhone: tap Share → Add to Home Screen, open Shelly from there, then turn on notifications.'; }
   $('#st-push').textContent = !CONFIG.relay ? 'Notifications need the Shelly relay to be set up (config.json).' :
+    nativeBlocked ? 'Android notifications need a one-time Firebase setup. Until then, calls and messages still work while Shelly is open.' :
     !pushSupported() ? 'This browser cannot receive notifications. On iPhone, add Shelly to your Home Screen first.' :
     on ? 'On - Shelly can ring you and show "New message" while it is closed. Message text is never sent in a notification.' : 'Off';
   $('#st-push-go').hidden = on || !can;
